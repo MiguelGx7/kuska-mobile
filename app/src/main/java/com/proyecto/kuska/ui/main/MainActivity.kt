@@ -35,8 +35,13 @@ class MainActivity : AppCompatActivity() {
     private var rolActual: String? = null
     private var insetInferior = 0
 
-    private val destinosSinBarra =
-        setOf(R.id.loginFragment, R.id.registroFragment, R.id.recuperarFragment)
+    private val destinosSinBarra = setOf(
+        R.id.loginFragment,
+        R.id.registroFragment,
+        R.id.recuperarFragment,
+        R.id.crearDonacionFragment,
+        R.id.alimentoFragment,
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splash = installSplashScreen()

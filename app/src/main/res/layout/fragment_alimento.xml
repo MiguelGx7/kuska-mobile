@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Agregar o editar un alimento de la donación. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
+    android:orientation="vertical"
+    tools:context=".ui.creardonacion.AlimentoFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/barra"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?android:attr/colorBackground"
+        app:navigationContentDescription="@string/accion_volver"
+        app:navigationIcon="@drawable/ic_atras"
+        tools:title="@string/titulo_agregar_alimento" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp">
+
+            <TextView
+                style="@style/Widget.Kumora.Etiqueta"
+                android:layout_marginTop="8dp"
+                android:text="@string/alimento_foto" />
+
+            <!-- Recuadro gris (16dp) mientras no hay foto -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imagen_foto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/estado_gris_fondo"
+                    android:contentDescription="@string/alimento_foto_vacia"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearance="@style/ShapeAppearance.Kumora.Card" />
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/indicador_foto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/cargando"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    app:indicatorColor="?attr/colorPrimary"
+                    app:indicatorSize="32dp"
+                    app:trackThickness="3dp" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/error_foto"
+                style="@style/Widget.Kumora.ErrorCampo"
+                android:paddingHorizontal="0dp"
+                tools:text="Agrega una foto del alimento."
+                tools:visibility="visible" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/alimento_foto_ayuda"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/boton_camara"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:minHeight="48dp"
+                    android:text="@string/alimento_tomar_foto" />
+
+                <Button
+                    android:id="@+id/boton_galeria"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="48dp"
+                    android:text="@string/alimento_elegir_galeria" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/Widget.Kumora.Etiqueta"
+                android:layout_marginTop="24dp"
+                android:labelFor="@id/entrada_nombre"
+                android:text="@string/alimento_nombre" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/campo_nombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/entrada_nombre"
+                    style="@style/Widget.Kumora.Entrada"
+                    android:hint="@string/alimento_nombre_placeholder"
+                    android:inputType="textCapSentences" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                style="@style/Widget.Kumora.Etiqueta"
+                android:labelFor="@id/entrada_descripcion"
+                android:text="@string/alimento_descripcion" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/campo_descripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/entrada_descripcion"
+                    style="@style/Widget.Kumora.Entrada"
+                    android:hint="@string/alimento_descripcion_placeholder"
+                    android:inputType="textCapSentences" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                style="@style/Widget.Kumora.Etiqueta"
+                android:labelFor="@id/entrada_categoria"
+                android:text="@string/alimento_categoria" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/campo_categoria"
+                style="@style/Widget.Kumora.TextInputLayout.Desplegable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/entrada_categoria"
+                    style="@style/Widget.Kumora.Entrada"
+                    android:hint="@string/alimento_categoria_placeholder"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/boton_reintentar_categorias"
+                style="?attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/alimento_categorias_reintentar"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <TextView
+                style="@style/Widget.Kumora.Etiqueta"
+                android:labelFor="@id/entrada_unidad"
+                android:text="@string/alimento_unidad" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/campo_unidad"
+                style="@style/Widget.Kumora.TextInputLayout.Desplegable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/entrada_unidad"
+                    style="@style/Widget.Kumora.Entrada"
+                    android:hint="@string/alimento_unidad_placeholder"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                style="@style/Widget.Kumora.Etiqueta"
+                android:labelFor="@id/entrada_cantidad"
+                android:text="@string/alimento_cantidad" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/campo_cantidad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <!-- digits permite coma y punto aunque el teclado del dispositivo solo muestre uno -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/entrada_cantidad"
+                    style="@style/Widget.Kumora.Entrada"
+                    android:digits="0123456789.,"
+                    android:hint="@string/alimento_cantidad_placeholder"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                style="@style/Widget.Kumora.Etiqueta"
+                android:labelFor="@id/entrada_fecha"
+                android:text="@string/alimento_fecha" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/campo_fecha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <!-- No se escribe: al tocarlo se abre el calendario -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/entrada_fecha"
+                    style="@style/Widget.Kumora.Entrada"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:hint="@string/alimento_fecha_placeholder"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:minHeight="32dp" />
+
+            <Button
+                android:id="@+id/boton_guardar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:stateListAnimator="@null"
+                android:text="@string/alimento_guardar" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

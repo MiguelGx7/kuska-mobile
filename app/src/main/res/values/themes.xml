@@ -133,6 +133,25 @@
         <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Card</item>
     </style>
 
+    <!-- Tarjeta con borde fino (alimentos de una donación) -->
+    <style name="Widget.Kumora.CardView.Alimento" parent="Widget.Material3.CardView.Outlined">
+        <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Card</item>
+        <item name="strokeColor">?attr/colorOutlineVariant</item>
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
+    </style>
+
+    <!-- Error bajo un grupo de chips u otro control sin TextInputLayout -->
+    <style name="Widget.Kumora.ErrorCampo" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:accessibilityLiveRegion">polite</item>
+        <item name="android:textAppearance">?attr/textAppearanceBodySmall</item>
+        <item name="android:textColor">?attr/colorError</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
     <!-- Tipografía: escala M3 con Figtree -->
     <style name="TextAppearance.Kumora.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
         <item name="fontFamily">@font/figtree</item>

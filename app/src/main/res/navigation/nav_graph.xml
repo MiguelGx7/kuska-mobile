@@ -58,7 +58,37 @@
     <fragment
         android:id="@+id/misDonacionesFragment"
         android:name="com.proyecto.kuska.ui.misdonaciones.MisDonacionesFragment"
-        android:label="@string/titulo_mis_donaciones" />
+        android:label="@string/titulo_mis_donaciones">
+        <action
+            android:id="@+id/action_mis_donaciones_a_crear_donacion"
+            app:destination="@id/nav_crear_donacion" />
+    </fragment>
+
+    <!-- Registrar donación: las dos pantallas comparten CrearDonacionViewModel (navGraphViewModels). -->
+    <navigation
+        android:id="@+id/nav_crear_donacion"
+        app:startDestination="@id/crearDonacionFragment">
+
+        <fragment
+            android:id="@+id/crearDonacionFragment"
+            android:name="com.proyecto.kuska.ui.creardonacion.CrearDonacionFragment"
+            android:label="@string/titulo_crear_donacion">
+            <action
+                android:id="@+id/action_crear_donacion_a_alimento"
+                app:destination="@id/alimentoFragment" />
+        </fragment>
+
+        <fragment
+            android:id="@+id/alimentoFragment"
+            android:name="com.proyecto.kuska.ui.creardonacion.AlimentoFragment"
+            android:label="@string/titulo_agregar_alimento">
+            <!-- Posición del alimento a editar; -1 = alimento nuevo -->
+            <argument
+                android:name="indice"
+                android:defaultValue="-1"
+                app:argType="integer" />
+        </fragment>
+    </navigation>
 
     <!-- Común -->
     <fragment

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Carpetas que comparte el FileProvider. Solo la de fotos temporales de los alimentos. -->
+<paths>
+    <cache-path
+        name="fotos"
+        path="fotos/" />
+</paths>

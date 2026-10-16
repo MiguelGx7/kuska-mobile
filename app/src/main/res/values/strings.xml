@@ -11,6 +11,9 @@
     <string name="titulo_mis_donaciones">Tus donaciones</string>
     <string name="titulo_perfil">Tu perfil</string>
     <string name="titulo_recuperar">Recupera tu contraseña</string>
+    <string name="titulo_crear_donacion">Nueva donación</string>
+    <string name="titulo_agregar_alimento">Agregar alimento</string>
+    <string name="titulo_editar_alimento">Editar alimento</string>
 
     <!-- Comunes a varias pantallas -->
     <string name="accion_volver">Volver</string>
@@ -72,6 +75,76 @@
     <string name="recuperar_cambiar">Cambiar contraseña</string>
     <string name="recuperar_contrasena_cambiada">Contraseña cambiada. Inicia sesión con la nueva.</string>
 
+    <!-- Mis donaciones -->
+    <string name="mis_donaciones_nueva">Nueva donación</string>
+    <string name="mis_donaciones_enviada">Donación enviada. El administrador la revisará.</string>
+
+    <!-- Crear donación -->
+    <string name="crear_donacion_titulo">Título</string>
+    <string name="crear_donacion_titulo_placeholder">Ej.: Mercado de la semana</string>
+    <string name="crear_donacion_descripcion">Descripción (opcional)</string>
+    <string name="crear_donacion_descripcion_placeholder">Cuéntale al administrador qué donas</string>
+    <string name="crear_donacion_direccion">Dirección de recogida (opcional)</string>
+    <string name="crear_donacion_direccion_placeholder">Ej.: Calle 10 # 5-20, Bogotá</string>
+    <string name="crear_donacion_modalidad">¿Cómo se entregan los alimentos?</string>
+    <string name="crear_donacion_alimentos">Alimentos</string>
+    <string name="crear_donacion_sin_alimentos">Agrega al menos un alimento para enviar la donación.</string>
+    <string name="crear_donacion_agregar_alimento">Agregar alimento</string>
+    <string name="crear_donacion_enviar">Enviar donación</string>
+    <string name="crear_donacion_revisa_alimentos">Revisa los alimentos marcados.</string>
+    <string name="crear_donacion_descartar_titulo">¿Descartar la donación?</string>
+    <string name="crear_donacion_descartar_mensaje">Se borrarán los datos y los alimentos que agregaste.</string>
+    <string name="crear_donacion_descartar">Descartar</string>
+    <string name="crear_donacion_seguir_editando">Seguir editando</string>
+    <string name="alimento_editar">Editar</string>
+    <string name="alimento_quitar">Quitar</string>
+    <string name="alimento_vence">Vence: %1$s</string>
+    <string name="alimento_foto_descripcion">Foto de %1$s</string>
+
+    <!-- Modalidad de entrega (ModalidadDonacionEnum) -->
+    <string name="modalidad_recoger">Recoger</string>
+    <string name="modalidad_domicilio">Domicilio</string>
+    <string name="modalidad_ambas">Ambas</string>
+
+    <!-- Alimento -->
+    <string name="alimento_foto">Foto</string>
+    <string name="alimento_foto_ayuda">El administrador la usa para revisar que el alimento está en buen estado.</string>
+    <string name="alimento_foto_elegida">Foto del alimento</string>
+    <string name="alimento_foto_vacia">Sin foto</string>
+    <string name="alimento_tomar_foto">Tomar foto</string>
+    <string name="alimento_elegir_galeria">Elegir de la galería</string>
+    <string name="alimento_nombre">Nombre</string>
+    <string name="alimento_nombre_placeholder">Ej.: Arroz</string>
+    <string name="alimento_descripcion">Descripción (opcional)</string>
+    <string name="alimento_descripcion_placeholder">Ej.: Bolsas de 1 kg</string>
+    <string name="alimento_categoria">Categoría</string>
+    <string name="alimento_categoria_placeholder">Elige la categoría</string>
+    <string name="alimento_categorias_reintentar">Reintentar</string>
+    <string name="alimento_unidad">Unidad de medida</string>
+    <string name="alimento_unidad_placeholder">Elige la unidad</string>
+    <string name="alimento_cantidad">Cantidad total</string>
+    <string name="alimento_cantidad_placeholder">Ej.: 5</string>
+    <string name="alimento_fecha">Fecha de vencimiento</string>
+    <string name="alimento_fecha_placeholder">dd/mm/aaaa</string>
+    <string name="alimento_guardar">Guardar alimento</string>
+
+    <!-- Unidades de medida (UnidadMedidaEnum) -->
+    <string name="unidad_kg">Kilogramos (kg)</string>
+    <string name="unidad_g">Gramos (g)</string>
+    <string name="unidad_l">Litros (L)</string>
+    <string name="unidad_ml">Mililitros (ml)</string>
+    <string name="unidad_unidad">Unidades</string>
+    <string name="unidad_paquete">Paquetes</string>
+    <string name="cantidad_con_simbolo">%1$s %2$s</string>
+    <plurals name="cantidad_unidades">
+        <item quantity="one">%1$s unidad</item>
+        <item quantity="other">%1$s unidades</item>
+    </plurals>
+    <plurals name="cantidad_paquetes">
+        <item quantity="one">%1$s paquete</item>
+        <item quantity="other">%1$s paquetes</item>
+    </plurals>
+
     <!-- Tipos de documento (TipoDocumentoEnum) -->
     <string name="tipo_documento_cc">Cédula de ciudadanía</string>
     <string name="tipo_documento_ce">Cédula de extranjería</string>
@@ -106,6 +179,20 @@
     <string name="error_confirmar_vacia">Vuelve a escribir tu contraseña.</string>
     <string name="error_contrasenas_distintas">Las contraseñas no coinciden.</string>
     <string name="error_codigo_formato">Escribe el código de 6 dígitos.</string>
+    <string name="error_modalidad">Elige cómo se entregan los alimentos.</string>
+    <string name="error_foto_obligatoria">Agrega una foto del alimento.</string>
+    <string name="error_foto_no_leida">No pudimos leer esa foto. Prueba con otra.</string>
+    <string name="error_camara_no_disponible">No encontramos una app de cámara. Elige la foto de la galería.</string>
+    <string name="error_categoria">Elige la categoría.</string>
+    <string name="error_unidad">Elige la unidad de medida.</string>
+    <string name="error_cantidad_vacia">Escribe la cantidad.</string>
+    <string name="error_cantidad_invalida">Escribe solo números, por ejemplo 5 o 2,5.</string>
+    <string name="error_cantidad_mayor_cero">La cantidad debe ser mayor que 0.</string>
+    <string name="error_cantidad_entera">Para esta unidad escribe una cantidad entera.</string>
+    <string name="error_cantidad_decimales">Escribe máximo %1$d decimales.</string>
+    <string name="error_cantidad_maxima">Escribe máximo %1$d cifras antes de la coma.</string>
+    <string name="error_fecha_vacia">Elige la fecha de vencimiento.</string>
+    <string name="error_fecha_pasada">La fecha debe ser posterior a hoy.</string>
     <string name="error_sin_conexion">No hay conexión. Revisa tu internet e inténtalo de nuevo.</string>
     <string name="error_servidor">El servidor no está disponible en este momento. Inténtalo más tarde.</string>
     <string name="error_desconocido">Algo salió mal. Inténtalo de nuevo.</string>

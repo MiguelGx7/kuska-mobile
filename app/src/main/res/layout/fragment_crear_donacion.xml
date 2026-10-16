@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Registrar donación: datos de la donación y lista de alimentos. El aviso y el botón van al final. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
+    android:orientation="vertical"
+    tools:context=".ui.creardonacion.CrearDonacionFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/barra"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?android:attr/colorBackground"
+        app:navigationContentDescription="@string/accion_volver"
+        app:navigationIcon="@drawable/ic_atras"
+        app:title="@string/titulo_crear_donacion" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/desplazamiento"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp">
+
+            <TextView
+                style="@style/Widget.Kumora.Etiqueta"
+                android:layout_marginTop="8dp"
+                android:labelFor="@id/entrada_titulo"
+                android:text="@string/crear_donacion_titulo" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/campo_titulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/entrada_titulo"
+                    style="@style/Widget.Kumora.Entrada"
+                    android:hint="@string/crear_donacion_titulo_placeholder"
+                    android:inputType="textCapSentences" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                style="@style/Widget.Kumora.Etiqueta"
+                android:labelFor="@id/entrada_descripcion"
+                android:text="@string/crear_donacion_descripcion" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/campo_descripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/entrada_descripcion"
+                    style="@style/Widget.Kumora.Entrada"
+                    android:gravity="top"
+                    android:hint="@string/crear_donacion_descripcion_placeholder"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLines="5"
+                    android:minLines="2" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                style="@style/Widget.Kumora.Etiqueta"
+                android:labelFor="@id/entrada_direccion"
+                android:text="@string/crear_donacion_direccion" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/campo_direccion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/entrada_direccion"
+                    style="@style/Widget.Kumora.Entrada"
+                    android:autofillHints="postalAddress"
+                    android:hint="@string/crear_donacion_direccion_placeholder"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPostalAddress" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                style="@style/Widget.Kumora.Etiqueta"
+                android:text="@string/crear_donacion_modalidad" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/grupo_modalidad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_recoger"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/modalidad_recoger" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_domicilio"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/modalidad_domicilio" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_ambas"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/modalidad_ambas" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:id="@+id/error_modalidad"
+                style="@style/Widget.Kumora.ErrorCampo"
+                android:paddingHorizontal="0dp"
+                tools:text="Elige cómo se entregan los alimentos."
+                tools:visibility="visible" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="12dp"
+                android:text="@string/crear_donacion_alimentos"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                android:textColor="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/texto_sin_alimentos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:text="@string/crear_donacion_sin_alimentos"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lista_alimentos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_alimento_donacion" />
+
+            <Button
+                android:id="@+id/boton_agregar_alimento"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/crear_donacion_agregar_alimento" />
+
+            <!-- Empuja el aviso y el botón hacia abajo cuando sobra espacio -->
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:minHeight="32dp" />
+
+            <TextView
+                android:id="@+id/aviso_error"
+                style="@style/Widget.Kumora.AvisoError"
+                android:layout_marginBottom="16dp"
+                tools:text="No hay conexión. Revisa tu internet e inténtalo de nuevo."
+                tools:visibility="visible" />
+
+            <include
+                android:id="@+id/boton_carga"
+                layout="@layout/vista_boton_carga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>
