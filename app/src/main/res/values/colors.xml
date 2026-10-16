@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Roles Material 3 (modo claro) -->
+    <color name="kumora_primary">#1766D6</color>
+    <color name="kumora_on_primary">#FFFFFF</color>
+    <color name="kumora_primary_container">#E6F0FF</color>
+    <color name="kumora_on_primary_container">#1250AA</color>
+    <color name="kumora_background">#F4F6F9</color>
+    <color name="kumora_surface">#FFFFFF</color>
+    <color name="kumora_on_surface">#101828</color>
+    <color name="kumora_on_surface_variant">#667085</color>
+    <color name="kumora_outline">#D0D5DD</color>
+    <color name="kumora_outline_variant">#E4E7EC</color>
+    <color name="kumora_error">#C0352B</color>
+
+    <!-- Estados: fondo / texto -->
+    <color name="estado_naranja_fondo">#FFF1E0</color>
+    <color name="estado_naranja_texto">#B54708</color>
+    <color name="estado_verde_fondo">#E3F6EA</color>
+    <color name="estado_verde_texto">#137A3F</color>
+    <color name="estado_rojo_fondo">#FDEBEA</color>
+    <color name="estado_rojo_texto">#C0352B</color>
+    <color name="estado_gris_fondo">#EEF0F4</color>
+    <color name="estado_gris_texto">#475467</color>
+
+    <!-- Solo para la mascota -->
+    <color name="maiz">#FFC233</color>
+
+    <!-- Fondo del splash (igual en ambos modos) -->
+    <color name="splash_fondo">#1766D6</color>
 </resources>

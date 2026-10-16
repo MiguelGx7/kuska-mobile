@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Roles Material 3 (modo oscuro) -->
+    <color name="kumora_primary">#5B9BF0</color>
+    <color name="kumora_on_primary">#0B111C</color>
+    <color name="kumora_primary_container">#172E52</color>
+    <color name="kumora_on_primary_container">#BFD6F8</color>
+    <color name="kumora_background">#0B111C</color>
+    <color name="kumora_surface">#151C28</color>
+    <color name="kumora_on_surface">#E8ECF2</color>
+    <color name="kumora_on_surface_variant">#98A2B3</color>
+    <color name="kumora_outline">#3A4558</color>
+    <color name="kumora_outline_variant">#2A3446</color>
+    <color name="kumora_error">#F28B82</color>
+
+    <!-- Estados: fondo / texto -->
+    <color name="estado_naranja_fondo">#3A2410</color>
+    <color name="estado_naranja_texto">#F5A35C</color>
+    <color name="estado_verde_fondo">#12301F</color>
+    <color name="estado_verde_texto">#6FD39A</color>
+    <color name="estado_rojo_fondo">#3B1715</color>
+    <color name="estado_rojo_texto">#F28B82</color>
+    <color name="estado_gris_fondo">#232C3A</color>
+    <color name="estado_gris_texto">#B4BCC8</color>
+</resources>

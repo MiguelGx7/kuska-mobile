@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Los ids coinciden con los destinos de nav_graph.xml -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/inicioDonanteFragment"
+        android:icon="@drawable/ic_inicio"
+        android:title="@string/nav_inicio" />
+    <item
+        android:id="@+id/misDonacionesFragment"
+        android:icon="@drawable/ic_donaciones"
+        android:title="@string/nav_donaciones" />
+    <item
+        android:id="@+id/perfilFragment"
+        android:icon="@drawable/ic_perfil"
+        android:title="@string/nav_perfil" />
+</menu>

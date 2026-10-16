@@ -1,9 +1,153 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Kuska" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<resources>
+
+    <style name="Base.Theme.Kumora" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Colores (values-night/colors.xml redefine los mismos nombres) -->
+        <item name="colorPrimary">@color/kumora_primary</item>
+        <item name="colorOnPrimary">@color/kumora_on_primary</item>
+        <item name="colorPrimaryContainer">@color/kumora_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/kumora_on_primary_container</item>
+        <item name="colorSecondary">@color/kumora_primary</item>
+        <item name="colorOnSecondary">@color/kumora_on_primary</item>
+        <item name="colorSecondaryContainer">@color/kumora_primary_container</item>
+        <item name="colorOnSecondaryContainer">@color/kumora_on_primary_container</item>
+        <item name="android:colorBackground">@color/kumora_background</item>
+        <item name="colorOnBackground">@color/kumora_on_surface</item>
+        <item name="colorSurface">@color/kumora_surface</item>
+        <item name="colorSurfaceContainer">@color/kumora_surface</item>
+        <item name="colorSurfaceContainerLow">@color/kumora_surface</item>
+        <item name="colorOnSurface">@color/kumora_on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/kumora_on_surface_variant</item>
+        <item name="colorOutline">@color/kumora_outline</item>
+        <item name="colorOutlineVariant">@color/kumora_outline_variant</item>
+        <item name="colorError">@color/kumora_error</item>
+
+        <!-- Tipografía Figtree en todo el tema -->
+        <item name="fontFamily">@font/figtree</item>
+        <item name="android:fontFamily">@font/figtree</item>
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.Kumora.DisplayLarge</item>
+        <item name="textAppearanceDisplayMedium">@style/TextAppearance.Kumora.DisplayMedium</item>
+        <item name="textAppearanceDisplaySmall">@style/TextAppearance.Kumora.DisplaySmall</item>
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.Kumora.HeadlineLarge</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.Kumora.HeadlineMedium</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Kumora.HeadlineSmall</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.Kumora.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.Kumora.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.Kumora.TitleSmall</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.Kumora.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.Kumora.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.Kumora.BodySmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Kumora.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.Kumora.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.Kumora.LabelSmall</item>
+
+        <!-- Formas: botones y campos 10dp, tarjetas 16dp -->
+        <item name="materialButtonStyle">@style/Widget.Kumora.Button</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.Kumora.Button.Outlined</item>
+        <item name="borderlessButtonStyle">@style/Widget.Kumora.Button.Text</item>
+        <item name="textInputStyle">@style/Widget.Kumora.TextInputLayout</item>
+        <item name="materialCardViewStyle">@style/Widget.Kumora.CardView</item>
     </style>
 
-    <style name="Theme.Kuska" parent="Base.Theme.Kuska" />
+    <style name="Theme.Kumora" parent="Base.Theme.Kumora" />
+
+    <!-- Splash (SplashScreen API) -->
+    <style name="Theme.Kumora.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_fondo</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.Kumora</item>
+    </style>
+
+    <!-- Formas -->
+    <style name="ShapeAppearance.Kumora.Control" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+    </style>
+
+    <style name="ShapeAppearance.Kumora.Card" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <!-- Componentes -->
+    <style name="Widget.Kumora.Button" parent="Widget.Material3.Button">
+        <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Control</item>
+    </style>
+
+    <style name="Widget.Kumora.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Control</item>
+    </style>
+
+    <style name="Widget.Kumora.Button.Text" parent="Widget.Material3.Button.TextButton">
+        <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Control</item>
+    </style>
+
+    <style name="Widget.Kumora.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Control</item>
+    </style>
+
+    <style name="Widget.Kumora.CardView" parent="Widget.Material3.CardView.Elevated">
+        <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Card</item>
+    </style>
+
+    <!-- Tipografía: escala M3 con Figtree -->
+    <style name="TextAppearance.Kumora.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
+        <item name="fontFamily">@font/figtree</item>
+        <item name="android:fontFamily">@font/figtree</item>
+    </style>
+    <style name="TextAppearance.Kumora.DisplayMedium" parent="TextAppearance.Material3.DisplayMedium">
+        <item name="fontFamily">@font/figtree</item>
+        <item name="android:fontFamily">@font/figtree</item>
+    </style>
+    <style name="TextAppearance.Kumora.DisplaySmall" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="fontFamily">@font/figtree</item>
+        <item name="android:fontFamily">@font/figtree</item>
+    </style>
+    <style name="TextAppearance.Kumora.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="fontFamily">@font/figtree_semibold</item>
+        <item name="android:fontFamily">@font/figtree_semibold</item>
+    </style>
+    <style name="TextAppearance.Kumora.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="fontFamily">@font/figtree_semibold</item>
+        <item name="android:fontFamily">@font/figtree_semibold</item>
+    </style>
+    <style name="TextAppearance.Kumora.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="fontFamily">@font/figtree_semibold</item>
+        <item name="android:fontFamily">@font/figtree_semibold</item>
+    </style>
+    <style name="TextAppearance.Kumora.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/figtree_semibold</item>
+        <item name="android:fontFamily">@font/figtree_semibold</item>
+    </style>
+    <style name="TextAppearance.Kumora.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/figtree_semibold</item>
+        <item name="android:fontFamily">@font/figtree_semibold</item>
+    </style>
+    <style name="TextAppearance.Kumora.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
+        <item name="fontFamily">@font/figtree_medium</item>
+        <item name="android:fontFamily">@font/figtree_medium</item>
+    </style>
+    <style name="TextAppearance.Kumora.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">@font/figtree</item>
+        <item name="android:fontFamily">@font/figtree</item>
+    </style>
+    <style name="TextAppearance.Kumora.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/figtree</item>
+        <item name="android:fontFamily">@font/figtree</item>
+    </style>
+    <style name="TextAppearance.Kumora.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="fontFamily">@font/figtree</item>
+        <item name="android:fontFamily">@font/figtree</item>
+    </style>
+    <style name="TextAppearance.Kumora.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/figtree_semibold</item>
+        <item name="android:fontFamily">@font/figtree_semibold</item>
+    </style>
+    <style name="TextAppearance.Kumora.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="fontFamily">@font/figtree_medium</item>
+        <item name="android:fontFamily">@font/figtree_medium</item>
+    </style>
+    <style name="TextAppearance.Kumora.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
+        <item name="fontFamily">@font/figtree_medium</item>
+        <item name="android:fontFamily">@font/figtree_medium</item>
+    </style>
 </resources>

@@ -1,3 +1,29 @@
 <resources>
-    <string name="app_name">Kuska</string>
+    <string name="app_name">Kumora</string>
+
+    <!-- Títulos de pantallas -->
+    <string name="titulo_login">Inicia sesión</string>
+    <string name="titulo_registro">Crea tu cuenta</string>
+    <string name="titulo_inicio_beneficiario">Inicio</string>
+    <string name="titulo_carrito">Tu carrito</string>
+    <string name="titulo_mis_solicitudes">Tus pedidos</string>
+    <string name="titulo_inicio_donante">Inicio</string>
+    <string name="titulo_mis_donaciones">Tus donaciones</string>
+    <string name="titulo_perfil">Tu perfil</string>
+
+    <!-- Barra inferior -->
+    <string name="nav_inicio">Inicio</string>
+    <string name="nav_carrito">Carrito</string>
+    <string name="nav_pedidos">Pedidos</string>
+    <string name="nav_donaciones">Donaciones</string>
+    <string name="nav_perfil">Perfil</string>
+
+    <!-- Sesión y errores -->
+    <string name="sesion_expirada">Tu sesión expiró. Vuelve a iniciar sesión.</string>
+    <string name="error_cuenta_administrador">Esta cuenta es de administrador. Usa el panel web de Kumora.</string>
+    <string name="error_rol_no_soportado">Esta cuenta no tiene acceso a la app.</string>
+    <string name="error_credenciales">Correo o contraseña incorrectos.</string>
+    <string name="error_sin_conexion">No hay conexión. Revisa tu internet e inténtalo de nuevo.</string>
+    <string name="error_servidor">El servidor no está disponible en este momento. Inténtalo más tarde.</string>
+    <string name="error_desconocido">Algo salió mal. Inténtalo de nuevo.</string>
 </resources>

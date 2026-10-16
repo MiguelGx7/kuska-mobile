@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- El startDestination real lo fija MainActivity según la sesión y el rol. -->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.proyecto.kuska.ui.login.LoginFragment"
+        android:label="@string/titulo_login">
+        <action
+            android:id="@+id/action_login_a_registro"
+            app:destination="@id/registroFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registroFragment"
+        android:name="com.proyecto.kuska.ui.registro.RegistroFragment"
+        android:label="@string/titulo_registro" />
+
+    <!-- Beneficiario -->
+    <fragment
+        android:id="@+id/inicioBeneficiarioFragment"
+        android:name="com.proyecto.kuska.ui.iniciobeneficiario.InicioBeneficiarioFragment"
+        android:label="@string/titulo_inicio_beneficiario" />
+
+    <fragment
+        android:id="@+id/carritoFragment"
+        android:name="com.proyecto.kuska.ui.carrito.CarritoFragment"
+        android:label="@string/titulo_carrito" />
+
+    <fragment
+        android:id="@+id/misSolicitudesFragment"
+        android:name="com.proyecto.kuska.ui.missolicitudes.MisSolicitudesFragment"
+        android:label="@string/titulo_mis_solicitudes" />
+
+    <!-- Donante -->
+    <fragment
+        android:id="@+id/inicioDonanteFragment"
+        android:name="com.proyecto.kuska.ui.iniciodonante.InicioDonanteFragment"
+        android:label="@string/titulo_inicio_donante" />
+
+    <fragment
+        android:id="@+id/misDonacionesFragment"
+        android:name="com.proyecto.kuska.ui.misdonaciones.MisDonacionesFragment"
+        android:label="@string/titulo_mis_donaciones" />
+
+    <!-- Común -->
+    <fragment
+        android:id="@+id/perfilFragment"
+        android:name="com.proyecto.kuska.ui.perfil.PerfilFragment"
+        android:label="@string/titulo_perfil" />
+</navigation>
