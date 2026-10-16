@@ -7,6 +7,7 @@ import com.proyecto.kuska.data.api.modelos.LoginRequest
 import com.proyecto.kuska.data.api.modelos.Usuario
 import com.proyecto.kuska.data.sesion.SesionManager
 import com.proyecto.kuska.util.Resultado
+import com.proyecto.kuska.util.extraerMensajeError
 import com.proyecto.kuska.util.mensajeDeError
 import com.proyecto.kuska.util.mensajeDeExcepcion
 import kotlinx.coroutines.CancellationException
@@ -20,7 +21,7 @@ class AuthRepositorio(
 
     /**
      * Inicia sesión. Solo guarda la sesión si el rol es Donante o Beneficiario.
-     * 401 → "Correo o contraseña incorrectos." · 403 → el "detail" de la API tal cual.
+     * 401 y 403 → el "detail" de la API tal cual · 429 → mensaje propio de demasiados intentos.
      */
     suspend fun login(correo: String, contrasena: String): Resultado<Usuario> = try {
         val respuesta = api.login(LoginRequest(correo.trim(), contrasena))
@@ -35,8 +36,13 @@ class AuthRepositorio(
                     Resultado.Error(context.getString(R.string.error_cuenta_administrador))
                 else -> Resultado.Error(context.getString(R.string.error_rol_no_soportado))
             }
-            respuesta.code() == 401 ->
-                Resultado.Error(context.getString(R.string.error_credenciales), 401)
+            respuesta.code() == 401 -> Resultado.Error(
+                extraerMensajeError(respuesta.errorBody()?.string())
+                    ?: context.getString(R.string.error_credenciales),
+                401,
+            )
+            respuesta.code() == 429 ->
+                Resultado.Error(context.getString(R.string.error_demasiados_intentos), 429)
             else -> Resultado.Error(mensajeDeError(context, respuesta), respuesta.code())
         }
     } catch (e: CancellationException) {

@@ -10,6 +10,22 @@
     <string name="titulo_inicio_donante">Inicio</string>
     <string name="titulo_mis_donaciones">Tus donaciones</string>
     <string name="titulo_perfil">Tu perfil</string>
+    <string name="titulo_recuperar">Recupera tu contraseña</string>
+
+    <!-- Login -->
+    <string name="login_subtitulo">Entra para donar o pedir alimentos.</string>
+    <string name="login_etiqueta_correo">Correo</string>
+    <string name="login_placeholder_correo">nombre@correo.com</string>
+    <string name="login_etiqueta_contrasena">Contraseña</string>
+    <string name="login_placeholder_contrasena">Escribe tu contraseña</string>
+    <string name="login_olvidaste">¿Olvidaste tu contraseña?</string>
+    <string name="login_boton">Iniciar sesión</string>
+    <string name="login_cargando">Iniciando sesión</string>
+    <string name="login_sin_cuenta">¿No tienes cuenta?</string>
+    <string name="login_crear_cuenta">Crear cuenta</string>
+
+    <!-- Perfil -->
+    <string name="perfil_cerrar_sesion">Cerrar sesión</string>
 
     <!-- Barra inferior -->
     <string name="nav_inicio">Inicio</string>
@@ -23,6 +39,12 @@
     <string name="error_cuenta_administrador">Esta cuenta es de administrador. Usa el panel web de Kumora.</string>
     <string name="error_rol_no_soportado">Esta cuenta no tiene acceso a la app.</string>
     <string name="error_credenciales">Correo o contraseña incorrectos.</string>
+    <string name="error_demasiados_intentos">Hiciste muchos intentos. Espera un minuto y vuelve a intentarlo.</string>
+
+    <!-- Validación de formularios -->
+    <string name="error_correo_vacio">Escribe tu correo.</string>
+    <string name="error_correo_invalido">Revisa el correo. Debe verse como nombre@correo.com.</string>
+    <string name="error_contrasena_vacia">Escribe tu contraseña.</string>
     <string name="error_sin_conexion">No hay conexión. Revisa tu internet e inténtalo de nuevo.</string>
     <string name="error_servidor">El servidor no está disponible en este momento. Inténtalo más tarde.</string>
     <string name="error_desconocido">Algo salió mal. Inténtalo de nuevo.</string>

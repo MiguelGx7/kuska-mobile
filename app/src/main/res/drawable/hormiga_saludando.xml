@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mascota de Kumora saludando. Convertida del SVG (viewBox 200x180); colores fijos en ambos modos. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="180dp"
+    android:viewportWidth="200"
+    android:viewportHeight="180">
+
+    <!-- Patas, brazo que saluda y antenas -->
+    <path
+        android:pathData="M90,132 L78,162 M100,136 L100,164 M110,132 L122,162 M120,126 Q172,132 182,90 M120,62 Q112,38 98,32 M144,60 Q152,36 168,30"
+        android:strokeWidth="6"
+        android:strokeColor="#1250AA"
+        android:strokeLineCap="round" />
+
+    <!-- Mano -->
+    <path
+        android:fillColor="#1250AA"
+        android:pathData="M176,88 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 Z" />
+
+    <!-- Puntas de las antenas -->
+    <path
+        android:fillColor="#FFC233"
+        android:pathData="M92,32 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 Z M162,30 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 Z" />
+
+    <!-- Grano de maíz -->
+    <path
+        android:fillColor="#FFC233"
+        android:pathData="M46,92 Q42,68 60,60 Q78,68 74,92 Q60,99 46,92 Z" />
+
+    <!-- Abdomen y brillo -->
+    <path
+        android:fillColor="#1766D6"
+        android:pathData="M28,118 a34,30 0 1,0 68,0 a34,30 0 1,0 -68,0 Z" />
+    <path
+        android:fillColor="#5B9BF0"
+        android:pathData="M40,106 a10,6 0 1,0 20,0 a10,6 0 1,0 -20,0 Z" />
+
+    <!-- Tórax -->
+    <path
+        android:fillColor="#1250AA"
+        android:pathData="M84,122 a16,16 0 1,0 32,0 a16,16 0 1,0 -32,0 Z" />
+
+    <!-- Cabeza -->
+    <path
+        android:fillColor="#1766D6"
+        android:pathData="M98,92 a34,34 0 1,0 68,0 a34,34 0 1,0 -68,0 Z" />
+
+    <!-- Ojos -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M112,88 a9,11 0 1,0 18,0 a9,11 0 1,0 -18,0 Z M136,88 a9,11 0 1,0 18,0 a9,11 0 1,0 -18,0 Z" />
+    <path
+        android:fillColor="#101828"
+        android:pathData="M118,89 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 Z M142,89 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M123.2,86 a1.8,1.8 0 1,0 3.6,0 a1.8,1.8 0 1,0 -3.6,0 Z M147.2,86 a1.8,1.8 0 1,0 3.6,0 a1.8,1.8 0 1,0 -3.6,0 Z" />
+
+    <!-- Boca -->
+    <path
+        android:fillColor="#101828"
+        android:pathData="M126,104 Q134,116 142,104 Z" />
+</vector>

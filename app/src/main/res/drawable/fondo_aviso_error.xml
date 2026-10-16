@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fondo del aviso de error de la API (encima del botón principal). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/estado_rojo_fondo" />
+    <corners android:radius="10dp" />
+</shape>

@@ -12,12 +12,20 @@
         <action
             android:id="@+id/action_login_a_registro"
             app:destination="@id/registroFragment" />
+        <action
+            android:id="@+id/action_login_a_recuperar"
+            app:destination="@id/recuperarFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/registroFragment"
         android:name="com.proyecto.kuska.ui.registro.RegistroFragment"
         android:label="@string/titulo_registro" />
+
+    <fragment
+        android:id="@+id/recuperarFragment"
+        android:name="com.proyecto.kuska.ui.recuperar.RecuperarFragment"
+        android:label="@string/titulo_recuperar" />
 
     <!-- Beneficiario -->
     <fragment
