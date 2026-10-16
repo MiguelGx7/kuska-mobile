@@ -6,18 +6,8 @@ import com.proyecto.kuska.R
 /** Validación local del login, antes de llamar a la API. Devuelve el mensaje de error o null si está bien. */
 object ValidacionLogin {
 
-    // Kotlin puro (no android.util.Patterns) para poder probarla en la JVM.
-    private val formatoCorreo = Regex("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")
-
     @StringRes
-    fun validarCorreo(correo: String): Int? {
-        val limpio = correo.trim()
-        return when {
-            limpio.isEmpty() -> R.string.error_correo_vacio
-            !formatoCorreo.matches(limpio) -> R.string.error_correo_invalido
-            else -> null
-        }
-    }
+    fun validarCorreo(correo: String): Int? = com.proyecto.kuska.util.validarCorreo(correo)
 
     @StringRes
     fun validarContrasena(contrasena: String): Int? =

@@ -24,6 +24,48 @@
     <string name="login_sin_cuenta">¿No tienes cuenta?</string>
     <string name="login_crear_cuenta">Crear cuenta</string>
 
+    <!-- Registro -->
+    <string name="registro_paso">Paso %1$d de 3</string>
+    <string name="registro_volver">Volver</string>
+    <string name="registro_rol_titulo">¿Cómo quieres usar Kumora?</string>
+    <string name="registro_rol_donante">Quiero donar</string>
+    <string name="registro_rol_donante_desc">Comparte los alimentos que te sobran, como persona o como negocio.</string>
+    <string name="registro_rol_beneficiario">Quiero recibir alimentos</string>
+    <string name="registro_rol_beneficiario_desc">Pide alimentos donados para ti o para tu familia.</string>
+    <string name="registro_datos_titulo">Tus datos</string>
+    <string name="registro_tipo_donante">¿Cómo donas?</string>
+    <string name="registro_tipo_persona">Persona</string>
+    <string name="registro_tipo_negocio">Negocio</string>
+    <string name="registro_nombre_negocio">Nombre del negocio</string>
+    <string name="registro_nit">NIT</string>
+    <string name="registro_nombres">Nombres</string>
+    <string name="registro_apellidos">Apellidos</string>
+    <string name="registro_tipo_documento">Tipo de documento</string>
+    <string name="registro_tipo_documento_placeholder">Elige el tipo</string>
+    <string name="registro_numero_documento">Número de documento</string>
+    <string name="registro_telefono">Teléfono</string>
+    <string name="registro_direccion">Dirección (opcional)</string>
+    <string name="registro_placeholder_contrasena">Crea una contraseña</string>
+    <string name="registro_confirmar_contrasena">Confirmar contraseña</string>
+    <string name="registro_placeholder_confirmar">Vuelve a escribirla</string>
+    <string name="registro_codigo_titulo">Revisa tu correo</string>
+    <string name="registro_codigo_enviado">Te enviamos un código a %1$s</string>
+    <string name="registro_codigo">Código</string>
+    <string name="registro_placeholder_codigo">6 dígitos</string>
+    <string name="registro_reenviar">Reenviar código</string>
+    <string name="registro_reenviar_en">Reenviar código (%1$d s)</string>
+    <string name="registro_codigo_reenviado">Te enviamos un código nuevo.</string>
+    <string name="registro_continuar">Continuar</string>
+    <string name="registro_enviar_codigo">Enviar código</string>
+    <string name="registro_crear_cuenta">Crear cuenta</string>
+    <string name="registro_cargando">Un momento</string>
+
+    <!-- Tipos de documento (TipoDocumentoEnum) -->
+    <string name="tipo_documento_cc">Cédula de ciudadanía</string>
+    <string name="tipo_documento_ce">Cédula de extranjería</string>
+    <string name="tipo_documento_pas">Pasaporte</string>
+    <string name="tipo_documento_ppt">Permiso por Protección Temporal</string>
+
     <!-- Perfil -->
     <string name="perfil_cerrar_sesion">Cerrar sesión</string>
 
@@ -45,6 +87,13 @@
     <string name="error_correo_vacio">Escribe tu correo.</string>
     <string name="error_correo_invalido">Revisa el correo. Debe verse como nombre@correo.com.</string>
     <string name="error_contrasena_vacia">Escribe tu contraseña.</string>
+    <string name="error_campo_obligatorio">Completa este campo.</string>
+    <string name="error_largo_maximo">Escribe máximo %1$d caracteres.</string>
+    <string name="error_tipo_donante">Elige si donas como persona o como negocio.</string>
+    <string name="error_tipo_documento">Elige el tipo de documento.</string>
+    <string name="error_confirmar_vacia">Vuelve a escribir tu contraseña.</string>
+    <string name="error_contrasenas_distintas">Las contraseñas no coinciden.</string>
+    <string name="error_codigo_formato">Escribe el código de 6 dígitos.</string>
     <string name="error_sin_conexion">No hay conexión. Revisa tu internet e inténtalo de nuevo.</string>
     <string name="error_servidor">El servidor no está disponible en este momento. Inténtalo más tarde.</string>
     <string name="error_desconocido">Algo salió mal. Inténtalo de nuevo.</string>

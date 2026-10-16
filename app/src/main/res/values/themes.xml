@@ -85,6 +85,38 @@
         <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Control</item>
     </style>
 
+    <style name="Widget.Kumora.TextInputLayout.Desplegable" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Control</item>
+    </style>
+
+    <!-- Tarjeta seleccionable (borde azul al elegirla) -->
+    <style name="Widget.Kumora.CardView.Seleccionable" parent="Widget.Material3.CardView.Outlined">
+        <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Card</item>
+        <item name="strokeColor">@color/borde_tarjeta_seleccionable</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="android:checkable">true</item>
+    </style>
+
+    <!-- Formularios: etiqueta arriba del campo y entrada de 48dp -->
+    <style name="Widget.Kumora.Etiqueta" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">6dp</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelLarge</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="Widget.Kumora.Entrada" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:imeOptions">actionNext</item>
+    </style>
+
     <style name="Widget.Kumora.CardView" parent="Widget.Material3.CardView.Elevated">
         <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Card</item>
     </style>

@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Registro en 3 pasos (rol, datos, código). Los pasos se muestran u ocultan; el aviso y el botón son comunes. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
+    android:orientation="vertical"
+    tools:context=".ui.registro.RegistroFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/barra"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?android:attr/colorBackground"
+        app:navigationContentDescription="@string/registro_volver"
+        app:navigationIcon="@drawable/ic_atras"
+        app:subtitleTextColor="?attr/colorOnSurfaceVariant"
+        app:title="@string/titulo_registro"
+        tools:subtitle="Paso 1 de 3" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progreso"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="3"
+        android:paddingHorizontal="24dp"
+        app:trackCornerRadius="2dp"
+        tools:progress="1" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/desplazamiento"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="16dp">
+
+            <!-- Paso 1: rol -->
+            <LinearLayout
+                android:id="@+id/paso_rol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/registro_rol_titulo"
+                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                    android:textColor="?attr/colorOnSurface" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/tarjeta_donante"
+                    style="@style/Widget.Kumora.CardView.Seleccionable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_donaciones"
+                            app:tint="?attr/colorPrimary" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="24dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/registro_rol_donante"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textColor="?attr/colorOnSurface" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/registro_rol_donante_desc"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/tarjeta_beneficiario"
+                    style="@style/Widget.Kumora.CardView.Seleccionable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_carrito"
+                            app:tint="?attr/colorPrimary" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="24dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/registro_rol_beneficiario"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textColor="?attr/colorOnSurface" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/registro_rol_beneficiario_desc"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Paso 2: datos -->
+            <LinearLayout
+                android:id="@+id/paso_datos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/registro_datos_titulo"
+                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                    android:textColor="?attr/colorOnSurface" />
+
+                <!-- Solo Donante -->
+                <LinearLayout
+                    android:id="@+id/grupo_donante"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/Widget.Kumora.Etiqueta"
+                        android:text="@string/registro_tipo_donante" />
+
+                    <RadioGroup
+                        android:id="@+id/grupo_tipo_donante"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/opcion_persona"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:text="@string/registro_tipo_persona" />
+
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/opcion_negocio"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:text="@string/registro_tipo_negocio" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:id="@+id/error_tipo_donante"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:accessibilityLiveRegion="polite"
+                        android:paddingHorizontal="16dp"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="?attr/colorError"
+                        android:visibility="gone"
+                        tools:text="Elige si donas como persona o como negocio."
+                        tools:visibility="visible" />
+
+                    <!-- Solo Donante tipo Negocio -->
+                    <LinearLayout
+                        android:id="@+id/grupo_negocio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Widget.Kumora.Etiqueta"
+                            android:labelFor="@id/entrada_nombre_negocio"
+                            android:text="@string/registro_nombre_negocio" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/campo_nombre_negocio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/entrada_nombre_negocio"
+                                style="@style/Widget.Kumora.Entrada"
+                                android:inputType="textCapWords" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            style="@style/Widget.Kumora.Etiqueta"
+                            android:labelFor="@id/entrada_nit"
+                            android:text="@string/registro_nit" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/campo_nit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/entrada_nit"
+                                style="@style/Widget.Kumora.Entrada"
+                                android:inputType="text" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:labelFor="@id/entrada_nombres"
+                    android:text="@string/registro_nombres" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_nombres"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_nombres"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:autofillHints="personGivenName"
+                        android:inputType="textPersonName|textCapWords" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:labelFor="@id/entrada_apellidos"
+                    android:text="@string/registro_apellidos" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_apellidos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_apellidos"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:autofillHints="personFamilyName"
+                        android:inputType="textPersonName|textCapWords" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:labelFor="@id/entrada_tipo_documento"
+                    android:text="@string/registro_tipo_documento" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_tipo_documento"
+                    style="@style/Widget.Kumora.TextInputLayout.Desplegable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/entrada_tipo_documento"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:hint="@string/registro_tipo_documento_placeholder"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:labelFor="@id/entrada_numero_documento"
+                    android:text="@string/registro_numero_documento" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_numero_documento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_numero_documento"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:labelFor="@id/entrada_telefono"
+                    android:text="@string/registro_telefono" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_telefono"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_telefono"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:autofillHints="phoneNational"
+                        android:inputType="phone" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:labelFor="@id/entrada_direccion"
+                    android:text="@string/registro_direccion" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_direccion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_direccion"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:autofillHints="postalAddress"
+                        android:inputType="textPostalAddress" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:labelFor="@id/entrada_correo"
+                    android:text="@string/login_etiqueta_correo" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_correo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false"
+                    app:startIconDrawable="@drawable/ic_correo">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_correo"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:autofillHints="emailAddress"
+                        android:hint="@string/login_placeholder_correo"
+                        android:inputType="textEmailAddress" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:labelFor="@id/entrada_contrasena"
+                    android:text="@string/login_etiqueta_contrasena" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_contrasena"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:endIconMode="password_toggle"
+                    app:hintEnabled="false"
+                    app:startIconDrawable="@drawable/ic_candado">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_contrasena"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:autofillHints="newPassword"
+                        android:hint="@string/registro_placeholder_contrasena"
+                        android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:labelFor="@id/entrada_confirmar_contrasena"
+                    android:text="@string/registro_confirmar_contrasena" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_confirmar_contrasena"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:endIconMode="password_toggle"
+                    app:hintEnabled="false"
+                    app:startIconDrawable="@drawable/ic_candado">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_confirmar_contrasena"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:autofillHints="newPassword"
+                        android:hint="@string/registro_placeholder_confirmar"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <!-- Paso 3: código -->
+            <LinearLayout
+                android:id="@+id/paso_codigo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/registro_codigo_titulo"
+                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                    android:textColor="?attr/colorOnSurface" />
+
+                <TextView
+                    android:id="@+id/texto_codigo_enviado"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    tools:text="Te enviamos un código a laura@correo.com" />
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:layout_marginTop="24dp"
+                    android:labelFor="@id/entrada_codigo"
+                    android:text="@string/registro_codigo" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_codigo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_codigo"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:autofillHints="smsOTPCode"
+                        android:hint="@string/registro_placeholder_codigo"
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+                        android:letterSpacing="0.3"
+                        android:maxLength="6" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/boton_reenviar"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="4dp"
+                    tools:text="Reenviar código (45 s)" />
+            </LinearLayout>
+
+            <!-- Empuja el aviso y el botón hacia abajo cuando sobra espacio -->
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:minHeight="24dp" />
+
+            <TextView
+                android:id="@+id/aviso_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:accessibilityLiveRegion="polite"
+                android:background="@drawable/fondo_aviso_error"
+                android:padding="12dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/estado_rojo_texto"
+                android:visibility="gone"
+                tools:text="El código no es válido o ya venció."
+                tools:visibility="visible" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/boton_principal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:stateListAnimator="@null"
+                    tools:text="Continuar" />
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/indicador_carga"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    app:indicatorColor="?attr/colorPrimary"
+                    app:indicatorSize="24dp"
+                    app:trackThickness="3dp" />
+            </FrameLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

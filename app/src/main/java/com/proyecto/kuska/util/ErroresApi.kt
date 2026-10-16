@@ -25,6 +25,27 @@ fun extraerMensajeError(cuerpo: String?): String? {
     return primerMensaje(json)
 }
 
+/** Claves que no son de un campo del formulario. */
+private val clavesGenerales = setOf("detail", "non_field_errors")
+
+/**
+ * Errores por campo de un cuerpo {"campo": ["mensaje"]}: el primer mensaje de cada campo.
+ * Ignora "detail" y "non_field_errors". Devuelve un mapa vacío para cualquier otro formato.
+ */
+fun extraerErroresPorCampo(cuerpo: String?): Map<String, String> {
+    if (cuerpo.isNullOrBlank()) return emptyMap()
+    val json = try {
+        JsonParser.parseString(cuerpo)
+    } catch (_: Exception) {
+        return emptyMap()
+    }
+    if (!json.isJsonObject) return emptyMap()
+    return json.asJsonObject.entrySet()
+        .filter { (campo, _) -> campo !in clavesGenerales }
+        .mapNotNull { (campo, valor) -> primerMensaje(valor)?.let { campo to it } }
+        .toMap()
+}
+
 private fun primerMensaje(json: JsonElement): String? = when {
     json.isJsonPrimitive -> json.asString.takeIf { it.isNotBlank() }
     json.isJsonArray -> json.asJsonArray.firstNotNullOfOrNull { primerMensaje(it) }

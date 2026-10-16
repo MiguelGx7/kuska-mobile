@@ -33,4 +33,23 @@ class ErroresApiTest {
         assertNull(extraerMensajeError("<html>Bad Gateway</html>"))
         assertNull(extraerMensajeError("{}"))
     }
+
+    @Test
+    fun erroresPorCampo() {
+        assertEquals(
+            mapOf("correo" to "Este correo ya está registrado.", "nit" to "NIT inválido."),
+            extraerErroresPorCampo(
+                """{"correo": ["Este correo ya está registrado.", "Otro"], "nit": "NIT inválido.", "detail": "General"}"""
+            ),
+        )
+    }
+
+    @Test
+    fun erroresPorCampoIgnoraFormatosGenerales() {
+        assertEquals(emptyMap<String, String>(), extraerErroresPorCampo("""["El código no es válido."]"""))
+        assertEquals(emptyMap<String, String>(), extraerErroresPorCampo("""{"detail": "Bloqueado"}"""))
+        assertEquals(emptyMap<String, String>(), extraerErroresPorCampo("""{"non_field_errors": ["X"]}"""))
+        assertEquals(emptyMap<String, String>(), extraerErroresPorCampo("<html>Bad Gateway</html>"))
+        assertEquals(emptyMap<String, String>(), extraerErroresPorCampo(null))
+    }
 }
