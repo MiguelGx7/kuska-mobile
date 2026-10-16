@@ -62,6 +62,18 @@
         <action
             android:id="@+id/action_mis_donaciones_a_crear_donacion"
             app:destination="@id/nav_crear_donacion" />
+        <action
+            android:id="@+id/action_mis_donaciones_a_detalle"
+            app:destination="@id/detalleDonacionFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detalleDonacionFragment"
+        android:name="com.proyecto.kuska.ui.detalledonacion.DetalleDonacionFragment"
+        android:label="@string/titulo_detalle_donacion">
+        <argument
+            android:name="id"
+            app:argType="integer" />
     </fragment>
 
     <!-- Registrar donación: las dos pantallas comparten CrearDonacionViewModel (navGraphViewModels). -->

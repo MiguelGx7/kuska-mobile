@@ -4,9 +4,11 @@ import android.content.Context
 import com.google.gson.Gson
 import com.proyecto.kuska.R
 import com.proyecto.kuska.data.api.KumoraApi
+import com.proyecto.kuska.data.api.modelos.AlimentoConSolicitudes
 import com.proyecto.kuska.data.api.modelos.CategoriaPublica
 import com.proyecto.kuska.data.api.modelos.DatosDonacion
 import com.proyecto.kuska.data.api.modelos.Donacion
+import com.proyecto.kuska.data.api.modelos.PaginaDonaciones
 import com.proyecto.kuska.util.Resultado
 import com.proyecto.kuska.util.extraerErroresDonacion
 import com.proyecto.kuska.util.extraerErroresPorCampo
@@ -51,13 +53,30 @@ class DonacionesRepositorio(
         return ejecutar({ api.crearDonacion(partes) }, ::extraerErroresDonacion)
     }
 
-    /** Hace la llamada y convierte cualquier fallo (HTTP o de red) en [Resultado.Error]. */
-    private suspend fun <T> ejecutar(
+    /** [estado] null = todas. [pagina] empieza en 1. */
+    suspend fun listarDonaciones(estado: String?, pagina: Int): Resultado<PaginaDonaciones> =
+        ejecutar({ api.listarDonaciones(estado, pagina) })
+
+    suspend fun obtenerDonacion(id: Int): Resultado<Donacion> = ejecutar({ api.obtenerDonacion(id) })
+
+    suspend fun solicitudesRecibidas(id: Int): Resultado<List<AlimentoConSolicitudes>> =
+        ejecutar({ api.solicitudesRecibidas(id) })
+
+    /** Solo Pendiente (RN-12); el servidor también borra las fotos. */
+    suspend fun eliminarDonacion(id: Int): Resultado<Unit> =
+        ejecutar({ api.eliminarDonacion(id) }, sinCuerpo = Unit)
+
+    /**
+     * Hace la llamada y convierte cualquier fallo (HTTP o de red) en [Resultado.Error].
+     * [sinCuerpo]: valor de éxito para las respuestas sin cuerpo (204).
+     */
+    private suspend fun <T : Any> ejecutar(
         llamada: suspend () -> Response<T>,
         erroresPorCampo: (String?) -> Map<String, String> = ::extraerErroresPorCampo,
+        sinCuerpo: T? = null,
     ): Resultado<T> = try {
         val respuesta = llamada()
-        val cuerpo = respuesta.body()
+        val cuerpo = respuesta.body() ?: sinCuerpo
         if (respuesta.isSuccessful && cuerpo != null) {
             Resultado.Exito(cuerpo)
         } else {

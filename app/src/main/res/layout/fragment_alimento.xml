@@ -89,19 +89,21 @@
                     android:id="@+id/boton_camara"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:minHeight="48dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="@string/alimento_tomar_foto" />
 
                 <Button
                     android:id="@+id/boton_galeria"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
-                    android:minHeight="48dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="@string/alimento_elegir_galeria" />
             </LinearLayout>
 

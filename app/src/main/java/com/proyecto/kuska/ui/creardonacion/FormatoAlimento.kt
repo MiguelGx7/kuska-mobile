@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.StringRes
 import com.proyecto.kuska.R
 import com.proyecto.kuska.data.api.modelos.Donacion
+import com.proyecto.kuska.ui.comun.textoCantidad
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -21,16 +22,8 @@ object FormatoAlimento {
         else -> R.string.unidad_paquete
     }
 
-    /** "2,5 kg", "12 unidades", "1 paquete". Supone una cantidad válida. */
-    fun cantidad(context: Context, cantidad: String, unidad: String): String {
-        val texto = ValidacionAlimento.normalizarCantidad(cantidad).replace('.', ',')
-        val plural = when (unidad) {
-            Donacion.UNIDAD_UNIDAD -> R.plurals.cantidad_unidades
-            Donacion.UNIDAD_PAQUETE -> R.plurals.cantidad_paquetes
-            else -> return context.getString(R.string.cantidad_con_simbolo, texto, unidad)
-        }
-        return context.resources.getQuantityString(plural, texto.toIntOrNull() ?: 0, texto)
-    }
+    /** "2,5 kg", "12 unidades", "1 paquete". */
+    fun cantidad(context: Context, cantidad: String, unidad: String): String = context.textoCantidad(cantidad, unidad)
 
     /** dd/MM/yyyy de una fecha del MaterialDatePicker (medianoche UTC). */
     fun fecha(fechaUtc: Long): String =

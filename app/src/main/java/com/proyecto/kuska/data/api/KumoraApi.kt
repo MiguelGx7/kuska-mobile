@@ -1,10 +1,12 @@
 package com.proyecto.kuska.data.api
 
+import com.proyecto.kuska.data.api.modelos.AlimentoConSolicitudes
 import com.proyecto.kuska.data.api.modelos.CategoriaPublica
 import com.proyecto.kuska.data.api.modelos.Donacion
 import com.proyecto.kuska.data.api.modelos.LoginRequest
 import com.proyecto.kuska.data.api.modelos.LoginResponse
 import com.proyecto.kuska.data.api.modelos.MensajeResponse
+import com.proyecto.kuska.data.api.modelos.PaginaDonaciones
 import com.proyecto.kuska.data.api.modelos.Perfil
 import com.proyecto.kuska.data.api.modelos.RecuperarConfirmarRequest
 import com.proyecto.kuska.data.api.modelos.RefreshRequest
@@ -15,10 +17,13 @@ import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 /** Endpoints de la API de Kumora. Se irán agregando con cada pantalla. */
 interface KumoraApi {
@@ -51,6 +56,24 @@ interface KumoraApi {
     @Multipart
     @POST("donaciones/")
     suspend fun crearDonacion(@Part partes: List<MultipartBody.Part>): Response<Donacion>
+
+    /** Paginado. [estado] null = todas. */
+    @GET("donaciones/")
+    suspend fun listarDonaciones(
+        @Query("estado") estado: String?,
+        @Query("page") pagina: Int,
+    ): Response<PaginaDonaciones>
+
+    @GET("donaciones/{id}/")
+    suspend fun obtenerDonacion(@Path("id") id: Int): Response<Donacion>
+
+    /** Solo Pendiente (RN-12). Responde 204 sin cuerpo. */
+    @DELETE("donaciones/{id}/")
+    suspend fun eliminarDonacion(@Path("id") id: Int): Response<Unit>
+
+    /** Sin paginación: una entrada por alimento con sus solicitudes. */
+    @GET("donaciones/{id}/solicitudes-recibidas/")
+    suspend fun solicitudesRecibidas(@Path("id") id: Int): Response<List<AlimentoConSolicitudes>>
 }
 
 /** Solo para el refresh de tokens. Usa un cliente sin interceptor de auth ni Authenticator. */

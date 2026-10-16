@@ -77,6 +77,13 @@
         <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Control</item>
     </style>
 
+    <!-- Botón secundario de peligro (p. ej. "Eliminar donación") -->
+    <style name="Widget.Kumora.Button.Peligro" parent="Widget.Kumora.Button.Outlined">
+        <item name="android:textColor">?attr/colorError</item>
+        <item name="strokeColor">?attr/colorError</item>
+        <item name="rippleColor">@color/estado_rojo_fondo</item>
+    </style>
+
     <style name="Widget.Kumora.Button.Text" parent="Widget.Material3.Button.TextButton">
         <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Control</item>
     </style>
@@ -133,11 +140,26 @@
         <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Card</item>
     </style>
 
-    <!-- Tarjeta con borde fino (alimentos de una donación) -->
-    <style name="Widget.Kumora.CardView.Alimento" parent="Widget.Material3.CardView.Outlined">
+    <!-- Tarjeta con borde de 1dp y sin sombra (listas de donaciones, alimentos y solicitudes) -->
+    <style name="Widget.Kumora.CardView.Borde" parent="Widget.Material3.CardView.Outlined">
         <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Card</item>
         <item name="strokeColor">?attr/colorOutlineVariant</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cardElevation">0dp</item>
         <item name="cardBackgroundColor">?attr/colorSurface</item>
+    </style>
+
+    <!-- Etiqueta de estado: solo texto, esquinas de 6dp. El color lo pone mostrarEtiqueta(). -->
+    <style name="Widget.Kumora.EtiquetaEstado" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/fondo_etiqueta_estado</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelMedium</item>
     </style>
 
     <!-- Error bajo un grupo de chips u otro control sin TextInputLayout -->

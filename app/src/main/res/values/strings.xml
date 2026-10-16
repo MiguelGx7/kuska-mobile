@@ -14,6 +14,7 @@
     <string name="titulo_crear_donacion">Nueva donación</string>
     <string name="titulo_agregar_alimento">Agregar alimento</string>
     <string name="titulo_editar_alimento">Editar alimento</string>
+    <string name="titulo_detalle_donacion">Detalle de la donación</string>
 
     <!-- Comunes a varias pantallas -->
     <string name="accion_volver">Volver</string>
@@ -78,6 +79,51 @@
     <!-- Mis donaciones -->
     <string name="mis_donaciones_nueva">Nueva donación</string>
     <string name="mis_donaciones_enviada">Donación enviada. El administrador la revisará.</string>
+    <string name="mis_donaciones_eliminada">Donación eliminada.</string>
+    <string name="mis_donaciones_filtro_todas">Todas</string>
+    <string name="mis_donaciones_vacia">Aún no has registrado donaciones. Cuando registres una, aparecerá aquí.</string>
+    <string name="mis_donaciones_vacia_filtro">No tienes donaciones en este estado.</string>
+    <string name="mis_donaciones_creada">Creada el %1$s</string>
+    <string name="mis_donaciones_miniatura">Foto del primer alimento de %1$s</string>
+    <plurals name="mis_donaciones_alimentos">
+        <item quantity="one">%1$d alimento</item>
+        <item quantity="other">%1$d alimentos</item>
+    </plurals>
+    <string name="accion_reintentar">Reintentar</string>
+
+    <!-- Detalle de donación -->
+    <string name="detalle_entrega">Entrega: %1$s</string>
+    <string name="detalle_recogida_en">Recogida en: %1$s</string>
+    <string name="detalle_creada">Creada el %1$s</string>
+    <string name="detalle_revisada">Revisada el %1$s</string>
+    <string name="detalle_motivo_rechazo">Motivo del rechazo: %1$s</string>
+    <string name="detalle_alimentos">Alimentos</string>
+    <string name="detalle_disponible">Disponible %1$s de %2$s</string>
+    <string name="detalle_maximo_solicitud">Máximo por solicitud: %1$s</string>
+    <string name="detalle_sin_disponibilidad">Sin disponibilidad</string>
+    <string name="detalle_solicitudes">Solicitudes recibidas</string>
+    <string name="detalle_sin_solicitudes">Todavía nadie ha pedido estos alimentos.</string>
+    <string name="detalle_cantidad_pedida">Pidió %1$s</string>
+    <string name="detalle_pedido">Pedido %1$s</string>
+    <string name="detalle_telefono">Teléfono: %1$s</string>
+    <string name="detalle_direccion">Dirección: %1$s</string>
+    <string name="detalle_cancelado">Cancelado</string>
+    <string name="detalle_eliminar">Eliminar donación</string>
+    <string name="detalle_eliminar_titulo">¿Eliminar la donación?</string>
+    <string name="detalle_eliminar_mensaje">Se eliminará la donación y sus fotos. No se puede deshacer.</string>
+    <string name="detalle_eliminar_confirmar">Eliminar</string>
+    <string name="accion_cancelar">Cancelar</string>
+
+    <!-- Estados (EstadoDonacionEnum y EstadoSolicitudEnum) -->
+    <string name="estado_pendiente">Pendiente</string>
+    <string name="estado_validada">Validada</string>
+    <string name="estado_rechazada">Rechazada</string>
+    <string name="estado_agotada">Agotada</string>
+    <string name="estado_finalizada">Finalizada</string>
+    <string name="estado_aprobada">Aprobada</string>
+    <string name="estado_entregada">Entregada</string>
+    <string name="estado_no_recogida">No recogida</string>
+    <string name="estado_cancelada">Cancelada</string>
 
     <!-- Crear donación -->
     <string name="crear_donacion_titulo">Título</string>
@@ -111,8 +157,8 @@
     <string name="alimento_foto_ayuda">El administrador la usa para revisar que el alimento está en buen estado.</string>
     <string name="alimento_foto_elegida">Foto del alimento</string>
     <string name="alimento_foto_vacia">Sin foto</string>
-    <string name="alimento_tomar_foto">Tomar foto</string>
-    <string name="alimento_elegir_galeria">Elegir de la galería</string>
+    <string name="alimento_tomar_foto">Cámara</string>
+    <string name="alimento_elegir_galeria">Galería</string>
     <string name="alimento_nombre">Nombre</string>
     <string name="alimento_nombre_placeholder">Ej.: Arroz</string>
     <string name="alimento_descripcion">Descripción (opcional)</string>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Encabezado del detalle: título, estado, modalidad, dirección, fechas y motivo del rechazo. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="8dp">
+
+    <TextView
+        android:id="@+id/texto_titulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="Mercado de la semana" />
+
+    <TextView
+        android:id="@+id/etiqueta_estado"
+        style="@style/Widget.Kumora.EtiquetaEstado"
+        android:layout_marginTop="8dp"
+        tools:text="Validada" />
+
+    <TextView
+        android:id="@+id/texto_descripcion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="Productos en buen estado" />
+
+    <TextView
+        android:id="@+id/texto_modalidad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="Entrega: Ambas" />
+
+    <TextView
+        android:id="@+id/texto_direccion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="Recogida en: Calle 10 # 5-20, Bogotá" />
+
+    <TextView
+        android:id="@+id/texto_creada"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        tools:text="Creada el 16/10/2026" />
+
+    <TextView
+        android:id="@+id/texto_revisada"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        tools:text="Revisada el 17/10/2026" />
+
+    <TextView
+        android:id="@+id/aviso_rechazo"
+        style="@style/Widget.Kumora.AvisoError"
+        android:layout_marginTop="16dp"
+        tools:text="Motivo del rechazo: La foto no muestra el alimento."
+        tools:visibility="visible" />
+</LinearLayout>
