@@ -3,6 +3,7 @@ package com.proyecto.kuska.data.api
 import com.proyecto.kuska.data.api.modelos.LoginRequest
 import com.proyecto.kuska.data.api.modelos.LoginResponse
 import com.proyecto.kuska.data.api.modelos.MensajeResponse
+import com.proyecto.kuska.data.api.modelos.RecuperarConfirmarRequest
 import com.proyecto.kuska.data.api.modelos.RefreshRequest
 import com.proyecto.kuska.data.api.modelos.RefreshResponse
 import com.proyecto.kuska.data.api.modelos.RegistroRequest
@@ -20,6 +21,13 @@ interface KumoraApi {
 
     @POST("auth/registro/solicitar-codigo/")
     suspend fun solicitarCodigoRegistro(@Body cuerpo: SolicitarCodigoRequest): Response<MensajeResponse>
+
+    /** Responde siempre lo mismo, exista o no el correo (RN-04b). */
+    @POST("auth/recuperar/solicitar/")
+    suspend fun solicitarRecuperacion(@Body cuerpo: SolicitarCodigoRequest): Response<MensajeResponse>
+
+    @POST("auth/recuperar/confirmar/")
+    suspend fun confirmarRecuperacion(@Body cuerpo: RecuperarConfirmarRequest): Response<MensajeResponse>
 
     /** Responde lo mismo que el login (access, refresh y usuario). */
     @POST("auth/registro/")

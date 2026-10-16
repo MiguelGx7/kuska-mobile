@@ -25,7 +25,13 @@
     <fragment
         android:id="@+id/recuperarFragment"
         android:name="com.proyecto.kuska.ui.recuperar.RecuperarFragment"
-        android:label="@string/titulo_recuperar" />
+        android:label="@string/titulo_recuperar">
+        <!-- Correo que ya estaba escrito en el Login (puede venir vacío) -->
+        <argument
+            android:name="correo"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
 
     <!-- Beneficiario -->
     <fragment

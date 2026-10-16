@@ -6,14 +6,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.proyecto.kuska.KumoraApp
-import com.proyecto.kuska.R
 import com.proyecto.kuska.data.api.modelos.RegistroRequest
 import com.proyecto.kuska.data.repositorio.AuthRepositorio
+import com.proyecto.kuska.ui.comun.ContadorReenvio
 import com.proyecto.kuska.ui.comun.TextoUi
+import com.proyecto.kuska.ui.comun.validarCodigo
 import com.proyecto.kuska.util.Resultado
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -52,7 +51,9 @@ class RegistroViewModel(private val repositorio: AuthRepositorio) : ViewModel() 
     private val _eventos = Channel<EventoRegistro>(Channel.BUFFERED)
     val eventos: Flow<EventoRegistro> = _eventos.receiveAsFlow()
 
-    private var temporizador: Job? = null
+    private val contador = ContadorReenvio(viewModelScope) { segundos ->
+        _estado.update { it.copy(segundosReenvio = segundos) }
+    }
 
     fun elegirRol(rol: String) = _estado.update {
         it.copy(datos = it.datos.copy(rol = rol), errorApi = null)
@@ -118,7 +119,7 @@ class RegistroViewModel(private val repositorio: AuthRepositorio) : ViewModel() 
             when (val resultado = repositorio.solicitarCodigoRegistro(correo)) {
                 is Resultado.Exito -> {
                     _estado.update { it.copy(cargando = false) }
-                    iniciarTemporizador()
+                    contador.iniciar()
                     _eventos.send(EventoRegistro.CodigoReenviado)
                 }
                 is Resultado.Error -> _estado.update {
@@ -146,7 +147,7 @@ class RegistroViewModel(private val repositorio: AuthRepositorio) : ViewModel() 
             when (val resultado = repositorio.solicitarCodigoRegistro(correo)) {
                 is Resultado.Exito -> {
                     _estado.update { it.copy(cargando = false, paso = 3, correoConCodigo = correo) }
-                    iniciarTemporizador()
+                    contador.iniciar()
                 }
                 // El correo ya registrado (RN-02) llega como error del campo "correo".
                 is Resultado.Error -> {
@@ -166,10 +167,9 @@ class RegistroViewModel(private val repositorio: AuthRepositorio) : ViewModel() 
     private fun crearCuenta() {
         val actual = _estado.value
         val codigo = actual.codigo.trim()
-        if (!FORMATO_CODIGO.matches(codigo)) {
-            _estado.update {
-                it.copy(errorCodigo = TextoUi.Recurso(R.string.error_codigo_formato), errorApi = null)
-            }
+        val errorCodigo = validarCodigo(codigo)
+        if (errorCodigo != null) {
+            _estado.update { it.copy(errorCodigo = errorCodigo, errorApi = null) }
             return
         }
 
@@ -199,19 +199,7 @@ class RegistroViewModel(private val repositorio: AuthRepositorio) : ViewModel() 
             CampoRegistro.desdeApi(nombre)?.let { it to TextoUi.Texto(mensaje) }
         }.toMap()
 
-    private fun iniciarTemporizador() {
-        temporizador?.cancel()
-        temporizador = viewModelScope.launch {
-            for (segundos in SEGUNDOS_REENVIO downTo 0) {
-                _estado.update { it.copy(segundosReenvio = segundos) }
-                if (segundos > 0) delay(1_000)
-            }
-        }
-    }
-
     companion object {
-        private const val SEGUNDOS_REENVIO = 60
-        private val FORMATO_CODIGO = Regex("^\\d{6}$")
         private val CAMPOS_DONANTE = setOf(
             CampoRegistro.TIPO_DONANTE,
             CampoRegistro.NOMBRE_NEGOCIO,

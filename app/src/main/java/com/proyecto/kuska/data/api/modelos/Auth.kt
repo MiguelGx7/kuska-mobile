@@ -27,7 +27,13 @@ data class SolicitarCodigoRequest(
 )
 
 data class MensajeResponse(
-    @SerializedName("mensaje") val mensaje: String,
+    @SerializedName("mensaje") val mensaje: String?,
+)
+
+data class RecuperarConfirmarRequest(
+    @SerializedName("correo") val correo: String,
+    @SerializedName("codigo") val codigo: String,
+    @SerializedName("contrasena_nueva") val contrasenaNueva: String,
 )
 
 /** Registro público (RN-04d). Los campos null no se envían (Gson los omite). */

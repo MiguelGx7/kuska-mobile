@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Campo del código de 6 dígitos y "Reenviar código". Se usa con <include> en el registro y en recuperar contraseña. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/Widget.Kumora.Etiqueta"
+        android:labelFor="@id/entrada_codigo"
+        android:text="@string/codigo_etiqueta" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/campo_codigo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintEnabled="false">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/entrada_codigo"
+            style="@style/Widget.Kumora.Entrada"
+            android:autofillHints="smsOTPCode"
+            android:hint="@string/codigo_placeholder"
+            android:inputType="number"
+            android:letterSpacing="0.3"
+            android:maxLength="6" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/boton_reenviar"
+        style="?attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="4dp"
+        tools:text="Reenviar código (45 s)" />
+</LinearLayout>

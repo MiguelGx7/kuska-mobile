@@ -24,6 +24,10 @@ import com.proyecto.kuska.R
 import com.proyecto.kuska.data.api.modelos.RegistroRequest
 import com.proyecto.kuska.data.api.modelos.Usuario
 import com.proyecto.kuska.databinding.FragmentRegistroBinding
+import com.proyecto.kuska.ui.comun.alPulsarListo
+import com.proyecto.kuska.ui.comun.mostrar
+import com.proyecto.kuska.ui.comun.mostrarAviso
+import com.proyecto.kuska.ui.comun.mostrarReenvio
 import com.proyecto.kuska.ui.comun.resolver
 import kotlinx.coroutines.launch
 
@@ -62,7 +66,7 @@ class RegistroFragment : Fragment() {
         configurarPasoRol()
         configurarPasoDatos()
         configurarPasoCodigo()
-        binding.botonPrincipal.setOnClickListener { accionPrincipal() }
+        binding.botonCarga.boton.setOnClickListener { accionPrincipal() }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -128,7 +132,8 @@ class RegistroFragment : Fragment() {
         entradaConfirmarContrasena.alPulsarListo { accionPrincipal() }
     }
 
-    private fun configurarPasoCodigo() = with(binding) {
+    private fun configurarPasoCodigo() = with(binding.codigo) {
+        entradaCodigo.imeOptions = EditorInfo.IME_ACTION_DONE
         entradaCodigo.doAfterTextChanged { viewModel.cambiarCodigo(it?.toString().orEmpty()) }
         entradaCodigo.alPulsarListo { accionPrincipal() }
         botonReenviar.setOnClickListener { viewModel.reenviarCodigo() }
@@ -171,9 +176,7 @@ class RegistroFragment : Fragment() {
         if (grupoTipoDonante.checkedRadioButtonId != idTipoDonante) {
             if (idTipoDonante == View.NO_ID) grupoTipoDonante.clearCheck() else grupoTipoDonante.check(idTipoDonante)
         }
-        val mensajeTipoDonante = estado.errores[CampoRegistro.TIPO_DONANTE]?.resolver(contexto)
-        errorTipoDonante.text = mensajeTipoDonante
-        errorTipoDonante.isVisible = mensajeTipoDonante != null
+        errorTipoDonante.mostrarAviso(estado.errores[CampoRegistro.TIPO_DONANTE]?.resolver(contexto))
 
         val textoDocumento = datos.tipoDocumento?.let { getString(etiquetasDocumento.getValue(it)) }.orEmpty()
         if (entradaTipoDocumento.text.toString() != textoDocumento) {
@@ -187,40 +190,24 @@ class RegistroFragment : Fragment() {
 
         // Paso 3
         textoCodigoEnviado.text = getString(R.string.registro_codigo_enviado, estado.correoConCodigo.orEmpty())
-        campoCodigo.error = estado.errorCodigo?.resolver(contexto)
-        botonReenviar.isEnabled = estado.segundosReenvio == 0 && !estado.cargando
-        botonReenviar.text = if (estado.segundosReenvio > 0) {
-            getString(R.string.registro_reenviar_en, estado.segundosReenvio)
-        } else {
-            getString(R.string.registro_reenviar)
-        }
+        codigo.campoCodigo.error = estado.errorCodigo?.resolver(contexto)
+        codigo.mostrarReenvio(estado.segundosReenvio, estado.cargando)
 
         // Aviso y botón principal
-        avisoError.text = estado.errorApi
-        avisoError.isVisible = estado.errorApi != null
+        avisoError.mostrarAviso(estado.errorApi)
 
         val textoBoton = getString(
             when (estado.paso) {
-                1 -> R.string.registro_continuar
-                2 -> if (estado.codigoYaEnviado) R.string.registro_continuar else R.string.registro_enviar_codigo
+                1 -> R.string.accion_continuar
+                2 -> if (estado.codigoYaEnviado) R.string.accion_continuar else R.string.accion_enviar_codigo
                 else -> R.string.registro_crear_cuenta
             }
         )
-        botonPrincipal.isEnabled = !estado.cargando && (estado.paso != 1 || datos.rol != null)
-        botonPrincipal.text = if (estado.cargando) null else textoBoton
-        botonPrincipal.contentDescription = if (estado.cargando) getString(R.string.registro_cargando) else null
-        indicadorCarga.isVisible = estado.cargando
-    }
-
-    private fun EditText.alPulsarListo(accion: () -> Unit) {
-        setOnEditorActionListener { _, idAccion, _ ->
-            if (idAccion == EditorInfo.IME_ACTION_DONE) {
-                accion()
-                true
-            } else {
-                false
-            }
-        }
+        botonCarga.mostrar(
+            texto = textoBoton,
+            cargando = estado.cargando,
+            habilitado = estado.paso != 1 || datos.rol != null,
+        )
     }
 
     override fun onDestroyView() {

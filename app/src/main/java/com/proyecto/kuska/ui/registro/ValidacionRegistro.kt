@@ -2,6 +2,8 @@ package com.proyecto.kuska.ui.registro
 
 import com.proyecto.kuska.R
 import com.proyecto.kuska.ui.comun.TextoUi
+import com.proyecto.kuska.ui.comun.validarConfirmacion
+import com.proyecto.kuska.ui.comun.validarContrasenaNueva
 import com.proyecto.kuska.util.validarCorreo
 
 /**
@@ -53,18 +55,9 @@ object ValidacionRegistro {
             largo(CampoRegistro.CORREO, datos.correo.trim())
         }
 
-        // La contraseña no se recorta: los espacios pueden ser parte de ella.
-        if (datos.contrasena.isEmpty()) {
-            errores[CampoRegistro.CONTRASENA] = TextoUi.Recurso(R.string.error_contrasena_vacia)
-        } else {
-            largo(CampoRegistro.CONTRASENA, datos.contrasena)
-        }
-        when {
-            datos.confirmarContrasena.isEmpty() ->
-                errores[CampoRegistro.CONFIRMAR_CONTRASENA] = TextoUi.Recurso(R.string.error_confirmar_vacia)
-            datos.confirmarContrasena != datos.contrasena ->
-                errores[CampoRegistro.CONFIRMAR_CONTRASENA] = TextoUi.Recurso(R.string.error_contrasenas_distintas)
-        }
+        validarContrasenaNueva(datos.contrasena)?.let { errores[CampoRegistro.CONTRASENA] = it }
+        validarConfirmacion(datos.contrasena, datos.confirmarContrasena)
+            ?.let { errores[CampoRegistro.CONFIRMAR_CONTRASENA] = it }
 
         return errores
     }

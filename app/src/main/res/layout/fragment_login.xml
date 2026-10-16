@@ -120,43 +120,18 @@
         <!-- Aviso de error de la API -->
         <TextView
             android:id="@+id/aviso_error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/Widget.Kumora.AvisoError"
             android:layout_marginTop="8dp"
-            android:accessibilityLiveRegion="polite"
-            android:background="@drawable/fondo_aviso_error"
-            android:padding="12dp"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="@color/estado_rojo_texto"
-            android:visibility="gone"
             tools:text="Correo o contraseña incorrectos."
             tools:visibility="visible" />
 
         <!-- Botón principal con indicador de carga encima -->
-        <FrameLayout
+        <include
+            android:id="@+id/boton_carga"
+            layout="@layout/vista_boton_carga"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
-
-            <Button
-                android:id="@+id/boton_iniciar_sesion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:stateListAnimator="@null"
-                android:text="@string/login_boton" />
-
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/indicador_carga"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:indeterminate="true"
-                android:visibility="gone"
-                app:indicatorColor="?attr/colorPrimary"
-                app:indicatorSize="24dp"
-                app:trackThickness="3dp" />
-        </FrameLayout>
+            android:layout_marginTop="16dp" />
 
         <!-- Empuja el pie hacia abajo cuando sobra espacio -->
         <Space

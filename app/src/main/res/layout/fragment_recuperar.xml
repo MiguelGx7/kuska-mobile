@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Recuperar contraseña en 2 pasos (correo; código y nueva contraseña). El aviso y el botón son comunes. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
+    android:orientation="vertical"
+    tools:context=".ui.recuperar.RecuperarFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/barra"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?android:attr/colorBackground"
+        app:navigationContentDescription="@string/accion_volver"
+        app:navigationIcon="@drawable/ic_atras"
+        app:subtitleTextColor="?attr/colorOnSurfaceVariant"
+        app:title="@string/titulo_recuperar"
+        tools:subtitle="Paso 1 de 2" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progreso"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="2"
+        android:paddingHorizontal="24dp"
+        app:trackCornerRadius="2dp"
+        tools:progress="1" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/desplazamiento"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="16dp">
+
+            <!-- Paso 1: correo -->
+            <LinearLayout
+                android:id="@+id/paso_correo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recuperar_correo_titulo"
+                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                    android:textColor="?attr/colorOnSurface" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/recuperar_correo_ayuda"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:layout_marginTop="24dp"
+                    android:labelFor="@id/entrada_correo"
+                    android:text="@string/login_etiqueta_correo" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_correo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false"
+                    app:startIconDrawable="@drawable/ic_correo">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_correo"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:autofillHints="emailAddress"
+                        android:hint="@string/login_placeholder_correo"
+                        android:imeOptions="actionDone"
+                        android:inputType="textEmailAddress" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <!-- Paso 2: código y nueva contraseña -->
+            <LinearLayout
+                android:id="@+id/paso_cambio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recuperar_cambio_titulo"
+                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                    android:textColor="?attr/colorOnSurface" />
+
+                <TextView
+                    android:id="@+id/texto_mensaje_envio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    tools:text="Si el correo está registrado, te enviamos un código." />
+
+                <TextView
+                    android:id="@+id/texto_bandeja"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    tools:text="Revisa la bandeja de entrada de laura@correo.com." />
+
+                <include
+                    android:id="@+id/codigo"
+                    layout="@layout/vista_codigo_verificacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:labelFor="@id/entrada_contrasena"
+                    android:text="@string/recuperar_contrasena_nueva" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_contrasena"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:endIconMode="password_toggle"
+                    app:hintEnabled="false"
+                    app:startIconDrawable="@drawable/ic_candado">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_contrasena"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:autofillHints="newPassword"
+                        android:hint="@string/contrasena_nueva_placeholder"
+                        android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:labelFor="@id/entrada_confirmar_contrasena"
+                    android:text="@string/confirmar_contrasena_etiqueta" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_confirmar_contrasena"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:endIconMode="password_toggle"
+                    app:hintEnabled="false"
+                    app:startIconDrawable="@drawable/ic_candado">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_confirmar_contrasena"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:autofillHints="newPassword"
+                        android:hint="@string/confirmar_contrasena_placeholder"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <!-- Empuja el aviso y el botón hacia abajo cuando sobra espacio -->
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:minHeight="24dp" />
+
+            <TextView
+                android:id="@+id/aviso_error"
+                style="@style/Widget.Kumora.AvisoError"
+                android:layout_marginBottom="16dp"
+                tools:text="El código no es válido o ya venció."
+                tools:visibility="visible" />
+
+            <include
+                android:id="@+id/boton_carga"
+                layout="@layout/vista_boton_carga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

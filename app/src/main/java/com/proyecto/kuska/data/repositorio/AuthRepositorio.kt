@@ -5,6 +5,7 @@ import com.proyecto.kuska.R
 import com.proyecto.kuska.data.api.KumoraApi
 import com.proyecto.kuska.data.api.modelos.LoginRequest
 import com.proyecto.kuska.data.api.modelos.LoginResponse
+import com.proyecto.kuska.data.api.modelos.RecuperarConfirmarRequest
 import com.proyecto.kuska.data.api.modelos.RegistroRequest
 import com.proyecto.kuska.data.api.modelos.SolicitarCodigoRequest
 import com.proyecto.kuska.data.api.modelos.Usuario
@@ -32,7 +33,7 @@ class AuthRepositorio(
         ejecutar({ api.login(LoginRequest(correo.trim(), contrasena)) }) { guardarSesion(it) }
 
     /** Pide el código de verificación al correo (RN-04d). Devuelve el mensaje de la API. */
-    suspend fun solicitarCodigoRegistro(correo: String): Resultado<String> =
+    suspend fun solicitarCodigoRegistro(correo: String): Resultado<String?> =
         ejecutar({ api.solicitarCodigoRegistro(SolicitarCodigoRequest(correo.trim())) }) {
             Resultado.Exito(it.mensaje)
         }
@@ -40,6 +41,18 @@ class AuthRepositorio(
     /** Crea la cuenta con el código. Responde como el login, así que se guarda la sesión igual. */
     suspend fun registrar(solicitud: RegistroRequest): Resultado<Usuario> =
         ejecutar({ api.registrar(solicitud) }) { guardarSesion(it) }
+
+    /** Pide el código para recuperar la contraseña (RN-04b). Devuelve el mensaje de la API, si trae. */
+    suspend fun solicitarRecuperacion(correo: String): Resultado<String?> =
+        ejecutar({ api.solicitarRecuperacion(SolicitarCodigoRequest(correo.trim())) }) {
+            Resultado.Exito(it.mensaje)
+        }
+
+    /** Cambia la contraseña con el código. No inicia sesión. */
+    suspend fun confirmarRecuperacion(correo: String, codigo: String, contrasenaNueva: String): Resultado<String?> =
+        ejecutar({
+            api.confirmarRecuperacion(RecuperarConfirmarRequest(correo.trim(), codigo, contrasenaNueva))
+        }) { Resultado.Exito(it.mensaje) }
 
     suspend fun cerrarSesion() = sesion.cerrarSesion()
 

@@ -117,6 +117,18 @@
         <item name="android:imeOptions">actionNext</item>
     </style>
 
+    <!-- Aviso rojo para errores de la API (encima del botón principal) -->
+    <style name="Widget.Kumora.AvisoError" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:accessibilityLiveRegion">polite</item>
+        <item name="android:background">@drawable/fondo_aviso_error</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:textAppearance">?attr/textAppearanceBodyMedium</item>
+        <item name="android:textColor">@color/estado_rojo_texto</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
     <style name="Widget.Kumora.CardView" parent="Widget.Material3.CardView.Elevated">
         <item name="shapeAppearance">@style/ShapeAppearance.Kumora.Card</item>
     </style>

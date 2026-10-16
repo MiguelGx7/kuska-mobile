@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?android:attr/colorBackground"
-        app:navigationContentDescription="@string/registro_volver"
+        app:navigationContentDescription="@string/accion_volver"
         app:navigationIcon="@drawable/ic_atras"
         app:subtitleTextColor="?attr/colorOnSurfaceVariant"
         app:title="@string/titulo_registro"
@@ -401,14 +401,14 @@
                         android:id="@+id/entrada_contrasena"
                         style="@style/Widget.Kumora.Entrada"
                         android:autofillHints="newPassword"
-                        android:hint="@string/registro_placeholder_contrasena"
+                        android:hint="@string/contrasena_nueva_placeholder"
                         android:inputType="textPassword" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     style="@style/Widget.Kumora.Etiqueta"
                     android:labelFor="@id/entrada_confirmar_contrasena"
-                    android:text="@string/registro_confirmar_contrasena" />
+                    android:text="@string/confirmar_contrasena_etiqueta" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/campo_confirmar_contrasena"
@@ -422,7 +422,7 @@
                         android:id="@+id/entrada_confirmar_contrasena"
                         style="@style/Widget.Kumora.Entrada"
                         android:autofillHints="newPassword"
-                        android:hint="@string/registro_placeholder_confirmar"
+                        android:hint="@string/confirmar_contrasena_placeholder"
                         android:imeOptions="actionDone"
                         android:inputType="textPassword" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -453,37 +453,12 @@
                     android:textColor="?attr/colorOnSurfaceVariant"
                     tools:text="Te enviamos un código a laura@correo.com" />
 
-                <TextView
-                    style="@style/Widget.Kumora.Etiqueta"
-                    android:layout_marginTop="24dp"
-                    android:labelFor="@id/entrada_codigo"
-                    android:text="@string/registro_codigo" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/campo_codigo"
+                <include
+                    android:id="@+id/codigo"
+                    layout="@layout/vista_codigo_verificacion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:hintEnabled="false">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/entrada_codigo"
-                        style="@style/Widget.Kumora.Entrada"
-                        android:autofillHints="smsOTPCode"
-                        android:hint="@string/registro_placeholder_codigo"
-                        android:imeOptions="actionDone"
-                        android:inputType="number"
-                        android:letterSpacing="0.3"
-                        android:maxLength="6" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <Button
-                    android:id="@+id/boton_reenviar"
-                    style="?attr/borderlessButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="4dp"
-                    tools:text="Reenviar código (45 s)" />
+                    android:layout_marginTop="8dp" />
             </LinearLayout>
 
             <!-- Empuja el aviso y el botón hacia abajo cuando sobra espacio -->
@@ -495,41 +470,16 @@
 
             <TextView
                 android:id="@+id/aviso_error"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/Widget.Kumora.AvisoError"
                 android:layout_marginBottom="16dp"
-                android:accessibilityLiveRegion="polite"
-                android:background="@drawable/fondo_aviso_error"
-                android:padding="12dp"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="@color/estado_rojo_texto"
-                android:visibility="gone"
                 tools:text="El código no es válido o ya venció."
                 tools:visibility="visible" />
 
-            <FrameLayout
+            <include
+                android:id="@+id/boton_carga"
+                layout="@layout/vista_boton_carga"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <Button
-                    android:id="@+id/boton_principal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:stateListAnimator="@null"
-                    tools:text="Continuar" />
-
-                <com.google.android.material.progressindicator.CircularProgressIndicator
-                    android:id="@+id/indicador_carga"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:indeterminate="true"
-                    android:visibility="gone"
-                    app:indicatorColor="?attr/colorPrimary"
-                    app:indicatorSize="24dp"
-                    app:trackThickness="3dp" />
-            </FrameLayout>
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

@@ -12,6 +12,19 @@
     <string name="titulo_perfil">Tu perfil</string>
     <string name="titulo_recuperar">Recupera tu contraseña</string>
 
+    <!-- Comunes a varias pantallas -->
+    <string name="accion_volver">Volver</string>
+    <string name="accion_continuar">Continuar</string>
+    <string name="accion_enviar_codigo">Enviar código</string>
+    <string name="cargando">Un momento</string>
+    <string name="codigo_etiqueta">Código</string>
+    <string name="codigo_placeholder">6 dígitos</string>
+    <string name="codigo_reenviar">Reenviar código</string>
+    <string name="codigo_reenviar_en">Reenviar código (%1$d s)</string>
+    <string name="contrasena_nueva_placeholder">Crea una contraseña</string>
+    <string name="confirmar_contrasena_etiqueta">Confirmar contraseña</string>
+    <string name="confirmar_contrasena_placeholder">Vuelve a escribirla</string>
+
     <!-- Login -->
     <string name="login_subtitulo">Entra para donar o pedir alimentos.</string>
     <string name="login_etiqueta_correo">Correo</string>
@@ -20,13 +33,11 @@
     <string name="login_placeholder_contrasena">Escribe tu contraseña</string>
     <string name="login_olvidaste">¿Olvidaste tu contraseña?</string>
     <string name="login_boton">Iniciar sesión</string>
-    <string name="login_cargando">Iniciando sesión</string>
     <string name="login_sin_cuenta">¿No tienes cuenta?</string>
     <string name="login_crear_cuenta">Crear cuenta</string>
 
     <!-- Registro -->
     <string name="registro_paso">Paso %1$d de 3</string>
-    <string name="registro_volver">Volver</string>
     <string name="registro_rol_titulo">¿Cómo quieres usar Kumora?</string>
     <string name="registro_rol_donante">Quiero donar</string>
     <string name="registro_rol_donante_desc">Comparte los alimentos que te sobran, como persona o como negocio.</string>
@@ -45,20 +56,21 @@
     <string name="registro_numero_documento">Número de documento</string>
     <string name="registro_telefono">Teléfono</string>
     <string name="registro_direccion">Dirección (opcional)</string>
-    <string name="registro_placeholder_contrasena">Crea una contraseña</string>
-    <string name="registro_confirmar_contrasena">Confirmar contraseña</string>
-    <string name="registro_placeholder_confirmar">Vuelve a escribirla</string>
     <string name="registro_codigo_titulo">Revisa tu correo</string>
     <string name="registro_codigo_enviado">Te enviamos un código a %1$s</string>
-    <string name="registro_codigo">Código</string>
-    <string name="registro_placeholder_codigo">6 dígitos</string>
-    <string name="registro_reenviar">Reenviar código</string>
-    <string name="registro_reenviar_en">Reenviar código (%1$d s)</string>
     <string name="registro_codigo_reenviado">Te enviamos un código nuevo.</string>
-    <string name="registro_continuar">Continuar</string>
-    <string name="registro_enviar_codigo">Enviar código</string>
     <string name="registro_crear_cuenta">Crear cuenta</string>
-    <string name="registro_cargando">Un momento</string>
+
+    <!-- Recuperar contraseña -->
+    <string name="recuperar_paso">Paso %1$d de 2</string>
+    <string name="recuperar_correo_titulo">Escribe tu correo</string>
+    <string name="recuperar_correo_ayuda">Te enviaremos un código para que crees una contraseña nueva.</string>
+    <string name="recuperar_cambio_titulo">Crea una contraseña nueva</string>
+    <string name="recuperar_codigo_enviado">Si el correo está registrado, te enviamos un código.</string>
+    <string name="recuperar_revisa_bandeja">Revisa la bandeja de entrada de %1$s.</string>
+    <string name="recuperar_contrasena_nueva">Nueva contraseña</string>
+    <string name="recuperar_cambiar">Cambiar contraseña</string>
+    <string name="recuperar_contrasena_cambiada">Contraseña cambiada. Inicia sesión con la nueva.</string>
 
     <!-- Tipos de documento (TipoDocumentoEnum) -->
     <string name="tipo_documento_cc">Cédula de ciudadanía</string>

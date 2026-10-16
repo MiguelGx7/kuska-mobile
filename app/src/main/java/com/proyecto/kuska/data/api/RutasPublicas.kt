@@ -7,7 +7,7 @@ import okhttp3.Request
 /** Rutas que no llevan token ni pasan por el refresh. */
 object RutasPublicas {
 
-    private val prefijos = listOf("auth/login/", "auth/registro/", "auth/refresh/")
+    private val prefijos = listOf("auth/login/", "auth/registro/", "auth/refresh/", "auth/recuperar/")
 
     private val rutaBase = BuildConfig.BASE_URL.toHttpUrl().encodedPath
 
