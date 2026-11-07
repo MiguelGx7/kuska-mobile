@@ -365,6 +365,20 @@
     <string name="solicitud_cancelar_confirmar">Cancelar solicitud</string>
     <string name="solicitud_cancelada">Solicitud cancelada.</string>
 
+    <!-- Notificaciones (HU-119, HU-120) -->
+    <string name="titulo_notificaciones">Notificaciones</string>
+    <string name="notificaciones_campana">Notificaciones</string>
+    <string name="notificaciones_campana_sin_leer">Notificaciones, %1$s sin leer</string>
+    <string name="notificaciones_filtro_todas">Todas</string>
+    <string name="notificaciones_filtro_no_leidas">No leídas</string>
+    <string name="notificaciones_vacia">No tienes notificaciones.</string>
+    <string name="notificaciones_vacia_no_leidas">No tienes notificaciones sin leer.</string>
+    <string name="notificaciones_marcar_todas">Marcar todas como leídas</string>
+    <string name="notificaciones_ahora">Ahora</string>
+    <string name="notificaciones_hace_minutos">Hace %1$d min</string>
+    <string name="notificaciones_hace_horas">Hace %1$d h</string>
+    <string name="notificaciones_no_leida">%1$s. Sin leer.</string>
+
     <!-- Barra inferior -->
     <string name="nav_inicio">Inicio</string>
     <string name="nav_carrito">Carrito</string>

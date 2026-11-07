@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Espacio a la derecha del título de cada pestaña principal para la campana de MainActivity (48dp + 8dp de
+         margen + 8dp de aire). -->
+    <dimen name="espacio_campana">64dp</dimen>
+</resources>

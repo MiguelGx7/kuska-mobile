@@ -54,6 +54,30 @@ object FormatoFecha {
         return milis - desfaseMilis(zona)
     }
 
+    /**
+     * Fecha de una notificación (HU-119): menos de 1 minuto → [FechaRelativa.Ahora]; menos de 1 hora → minutos;
+     * menos de 24 horas → horas; si no, "dd/MM/yyyy HH:mm" en hora de Bogotá. Un reloj algo atrasado (fecha hasta
+     * 1 minuto en el futuro) cuenta como "Ahora"; más en el futuro, la fecha completa. Null si no se puede leer.
+     */
+    fun fechaRelativa(texto: String?, ahora: Long): FechaRelativa? {
+        val milis = milisDeFechaHora(texto) ?: return null
+        val diferencia = ahora - milis
+        return when {
+            diferencia < -MINUTO -> FechaRelativa.Fecha(fechaHoraCorta(milis))
+            diferencia < MINUTO -> FechaRelativa.Ahora
+            diferencia < HORA -> FechaRelativa.Minutos((diferencia / MINUTO).toInt())
+            diferencia < DIA -> FechaRelativa.Horas((diferencia / HORA).toInt())
+            else -> FechaRelativa.Fecha(fechaHoraCorta(milis))
+        }
+    }
+
+    private fun fechaHoraCorta(milis: Long): String =
+        SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.US).apply { timeZone = ZONA_BOGOTA }.format(milis)
+
+    private const val MINUTO = 60_000L
+    private const val HORA = 60 * MINUTO
+    private const val DIA = 24 * HORA
+
     /** "Z" o "" → 0; "-05:00" → -5 h; "+0530" → +5 h 30 min. */
     private fun desfaseMilis(zona: String): Long {
         if (zona.isEmpty() || zona == "Z") return 0
@@ -63,4 +87,14 @@ object FormatoFecha {
         val minutos = digitos.substring(2, 4).toLong()
         return signo * (horas * 60 + minutos) * 60_000
     }
+}
+
+/** Fecha de una notificación, sin textos de Android: la vista arma "Ahora", "Hace 5 min"… */
+sealed interface FechaRelativa {
+    data object Ahora : FechaRelativa
+    data class Minutos(val cantidad: Int) : FechaRelativa
+    data class Horas(val cantidad: Int) : FechaRelativa
+
+    /** "dd/MM/yyyy HH:mm" en hora de Bogotá. */
+    data class Fecha(val texto: String) : FechaRelativa
 }

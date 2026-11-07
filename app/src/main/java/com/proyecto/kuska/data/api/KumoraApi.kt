@@ -19,7 +19,10 @@ import com.proyecto.kuska.data.api.modelos.LoginResponse
 import com.proyecto.kuska.data.api.modelos.MensajeResponse
 import com.proyecto.kuska.data.api.modelos.ConfirmarEntregaRequest
 import com.proyecto.kuska.data.api.modelos.MiSolicitud
+import com.proyecto.kuska.data.api.modelos.LeerTodas
+import com.proyecto.kuska.data.api.modelos.Notificacion
 import com.proyecto.kuska.data.api.modelos.Novedad
+import com.proyecto.kuska.data.api.modelos.PaginaNotificaciones
 import com.proyecto.kuska.data.api.modelos.NovedadCrearRequest
 import com.proyecto.kuska.data.api.modelos.PaginaNovedades
 import com.proyecto.kuska.data.api.modelos.PaginaDonaciones
@@ -180,6 +183,20 @@ interface KumoraApi {
     /** RN-26b: solo Entregada, una vez y antes de entrega.confirmar_hasta. Responde 200 con la solicitud actualizada. */
     @POST("mis-solicitudes/{id}/confirmar-entrega/")
     suspend fun confirmarEntrega(@Path("id") id: Int, @Body cuerpo: ConfirmarEntregaRequest): Response<MiSolicitud>
+
+    /** Mis notificaciones (RN-41), de la más nueva a la más vieja. [leida] null = todas. Trae no_leidas. */
+    @GET("notificaciones/")
+    suspend fun listarNotificaciones(
+        @Query("leida") leida: Boolean?,
+        @Query("page") pagina: Int,
+    ): Response<PaginaNotificaciones>
+
+    /** Si es de otro usuario, 404. */
+    @POST("notificaciones/{id}/leer/")
+    suspend fun marcarNotificacionLeida(@Path("id") id: Int): Response<Notificacion>
+
+    @POST("notificaciones/leer-todas/")
+    suspend fun marcarTodasLeidas(): Response<LeerTodas>
 }
 
 /** Solo para el refresh de tokens. Usa un cliente sin interceptor de auth ni Authenticator. */

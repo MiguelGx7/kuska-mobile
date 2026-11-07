@@ -182,4 +182,20 @@
         android:id="@+id/cambiarContrasenaFragment"
         android:name="com.proyecto.kuska.ui.cambiarcontrasena.CambiarContrasenaFragment"
         android:label="@string/titulo_cambiar_contrasena" />
+    <!-- Notificaciones (HU-119), para los dos roles. Se abre con la campana desde cualquier pestaña principal. -->
+    <action
+        android:id="@+id/action_global_notificaciones"
+        app:destination="@id/notificacionesFragment" />
+
+    <fragment
+        android:id="@+id/notificacionesFragment"
+        android:name="com.proyecto.kuska.ui.notificaciones.NotificacionesFragment"
+        android:label="@string/titulo_notificaciones">
+        <action
+            android:id="@+id/action_notificaciones_a_detalle_donacion"
+            app:destination="@id/detalleDonacionFragment" />
+        <action
+            android:id="@+id/action_notificaciones_a_detalle_solicitud"
+            app:destination="@id/detalleSolicitudFragment" />
+    </fragment>
 </navigation>

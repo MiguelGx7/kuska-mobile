@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Barra de Notificaciones. El título sirve de tooltip y de descripción accesible del ícono. -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/accion_marcar_todas"
+        android:icon="@drawable/ic_marcar_leidas"
+        android:title="@string/notificaciones_marcar_todas"
+        app:showAsAction="always" />
+</menu>

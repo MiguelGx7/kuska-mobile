@@ -9,13 +9,67 @@
     android:orientation="vertical"
     tools:context=".ui.main.MainActivity">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/nav_host"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        app:defaultNavHost="true" />
+        android:layout_weight="1">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/nav_host"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true" />
+
+        <!--
+            Campana con el contador de no leídas (HU-120), solo en las pestañas principales. Queda a la altura del
+            título de cada pestaña (24dp de padding + línea de 32dp → centro en 40dp) y termina en 60dp, antes de lo
+            que va debajo del título (empieza en 64dp). Los títulos dejan 64dp libres a la derecha (paddingEnd).
+        -->
+        <FrameLayout
+            android:id="@+id/campana"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/notificaciones_campana"
+            android:focusable="true"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_campana"
+                app:tint="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/contador_campana"
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/fondo_contador"
+                android:backgroundTint="?attr/colorError"
+                android:gravity="center"
+                android:importantForAccessibility="no"
+                android:includeFontPadding="false"
+                android:minWidth="18dp"
+                android:paddingHorizontal="4dp"
+                android:textColor="?attr/colorOnError"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="99+"
+                tools:visibility="visible" />
+        </FrameLayout>
+    </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
