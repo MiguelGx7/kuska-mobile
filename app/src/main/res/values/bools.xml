@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Con poca altura (horizontal, pantallas bajas) la hormiga de los estados no se muestra, para que el texto y
+         el botón no se salgan de la pantalla. values-h480dp lo activa. -->
+    <bool name="estado_con_ilustracion">false</bool>
+</resources>

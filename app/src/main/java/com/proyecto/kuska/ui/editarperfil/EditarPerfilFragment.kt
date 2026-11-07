@@ -1,5 +1,6 @@
 package com.proyecto.kuska.ui.editarperfil
 
+import com.proyecto.kuska.ui.comun.IlustracionEstado
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -119,6 +120,7 @@ class EditarPerfilFragment : Fragment() {
             cargando = estado.cargando,
             mensaje = estado.errorCarga,
             conReintentar = estado.errorCarga != null,
+            ilustracion = estado.errorCarga?.let { IlustracionEstado.deError(estado.codigoError) },
         )
         if (original == null) return@with
 

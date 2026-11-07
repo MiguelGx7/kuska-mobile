@@ -50,6 +50,8 @@ data class CarritoEstado(
     val refrescando: Boolean = false,
     /** Error sin carrito que mostrar (pantalla completa con "Reintentar"). */
     val error: String? = null,
+    /** Código del error de pantalla completa (null = sin conexión): elige la hormiga (IlustracionEstado). */
+    val codigoError: Int? = null,
     /** Modalidad y dirección de cada donación "Ambas", por id de donación. */
     val elecciones: Map<Int, EleccionEntrega> = emptyMap(),
     /** Validación en el celular antes de enviar, por id de donación. */
@@ -119,14 +121,14 @@ class CarritoViewModel(
 
     private fun cargar(pantallaCompleta: Boolean) {
         carga?.cancel()
-        _estado.update { it.copy(cargando = pantallaCompleta, error = null) }
+        _estado.update { it.copy(cargando = pantallaCompleta, error = null, codigoError = null) }
         carga = viewModelScope.launch {
             when (val resultado = repositorio.obtenerCarrito()) {
                 is Resultado.Exito -> aplicar(resultado.datos)
                 is Resultado.Error -> {
                     val conCarrito = _estado.value.carrito != null
                     _estado.update {
-                        it.copy(cargando = false, refrescando = false, error = if (conCarrito) null else resultado.mensaje)
+                        it.copy(cargando = false, refrescando = false, error = if (conCarrito) null else resultado.mensaje, codigoError = if (conCarrito) null else resultado.codigo)
                     }
                     if (conCarrito) _eventos.send(EventoCarrito.Mensaje(TextoUi.Texto(resultado.mensaje)))
                 }
@@ -157,7 +159,7 @@ class CarritoViewModel(
                 carrito = carrito,
                 cargando = false,
                 refrescando = false,
-                error = null,
+                error = null, codigoError = null,
                 elecciones = EnvioCarrito.conservar(it.elecciones, carrito),
                 erroresLocales = it.erroresLocales.filterKeys { id -> id in donaciones },
                 errores = errores,

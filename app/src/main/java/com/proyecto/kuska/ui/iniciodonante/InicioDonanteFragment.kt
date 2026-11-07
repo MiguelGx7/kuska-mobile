@@ -1,5 +1,6 @@
 package com.proyecto.kuska.ui.iniciodonante
 
+import com.proyecto.kuska.ui.comun.IlustracionEstado
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -117,6 +118,7 @@ class InicioDonanteFragment : Fragment() {
             cargando = estado.cargando && !estado.refrescando,
             mensaje = estado.error,
             conReintentar = estado.error != null,
+            ilustracion = estado.error?.let { IlustracionEstado.deError(estado.codigoError) },
         )
         val dashboard = estado.dashboard
         contenido.isVisible = dashboard != null

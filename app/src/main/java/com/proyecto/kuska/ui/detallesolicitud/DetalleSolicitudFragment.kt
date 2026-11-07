@@ -1,5 +1,6 @@
 package com.proyecto.kuska.ui.detallesolicitud
 
+import com.proyecto.kuska.ui.comun.IlustracionEstado
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -131,6 +132,7 @@ class DetalleSolicitudFragment : Fragment() {
             cargando = estado.cargando && !estado.refrescando,
             mensaje = estado.error,
             conReintentar = estado.error != null,
+            ilustracion = estado.error?.let { IlustracionEstado.deError(estado.codigoError) },
         )
     }
 

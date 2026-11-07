@@ -1,5 +1,6 @@
 package com.proyecto.kuska.ui.perfil
 
+import com.proyecto.kuska.ui.comun.IlustracionEstado
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -105,6 +106,7 @@ class PerfilFragment : Fragment() {
             cargando = estado.cargando && !estado.refrescando,
             mensaje = estado.error,
             conReintentar = estado.error != null,
+            ilustracion = estado.error?.let { IlustracionEstado.deError(estado.codigoError) },
         )
 
         botonEditar.isEnabled = !estado.cerrandoSesion

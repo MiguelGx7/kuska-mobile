@@ -1,5 +1,6 @@
 package com.proyecto.kuska.ui.misdonaciones
 
+import com.proyecto.kuska.ui.comun.IlustracionEstado
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -173,6 +174,11 @@ class MisDonacionesFragment : Fragment() {
             cargando = estado.cargando && !estado.refrescando,
             mensaje = mensaje,
             conReintentar = estado.error != null,
+            ilustracion = when {
+                estado.error != null -> IlustracionEstado.deError(estado.codigoError)
+                estado.vacia && estado.filtro == null -> IlustracionEstado.PLATO_VACIO
+                else -> null
+            },
         )
     }
 

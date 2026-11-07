@@ -4,19 +4,38 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.proyecto.kuska.R
 import com.proyecto.kuska.databinding.ItemPieListaBinding
 import com.proyecto.kuska.databinding.VistaEstadoPantallaBinding
 
 /**
  * Estado de pantalla completa (vista_estado_pantalla): indicador si [cargando]; si no, [mensaje] (vacío o
  * error) con "Reintentar" cuando [conReintentar]. Sin mensaje ni carga, la vista no se ve.
+ * [ilustracion]: la hormiga arriba del texto (null = solo texto, p. ej. un vacío por filtro). Con poca altura de
+ * pantalla no se muestra.
  */
-fun VistaEstadoPantallaBinding.mostrar(cargando: Boolean, mensaje: String?, conReintentar: Boolean) {
+fun VistaEstadoPantallaBinding.mostrar(
+    cargando: Boolean,
+    mensaje: String?,
+    conReintentar: Boolean,
+    ilustracion: IlustracionEstado? = null,
+) {
     root.isVisible = cargando || mensaje != null
     indicador.isVisible = cargando
     contenedorMensaje.isVisible = !cargando && mensaje != null
     textoMensaje.text = mensaje
     botonReintentar.isVisible = conReintentar
+
+    val recursos = root.resources
+    val dibujo = ilustracion?.takeIf { mensaje != null && recursos.getBoolean(R.bool.estado_con_ilustracion) }
+    this.ilustracion.isVisible = dibujo != null
+    if (dibujo != null) {
+        this.ilustracion.setImageResource(dibujo.dibujo)
+        this.ilustracion.layoutParams = this.ilustracion.layoutParams.apply {
+            width = recursos.getDimensionPixelSize(dibujo.ancho)
+            height = recursos.getDimensionPixelSize(dibujo.alto)
+        }
+    }
 }
 
 /** Lo que se muestra al final de una lista paginada. */

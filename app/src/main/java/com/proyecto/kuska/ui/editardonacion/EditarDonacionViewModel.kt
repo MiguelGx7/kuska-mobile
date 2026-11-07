@@ -35,6 +35,8 @@ data class EditarDonacionEstado(
     val cargando: Boolean = false,
     /** Error al cargarla (pantalla completa con "Reintentar"). */
     val errorCarga: String? = null,
+    /** Código del error de pantalla completa (null = sin conexión): elige la hormiga (IlustracionEstado). */
+    val codigoError: Int? = null,
     val titulo: String = "",
     val descripcion: String = "",
     val direccion: String = "",
@@ -82,7 +84,7 @@ class EditarDonacionViewModel(
     /** Pide la donación al abrir: los campos parten de lo que hay en el servidor, no de lo que mostraba el detalle. */
     fun cargar() {
         if (_estado.value.cargando) return
-        _estado.update { it.copy(cargando = true, errorCarga = null) }
+        _estado.update { it.copy(cargando = true, errorCarga = null, codigoError = null) }
         viewModelScope.launch {
             when (val resultado = repositorio.obtenerDonacion(id)) {
                 is Resultado.Exito -> {
@@ -107,7 +109,7 @@ class EditarDonacionViewModel(
                         _eventos.send(EventoEditar.YaNoEditable(resultado.mensaje))
                         return@launch
                     }
-                    _estado.update { it.copy(cargando = false, errorCarga = resultado.mensaje) }
+                    _estado.update { it.copy(cargando = false, errorCarga = resultado.mensaje, codigoError = resultado.codigo) }
                 }
             }
         }

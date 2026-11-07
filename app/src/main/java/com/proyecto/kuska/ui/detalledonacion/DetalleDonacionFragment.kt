@@ -1,5 +1,6 @@
 package com.proyecto.kuska.ui.detalledonacion
 
+import com.proyecto.kuska.ui.comun.IlustracionEstado
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -175,6 +176,7 @@ class DetalleDonacionFragment : Fragment() {
             cargando = estado.cargando && !estado.refrescando,
             mensaje = estado.error,
             conReintentar = estado.error != null,
+            ilustracion = estado.error?.let { IlustracionEstado.deError(estado.codigoError) },
         )
     }
 

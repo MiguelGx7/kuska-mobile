@@ -41,6 +41,8 @@ data class InicioBeneficiarioEstado(
     val hayMas: Boolean = false,
     /** Error de la primera página (pantalla completa con "Reintentar"). */
     val error: String? = null,
+    /** Código del error de pantalla completa (null = sin conexión): elige la hormiga (IlustracionEstado). */
+    val codigoError: Int? = null,
     /** Error al pedir otra página (al final de la lista con "Reintentar"). */
     val errorMas: String? = null,
 ) {
@@ -215,7 +217,7 @@ class InicioBeneficiarioViewModel(
         val filtros = _estado.value.filtros
         consultados = filtros
         _estado.update {
-            it.copy(cargando = pantallaCompleta, cargandoMas = false, error = null, errorMas = null)
+            it.copy(cargando = pantallaCompleta, cargandoMas = false, error = null, codigoError = null, errorMas = null)
         }
         trabajo = viewModelScope.launch {
             when (val resultado = repositorio.listarAlimentos(filtros, 1)) {
@@ -234,7 +236,7 @@ class InicioBeneficiarioViewModel(
                 is Resultado.Error -> {
                     val conLista = _estado.value.alimentos.isNotEmpty()
                     _estado.update {
-                        it.copy(cargando = false, refrescando = false, error = if (conLista) null else resultado.mensaje)
+                        it.copy(cargando = false, refrescando = false, error = if (conLista) null else resultado.mensaje, codigoError = if (conLista) null else resultado.codigo)
                     }
                     if (conLista) _mensajes.send(resultado.mensaje)
                 }

@@ -1,5 +1,6 @@
 package com.proyecto.kuska.ui.editardonacion
 
+import com.proyecto.kuska.ui.comun.IlustracionEstado
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -108,6 +109,7 @@ class EditarDonacionFragment : Fragment() {
             cargando = estado.cargando,
             mensaje = estado.errorCarga,
             conReintentar = estado.errorCarga != null,
+            ilustracion = estado.errorCarga?.let { IlustracionEstado.deError(estado.codigoError) },
         )
         if (!cargada) return@with
 

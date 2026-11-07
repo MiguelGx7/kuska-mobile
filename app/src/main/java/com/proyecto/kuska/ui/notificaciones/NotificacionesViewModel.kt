@@ -35,6 +35,8 @@ data class NotificacionesEstado(
     val hayMas: Boolean = false,
     /** Error de la primera página (pantalla completa con "Reintentar"). */
     val error: String? = null,
+    /** Código del error de pantalla completa (null = sin conexión): elige la hormiga (IlustracionEstado). */
+    val codigoError: Int? = null,
     /** Error al pedir otra página (al final de la lista con "Reintentar"). */
     val errorMas: String? = null,
     val marcandoTodas: Boolean = false,
@@ -179,7 +181,7 @@ class NotificacionesViewModel(
     /** Pide la página 1 y reemplaza la lista. Cancela cualquier carga en curso. */
     private fun cargarPrimera(pantallaCompleta: Boolean) {
         trabajo?.cancel()
-        _estado.update { it.copy(cargando = pantallaCompleta, cargandoMas = false, error = null, errorMas = null) }
+        _estado.update { it.copy(cargando = pantallaCompleta, cargandoMas = false, error = null, codigoError = null, errorMas = null) }
         val soloNoLeidas = _estado.value.soloNoLeidas
         trabajo = viewModelScope.launch {
             when (val resultado = repositorio.listar(soloNoLeidas, 1)) {
@@ -198,7 +200,7 @@ class NotificacionesViewModel(
                 is Resultado.Error -> {
                     val conLista = _estado.value.notificaciones.isNotEmpty()
                     _estado.update {
-                        it.copy(cargando = false, refrescando = false, error = if (conLista) null else resultado.mensaje)
+                        it.copy(cargando = false, refrescando = false, error = if (conLista) null else resultado.mensaje, codigoError = if (conLista) null else resultado.codigo)
                     }
                     if (conLista) _eventos.send(EventoNotificaciones.Mensaje(resultado.mensaje))
                 }

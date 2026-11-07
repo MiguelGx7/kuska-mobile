@@ -1,5 +1,6 @@
 package com.proyecto.kuska.ui.iniciobeneficiario
 
+import com.proyecto.kuska.ui.comun.IlustracionEstado
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -288,6 +289,11 @@ class InicioBeneficiarioFragment : Fragment() {
             cargando = estado.cargando && !estado.refrescando,
             mensaje = mensaje,
             conReintentar = estado.error != null,
+            ilustracion = when {
+                estado.error != null -> IlustracionEstado.deError(estado.codigoError)
+                estado.vacia && !estado.filtros.activos -> IlustracionEstado.PLATO_VACIO
+                else -> null
+            },
         )
     }
 

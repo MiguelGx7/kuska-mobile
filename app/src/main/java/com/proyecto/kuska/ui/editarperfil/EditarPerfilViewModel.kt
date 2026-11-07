@@ -27,6 +27,8 @@ data class EditarPerfilEstado(
     val cargando: Boolean = false,
     /** Error al cargarlo (pantalla completa con "Reintentar"). */
     val errorCarga: String? = null,
+    /** Código del error de pantalla completa (null = sin conexión): elige la hormiga (IlustracionEstado). */
+    val codigoError: Int? = null,
     val valores: ValoresPerfil = ValoresPerfil(),
     val errores: Map<CampoPerfil, TextoUi> = emptyMap(),
     /** Mensaje para el aviso rojo. */
@@ -59,13 +61,13 @@ class EditarPerfilViewModel(private val repositorio: PerfilRepositorio) : ViewMo
     /** Pide el perfil al abrir: los campos parten de lo que hay en el servidor. */
     fun cargar() {
         if (_estado.value.cargando) return
-        _estado.update { it.copy(cargando = true, errorCarga = null) }
+        _estado.update { it.copy(cargando = true, errorCarga = null, codigoError = null) }
         viewModelScope.launch {
             when (val resultado = repositorio.obtenerPerfil()) {
                 is Resultado.Exito -> _estado.update {
                     it.copy(original = resultado.datos, cargando = false, valores = ValoresPerfil.de(resultado.datos))
                 }
-                is Resultado.Error -> _estado.update { it.copy(cargando = false, errorCarga = resultado.mensaje) }
+                is Resultado.Error -> _estado.update { it.copy(cargando = false, errorCarga = resultado.mensaje, codigoError = resultado.codigo) }
             }
         }
     }

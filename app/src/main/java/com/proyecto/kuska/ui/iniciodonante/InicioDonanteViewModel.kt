@@ -32,6 +32,8 @@ data class InicioDonanteEstado(
     val refrescando: Boolean = false,
     /** Error sin datos (pantalla completa con "Reintentar"). */
     val error: String? = null,
+    /** Código del error de pantalla completa (null = sin conexión): elige la hormiga (IlustracionEstado). */
+    val codigoError: Int? = null,
 )
 
 /** Inicio del donante (HU-035 a HU-037). Se recarga al volver a la pestaña, no al girar. */
@@ -79,7 +81,7 @@ class InicioDonanteViewModel(
 
     private fun cargar() {
         trabajo?.cancel()
-        _estado.update { it.copy(cargando = it.dashboard == null, error = null) }
+        _estado.update { it.copy(cargando = it.dashboard == null, error = null, codigoError = null) }
         trabajo = viewModelScope.launch {
             when (val resultado = repositorio.obtenerDashboard()) {
                 is Resultado.Exito -> _estado.update {
@@ -88,7 +90,7 @@ class InicioDonanteViewModel(
                 is Resultado.Error -> {
                     val conDatos = _estado.value.dashboard != null
                     _estado.update {
-                        it.copy(cargando = false, refrescando = false, error = if (conDatos) null else resultado.mensaje)
+                        it.copy(cargando = false, refrescando = false, error = if (conDatos) null else resultado.mensaje, codigoError = if (conDatos) null else resultado.codigo)
                     }
                     if (conDatos) _mensajes.send(resultado.mensaje)
                 }

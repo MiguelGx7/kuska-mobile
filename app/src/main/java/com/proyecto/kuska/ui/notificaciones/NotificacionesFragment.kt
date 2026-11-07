@@ -1,5 +1,6 @@
 package com.proyecto.kuska.ui.notificaciones
 
+import com.proyecto.kuska.ui.comun.IlustracionEstado
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -155,6 +156,11 @@ class NotificacionesFragment : Fragment() {
             cargando = estado.cargando && !estado.refrescando,
             mensaje = mensaje,
             conReintentar = estado.error != null,
+            ilustracion = when {
+                estado.error != null -> IlustracionEstado.deError(estado.codigoError)
+                estado.vacia && !estado.soloNoLeidas -> IlustracionEstado.PLATO_VACIO
+                else -> null
+            },
         )
     }
 

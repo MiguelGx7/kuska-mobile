@@ -1,5 +1,6 @@
 package com.proyecto.kuska.ui.missolicitudes
 
+import com.proyecto.kuska.ui.comun.IlustracionEstado
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -165,6 +166,11 @@ class MisSolicitudesFragment : Fragment() {
             cargando = estado.cargando && !estado.refrescando,
             mensaje = mensaje,
             conReintentar = estado.error != null || sinPedidos,
+            ilustracion = when {
+                estado.error != null -> IlustracionEstado.deError(estado.codigoError)
+                sinPedidos -> IlustracionEstado.PLATO_VACIO
+                else -> null
+            },
         )
         estadoPantalla.botonReintentar.setText(
             if (estado.error == null && sinPedidos) R.string.carrito_ir_inicio else R.string.accion_reintentar

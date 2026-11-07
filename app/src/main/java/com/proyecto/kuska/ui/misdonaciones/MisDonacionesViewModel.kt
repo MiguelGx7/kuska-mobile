@@ -33,6 +33,8 @@ data class MisDonacionesEstado(
     val hayMas: Boolean = false,
     /** Error de la primera página (pantalla completa con "Reintentar"). */
     val error: String? = null,
+    /** Código del error de pantalla completa (null = sin conexión): elige la hormiga (IlustracionEstado). */
+    val codigoError: Int? = null,
     /** Error al pedir otra página (al final de la lista con "Reintentar"). */
     val errorMas: String? = null,
 ) {
@@ -120,7 +122,7 @@ class MisDonacionesViewModel(private val repositorio: DonacionesRepositorio) : V
     private fun cargarPrimera(pantallaCompleta: Boolean) {
         trabajo?.cancel()
         _estado.update {
-            it.copy(cargando = pantallaCompleta, cargandoMas = false, error = null, errorMas = null)
+            it.copy(cargando = pantallaCompleta, cargandoMas = false, error = null, codigoError = null, errorMas = null)
         }
         val filtro = _estado.value.filtro
         trabajo = viewModelScope.launch {
@@ -144,7 +146,7 @@ class MisDonacionesViewModel(private val repositorio: DonacionesRepositorio) : V
                         it.copy(
                             cargando = false,
                             refrescando = false,
-                            error = if (conLista) null else resultado.mensaje,
+                            error = if (conLista) null else resultado.mensaje, codigoError = if (conLista) null else resultado.codigo,
                         )
                     }
                     if (conLista) _mensajes.send(resultado.mensaje)

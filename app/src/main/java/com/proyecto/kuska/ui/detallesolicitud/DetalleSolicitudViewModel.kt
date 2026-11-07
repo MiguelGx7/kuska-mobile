@@ -33,6 +33,8 @@ data class DetalleSolicitudEstado(
     val refrescando: Boolean = false,
     /** Error sin datos (pantalla completa con "Reintentar"). */
     val error: String? = null,
+    /** Código del error de pantalla completa (null = sin conexión): elige la hormiga (IlustracionEstado). */
+    val codigoError: Int? = null,
     val cancelando: Boolean = false,
     /** Respuesta de la entrega que se está enviando (RN-26b). */
     val confirmando: RespuestaEntrega? = null,
@@ -99,7 +101,7 @@ class DetalleSolicitudViewModel(
 
     private fun cargar() {
         trabajo?.cancel()
-        _estado.update { it.copy(cargando = it.solicitud == null, error = null) }
+        _estado.update { it.copy(cargando = it.solicitud == null, error = null, codigoError = null) }
         trabajo = viewModelScope.launch {
             when (val resultado = repositorio.obtenerMiSolicitud(id)) {
                 is Resultado.Exito -> _estado.update {
@@ -108,7 +110,7 @@ class DetalleSolicitudViewModel(
                 is Resultado.Error -> {
                     val conDatos = _estado.value.solicitud != null
                     _estado.update {
-                        it.copy(cargando = false, refrescando = false, error = if (conDatos) null else resultado.mensaje)
+                        it.copy(cargando = false, refrescando = false, error = if (conDatos) null else resultado.mensaje, codigoError = if (conDatos) null else resultado.codigo)
                     }
                     if (conDatos) _eventos.send(EventoSolicitud.Mensaje(resultado.mensaje))
                 }

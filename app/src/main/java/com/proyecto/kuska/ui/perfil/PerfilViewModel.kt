@@ -28,6 +28,8 @@ data class PerfilEstado(
     val refrescando: Boolean = false,
     /** Error sin datos (pantalla completa con "Reintentar"). */
     val error: String? = null,
+    /** Código del error de pantalla completa (null = sin conexión): elige la hormiga (IlustracionEstado). */
+    val codigoError: Int? = null,
     val cerrandoSesion: Boolean = false,
 )
 
@@ -73,7 +75,7 @@ class PerfilViewModel(
 
     private fun cargar() {
         trabajo?.cancel()
-        _estado.update { it.copy(cargando = it.perfil == null, error = null) }
+        _estado.update { it.copy(cargando = it.perfil == null, error = null, codigoError = null) }
         trabajo = viewModelScope.launch {
             when (val resultado = repositorio.obtenerPerfil()) {
                 is Resultado.Exito -> _estado.update {
@@ -82,7 +84,7 @@ class PerfilViewModel(
                 is Resultado.Error -> {
                     val conDatos = _estado.value.perfil != null
                     _estado.update {
-                        it.copy(cargando = false, refrescando = false, error = if (conDatos) null else resultado.mensaje)
+                        it.copy(cargando = false, refrescando = false, error = if (conDatos) null else resultado.mensaje, codigoError = if (conDatos) null else resultado.codigo)
                     }
                     if (conDatos) _eventos.send(EventoPerfil.Mensaje(resultado.mensaje))
                 }

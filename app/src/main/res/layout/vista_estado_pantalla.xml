@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Estado de pantalla completa: cargando, vacío o error con "Reintentar". Se usa con <include> y mostrarEstadoPantalla(). -->
+<!-- Estado de pantalla completa: cargando, vacío o error con "Reintentar", con la hormiga opcional arriba del texto.
+     Se usa con <include> y VistaEstadoPantallaBinding.mostrar(). -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -28,6 +29,17 @@
         android:paddingHorizontal="32dp"
         android:visibility="gone"
         tools:visibility="visible">
+
+        <!-- Hormiga decorativa (vacío o error); con poca altura no se muestra (bool estado_con_ilustracion) -->
+        <ImageView
+            android:id="@+id/ilustracion"
+            android:layout_width="@dimen/ilustracion_vacia_ancho"
+            android:layout_height="@dimen/ilustracion_vacia_alto"
+            android:layout_marginBottom="16dp"
+            android:importantForAccessibility="no"
+            android:visibility="gone"
+            tools:src="@drawable/hormiga_vacia"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/texto_mensaje"

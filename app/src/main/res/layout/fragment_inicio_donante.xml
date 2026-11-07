@@ -66,12 +66,12 @@
                             android:orientation="vertical"
                             android:padding="24dp">
 
+                            <!-- Hormiga con el plato vacío (decorativa); la tarjeta se desplaza si falta altura -->
                             <ImageView
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="@dimen/ilustracion_vacia_ancho"
+                                android:layout_height="@dimen/ilustracion_vacia_alto"
                                 android:importantForAccessibility="no"
-                                android:src="@drawable/ic_donaciones"
-                                app:tint="?attr/colorPrimary" />
+                                android:src="@drawable/hormiga_vacia" />
 
                             <TextView
                                 android:layout_width="match_parent"

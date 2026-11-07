@@ -3,4 +3,10 @@
     <!-- Espacio a la derecha del título de cada pestaña principal para la campana de MainActivity (48dp + 8dp de
          margen + 8dp de aire). -->
     <dimen name="espacio_campana">64dp</dimen>
+
+    <!-- Hormiga de los estados de pantalla completa (IlustracionEstado) -->
+    <dimen name="ilustracion_vacia_ancho">160dp</dimen>
+    <dimen name="ilustracion_vacia_alto">144dp</dimen>
+    <dimen name="ilustracion_error_ancho">200dp</dimen>
+    <dimen name="ilustracion_error_alto">164dp</dimen>
 </resources>

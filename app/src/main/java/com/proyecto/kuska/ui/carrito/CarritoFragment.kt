@@ -1,5 +1,6 @@
 package com.proyecto.kuska.ui.carrito
 
+import com.proyecto.kuska.ui.comun.IlustracionEstado
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -92,6 +93,11 @@ class CarritoFragment : Fragment() {
             cargando = estado.cargando && !estado.refrescando,
             mensaje = mensaje,
             conReintentar = estado.error != null || estado.vacio,
+            ilustracion = when {
+                estado.error != null -> IlustracionEstado.deError(estado.codigoError)
+                estado.vacio -> IlustracionEstado.PLATO_VACIO
+                else -> null
+            },
         )
         estadoPantalla.botonReintentar.setText(if (estado.vacio) R.string.carrito_ir_inicio else R.string.accion_reintentar)
 

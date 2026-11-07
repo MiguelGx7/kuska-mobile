@@ -44,6 +44,15 @@
             android:paddingTop="24dp"
             android:paddingBottom="16dp">
 
+            <!-- Encabezado (los 3 pasos): la hormiga cargando el grano, como la del login. Se desplaza con el contenido. -->
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="126dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/hormiga_cargando" />
+
             <!-- Paso 1: rol -->
             <LinearLayout
                 android:id="@+id/paso_rol"

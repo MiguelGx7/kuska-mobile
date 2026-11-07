@@ -33,6 +33,8 @@ data class DetalleDonacionEstado(
     val refrescando: Boolean = false,
     /** Error sin datos (pantalla completa con "Reintentar"). */
     val error: String? = null,
+    /** Código del error de pantalla completa (null = sin conexión): elige la hormiga (IlustracionEstado). */
+    val codigoError: Int? = null,
     /** Solo si la donación no está Pendiente (RN-15). */
     val solicitudes: List<AlimentoConSolicitudes>? = null,
     val cargandoSolicitudes: Boolean = false,
@@ -146,7 +148,7 @@ class DetalleDonacionViewModel(
     /** Primero la donación; luego, si no está Pendiente, sus novedades y sus solicitudes recibidas (en paralelo). */
     private fun cargar() {
         trabajo?.cancel()
-        _estado.update { it.copy(cargando = it.donacion == null, error = null) }
+        _estado.update { it.copy(cargando = it.donacion == null, error = null, codigoError = null) }
         trabajo = viewModelScope.launch {
             when (val resultado = repositorio.obtenerDonacion(id)) {
                 is Resultado.Exito -> {
@@ -167,7 +169,7 @@ class DetalleDonacionViewModel(
                 is Resultado.Error -> {
                     val conDatos = _estado.value.donacion != null
                     _estado.update {
-                        it.copy(cargando = false, refrescando = false, error = if (conDatos) null else resultado.mensaje)
+                        it.copy(cargando = false, refrescando = false, error = if (conDatos) null else resultado.mensaje, codigoError = if (conDatos) null else resultado.codigo)
                     }
                     if (conDatos) _eventos.send(EventoDetalle.Mensaje(resultado.mensaje))
                 }
