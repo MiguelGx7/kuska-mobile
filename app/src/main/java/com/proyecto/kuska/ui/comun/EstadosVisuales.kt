@@ -7,6 +7,7 @@ import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.proyecto.kuska.R
 import com.proyecto.kuska.data.api.modelos.Donacion
+import com.proyecto.kuska.data.api.modelos.Novedad
 import com.proyecto.kuska.data.api.modelos.SolicitudRecibida
 
 /** Las 4 familias de color del tema para las etiquetas de estado. */
@@ -36,7 +37,15 @@ object EstadosVisuales {
         else -> FamiliaColor.GRIS // Cancelada
     }
 
-    /** Texto de un estado de donación o de solicitud (null si la app no lo conoce). */
+    /** La Pendiente espera la revisión del administrador (RN-32, RN-33). */
+    fun familiaNovedad(estado: String): FamiliaColor = when (estado) {
+        Novedad.ESTADO_PENDIENTE -> FamiliaColor.NARANJA
+        Novedad.ESTADO_ACEPTADA -> FamiliaColor.VERDE
+        Novedad.ESTADO_RECHAZADA -> FamiliaColor.ROJO
+        else -> FamiliaColor.GRIS
+    }
+
+    /** Texto de un estado de donación, de solicitud o de novedad (null si la app no lo conoce). */
     @StringRes
     fun etiqueta(estado: String): Int? = when (estado) {
         Donacion.ESTADO_PENDIENTE -> R.string.estado_pendiente
@@ -48,6 +57,7 @@ object EstadosVisuales {
         SolicitudRecibida.ESTADO_ENTREGADA -> R.string.estado_entregada
         SolicitudRecibida.ESTADO_NO_RECOGIDA -> R.string.estado_no_recogida
         SolicitudRecibida.ESTADO_CANCELADA -> R.string.estado_cancelada
+        Novedad.ESTADO_ACEPTADA -> R.string.estado_aceptada
         else -> null
     }
 }
@@ -67,4 +77,9 @@ fun TextView.mostrarEstadoDonacion(estado: String) = mostrarEtiqueta(
 fun TextView.mostrarEstadoSolicitud(estado: String) = mostrarEtiqueta(
     EstadosVisuales.etiqueta(estado)?.let(context::getString) ?: estado,
     EstadosVisuales.familiaSolicitud(estado),
+)
+
+fun TextView.mostrarEstadoNovedad(estado: String) = mostrarEtiqueta(
+    EstadosVisuales.etiqueta(estado)?.let(context::getString) ?: estado,
+    EstadosVisuales.familiaNovedad(estado),
 )

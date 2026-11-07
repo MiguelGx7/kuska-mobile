@@ -2,6 +2,7 @@ package com.proyecto.kuska.ui.detalledonacion
 
 import com.proyecto.kuska.data.api.modelos.Alimento
 import com.proyecto.kuska.data.api.modelos.Donacion
+import com.proyecto.kuska.data.api.modelos.Novedad
 import com.proyecto.kuska.data.api.modelos.SolicitudRecibida
 
 /** Qué se muestra en la tarjeta de un alimento para quitarlo (solo en una donación Pendiente). */
@@ -20,12 +21,19 @@ enum class ModoQuitar {
 sealed interface FilaDetalle {
     val clave: String
 
-    /** [editable]: muestra "Editar datos". [aviso]: aviso rojo de la última acción que falló. */
+    /**
+     * [editable]: muestra "Editar datos". [aviso]: aviso rojo de la última acción que falló.
+     * [novedad]: "Reportar novedad de toda la donación" o "Novedad en revisión". [reportandoNovedad]: se está
+     * enviando la novedad general. [novedadHabilitada]: false mientras se cargan las novedades por primera vez.
+     */
     data class Encabezado(
         val donacion: Donacion,
         val editable: Boolean,
         val ocupado: Boolean,
         val aviso: String?,
+        val novedad: ModoNovedad = ModoNovedad.NO,
+        val reportandoNovedad: Boolean = false,
+        val novedadHabilitada: Boolean = true,
     ) : FilaDetalle {
         override val clave = "encabezado"
     }
@@ -34,18 +42,34 @@ sealed interface FilaDetalle {
         override val clave = "seccion_$titulo"
     }
 
-    /** [quitando]: se está quitando este alimento. [ocupado]: hay otra acción en curso (no se puede quitar). */
+    /**
+     * [quitando]: se está quitando este alimento. [ocupado]: hay otra acción en curso (no se puede quitar).
+     * [novedad], [reportandoNovedad] y [novedadHabilitada]: como en [Encabezado], para este alimento.
+     */
     data class AlimentoFila(
         val alimento: Alimento,
         val quitar: ModoQuitar = ModoQuitar.NO,
         val quitando: Boolean = false,
         val ocupado: Boolean = false,
+        val novedad: ModoNovedad = ModoNovedad.NO,
+        val reportandoNovedad: Boolean = false,
+        val novedadHabilitada: Boolean = true,
     ) : FilaDetalle {
         override val clave = "alimento_${alimento.id}"
     }
 
     data class AgregarAlimento(val habilitado: Boolean) : FilaDetalle {
         override val clave = "agregar_alimento"
+    }
+
+    /** Novedad reportada (RN-30 a RN-33), con su estado y la respuesta del administrador. */
+    data class NovedadFila(val novedad: Novedad) : FilaDetalle {
+        override val clave = "novedad_${novedad.id}"
+    }
+
+    /** Error al cargar las novedades, con "Reintentar" ([cargando]: se está reintentando). */
+    data class MensajeNovedades(val mensaje: String, val cargando: Boolean) : FilaDetalle {
+        override val clave = "mensaje_novedades"
     }
 
     /** Nombre del alimento sobre sus solicitudes. */
@@ -80,13 +104,15 @@ sealed interface FilaDetalle {
 }
 
 /**
- * Arma las filas: encabezado, alimentos y, según el estado, las solicitudes recibidas (no Pendiente) o las
- * acciones de una donación Pendiente (editar, agregar y quitar alimentos, eliminar; RN-12).
- * [sinSolicitudes] es el texto para cuando nadie ha pedido nada.
+ * Arma las filas: encabezado, alimentos y, según el estado, las novedades y las solicitudes recibidas (no Pendiente)
+ * o las acciones de una donación Pendiente (editar, agregar y quitar alimentos, eliminar; RN-12).
+ * La sección de novedades solo aparece si hay alguna o si falló su carga. [sinSolicitudes] es el texto para cuando
+ * nadie ha pedido nada.
  */
 fun construirFilas(
     estado: DetalleDonacionEstado,
     tituloAlimentos: Int,
+    tituloNovedades: Int,
     tituloSolicitudes: Int,
     sinSolicitudes: String,
 ): List<FilaDetalle> {
@@ -94,8 +120,16 @@ fun construirFilas(
     val pendiente = donacion.estado == Donacion.ESTADO_PENDIENTE
     val ocupado = estado.ocupado
     val alimentos = donacion.alimentos.orEmpty()
+    val novedadHabilitada = !(estado.cargandoNovedades && estado.novedades == null)
     return buildList {
-        add(FilaDetalle.Encabezado(donacion, editable = pendiente, ocupado = ocupado, aviso = estado.aviso))
+        add(
+            FilaDetalle.Encabezado(
+                donacion, editable = pendiente, ocupado = ocupado, aviso = estado.aviso,
+                novedad = NovedadDonacion.modo(donacion, estado.novedades, alimentoId = null),
+                reportandoNovedad = estado.enviandoNovedad == ObjetivoNovedad(null),
+                novedadHabilitada = novedadHabilitada,
+            )
+        )
         add(FilaDetalle.Seccion(tituloAlimentos))
         val modo = when {
             !pendiente -> ModoQuitar.NO
@@ -103,13 +137,32 @@ fun construirFilas(
             else -> ModoQuitar.ULTIMO
         }
         alimentos.forEach {
-            add(FilaDetalle.AlimentoFila(it, modo, quitando = estado.quitandoId == it.id, ocupado = ocupado))
+            add(
+                FilaDetalle.AlimentoFila(
+                    it, modo, quitando = estado.quitandoId == it.id, ocupado = ocupado,
+                    novedad = NovedadDonacion.modo(donacion, estado.novedades, alimentoId = it.id),
+                    reportandoNovedad = estado.enviandoNovedad == ObjetivoNovedad(it.id),
+                    novedadHabilitada = novedadHabilitada,
+                )
+            )
         }
 
         if (pendiente) {
             add(FilaDetalle.AgregarAlimento(habilitado = !ocupado))
             add(FilaDetalle.Eliminar(estado.eliminando, habilitado = !ocupado))
             return@buildList
+        }
+
+        val novedades = estado.novedades.orEmpty()
+        when {
+            estado.errorNovedades != null -> {
+                add(FilaDetalle.Seccion(tituloNovedades))
+                add(FilaDetalle.MensajeNovedades(estado.errorNovedades, cargando = estado.cargandoNovedades))
+            }
+            novedades.isNotEmpty() -> {
+                add(FilaDetalle.Seccion(tituloNovedades))
+                NovedadDonacion.ordenar(novedades).forEach { add(FilaDetalle.NovedadFila(it)) }
+            }
         }
 
         add(FilaDetalle.Seccion(tituloSolicitudes))

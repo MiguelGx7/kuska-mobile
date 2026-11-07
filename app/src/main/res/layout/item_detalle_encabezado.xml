@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Encabezado del detalle: título, estado, modalidad, dirección, fechas y motivo del rechazo. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -89,6 +90,43 @@
         android:layout_height="48dp"
         android:layout_marginTop="16dp"
         android:text="@string/detalle_editar"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <!-- Solo Validada o Agotada (RN-30): novedad sobre toda la donación -->
+    <FrameLayout
+        android:id="@+id/contenedor_novedad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <Button
+            android:id="@+id/boton_novedad"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/novedad_boton_donacion" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/indicador_novedad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:indicatorColor="?attr/colorPrimary"
+            app:indicatorSize="24dp"
+            app:trackThickness="3dp" />
+    </FrameLayout>
+
+    <!-- Ya hay una novedad Pendiente sobre toda la donación -->
+    <TextView
+        android:id="@+id/etiqueta_novedad_revision"
+        style="@style/Widget.Kumora.EtiquetaEstado"
+        android:layout_marginTop="16dp"
+        android:text="@string/novedad_en_revision"
         android:visibility="gone"
         tools:visibility="visible" />
 </LinearLayout>

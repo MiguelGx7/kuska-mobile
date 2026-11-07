@@ -136,6 +136,23 @@
     <string name="confirmacion_asumida">Asumida</string>
     <string name="confirmacion_reclamada">Reclamada</string>
     <string name="confirmacion_revisada">Revisada</string>
+    <string name="detalle_novedades">Novedades</string>
+    <string name="novedad_boton_donacion">Reportar novedad de toda la donación</string>
+    <string name="novedad_boton_alimento">Reportar novedad</string>
+    <string name="novedad_en_revision">Novedad en revisión</string>
+    <string name="novedad_titulo">Reportar novedad</string>
+    <string name="novedad_toda_donacion">Toda la donación</string>
+    <string name="novedad_descripcion">¿Qué pasó?</string>
+    <string name="novedad_descripcion_placeholder">Cuéntale al administrador qué pasó</string>
+    <string name="novedad_error_descripcion">Escribe qué pasó.</string>
+    <string name="novedad_enviar">Enviar</string>
+    <string name="novedad_enviada">Novedad enviada. El administrador la revisará.</string>
+    <string name="novedad_afecta_alimento">Alimento: %1$s</string>
+    <string name="novedad_reportada">Reportada el %1$s</string>
+    <string name="novedad_revisada">Revisada el %1$s</string>
+    <string name="novedad_fechas">%1$s · %2$s</string>
+    <string name="novedad_respuesta">Respuesta del administrador: %1$s</string>
+    <string name="estado_aceptada">Aceptada</string>
 
     <!-- Editar donación -->
     <string name="editar_guardar">Guardar cambios</string>

@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 /**
  * Detalle de una donación del donante (RN-12, RN-15, RN-16). Si está Pendiente se pueden editar sus datos,
- * agregar y quitar alimentos, o eliminarla. Si no, en sus solicitudes recibidas se registra la entrega de las Aprobadas (RN-26). Las novedades llegan después.
+ * agregar y quitar alimentos, o eliminarla. Si no, en sus solicitudes recibidas se registra la entrega de las Aprobadas (RN-26). En una Validada o Agotada se reportan novedades (RN-30) y se ven sus respuestas.
  */
 class DetalleDonacionFragment : Fragment() {
 
@@ -53,6 +53,8 @@ class DetalleDonacionFragment : Fragment() {
             alAgregarAlimento = { abrir(R.id.action_detalle_a_agregar_alimento) },
             alQuitarAlimento = ::confirmarQuitar,
             alRegistrarEntrega = ::abrirEntrega,
+            alReportarNovedad = ::abrirNovedad,
+            alReintentarNovedades = viewModel::reintentarNovedades,
         )
         binding.listaDetalle.adapter = adapter
         binding.deslizarRefrescar.setOnRefreshListener { viewModel.refrescar() }
@@ -96,6 +98,19 @@ class DetalleDonacionFragment : Fragment() {
         (childFragmentManager.findFragmentByTag(RegistrarEntregaDialogFragment.TAG) as? DialogFragment)?.dismiss()
     }
 
+    /** Diálogo de novedad (RN-30): [alimento] null = toda la donación. */
+    private fun abrirNovedad(alimento: Alimento?) {
+        if (viewModel.estado.value.ocupado || childFragmentManager.findFragmentByTag(ReportarNovedadDialogFragment.TAG) != null) return
+        viewModel.limpiarErroresNovedad()
+        val contexto = alimento?.nombre ?: getString(R.string.novedad_toda_donacion)
+        ReportarNovedadDialogFragment.nuevo(alimento?.id, contexto)
+            .show(childFragmentManager, ReportarNovedadDialogFragment.TAG)
+    }
+
+    private fun cerrarDialogoNovedad() {
+        (childFragmentManager.findFragmentByTag(ReportarNovedadDialogFragment.TAG) as? DialogFragment)?.dismiss()
+    }
+
     /** Editar y agregar dejan en el SavedStateHandle de esta pantalla un mensaje de éxito o un aviso. */
     private fun observarResultados() {
         val estadoGuardado = findNavController().currentBackStackEntry?.savedStateHandle ?: return
@@ -136,6 +151,11 @@ class DetalleDonacionFragment : Fragment() {
                 Snackbar.make(binding.root, R.string.entrega_registrada, Snackbar.LENGTH_LONG).show()
             }
             EventoDetalle.CerrarDialogoEntrega -> cerrarDialogoEntrega()
+            EventoDetalle.NovedadEnviada -> {
+                cerrarDialogoNovedad()
+                Snackbar.make(binding.root, R.string.novedad_enviada, Snackbar.LENGTH_LONG).show()
+            }
+            EventoDetalle.CerrarDialogoNovedad -> cerrarDialogoNovedad()
         }
     }
 
@@ -144,6 +164,7 @@ class DetalleDonacionFragment : Fragment() {
             construirFilas(
                 estado,
                 tituloAlimentos = R.string.detalle_alimentos,
+                tituloNovedades = R.string.detalle_novedades,
                 tituloSolicitudes = R.string.detalle_solicitudes,
                 sinSolicitudes = getString(R.string.detalle_sin_solicitudes),
             )

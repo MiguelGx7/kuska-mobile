@@ -10,8 +10,10 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.proyecto.kuska.KumoraApp
 import com.proyecto.kuska.data.api.modelos.AlimentoConSolicitudes
 import com.proyecto.kuska.data.api.modelos.Donacion
+import com.proyecto.kuska.data.api.modelos.Novedad
 import com.proyecto.kuska.data.repositorio.DonacionesRepositorio
 import com.proyecto.kuska.ui.comun.ErroresAccion
+import com.proyecto.kuska.ui.comun.TextoUi
 import com.proyecto.kuska.util.Resultado
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -46,9 +48,20 @@ data class DetalleDonacionEstado(
     val errorObservacion: String? = null,
     /** Diálogo de entrega: sin conexión o 429 (dentro del diálogo, que sigue abierto). */
     val errorEntrega: String? = null,
+    /** Novedades de la donación (no se piden si está Pendiente). Null = todavía no cargaron. */
+    val novedades: List<Novedad>? = null,
+    val cargandoNovedades: Boolean = false,
+    /** Se mantiene mientras se reintenta, para que la sección no desaparezca. */
+    val errorNovedades: String? = null,
+    /** Novedad que se está enviando (null = ninguna). */
+    val enviandoNovedad: ObjetivoNovedad? = null,
+    /** Diálogo de novedad: error de la descripción (en su campo). */
+    val errorDescripcion: TextoUi? = null,
+    /** Diálogo de novedad: sin conexión o 429 (dentro del diálogo, que sigue abierto). */
+    val errorNovedad: String? = null,
 ) {
     /** Hay una acción en curso: las demás quedan deshabilitadas. */
-    val ocupado get() = eliminando || quitandoId != null || entregandoId != null
+    val ocupado get() = eliminando || quitandoId != null || entregandoId != null || enviandoNovedad != null
 }
 
 sealed interface EventoDetalle {
@@ -62,6 +75,12 @@ sealed interface EventoDetalle {
 
     /** Error que va al aviso rojo: se cierra el diálogo de entrega. */
     data object CerrarDialogoEntrega : EventoDetalle
+
+    /** Novedad enviada: se cierra el diálogo y sale "Novedad enviada. El administrador la revisará.". */
+    data object NovedadEnviada : EventoDetalle
+
+    /** Error que va al aviso rojo: se cierra el diálogo de novedad. */
+    data object CerrarDialogoNovedad : EventoDetalle
 }
 
 class DetalleDonacionViewModel(
@@ -78,6 +97,9 @@ class DetalleDonacionViewModel(
     val eventos: Flow<EventoDetalle> = _eventos.receiveAsFlow()
 
     private var trabajo: Job? = null
+
+    /** Aparte de [trabajo]: así reintentar las solicitudes no corta la carga de las novedades. */
+    private var trabajoNovedades: Job? = null
 
     init {
         cargar()
@@ -116,7 +138,12 @@ class DetalleDonacionViewModel(
         trabajo = viewModelScope.launch { cargarSolicitudes(donacion) }
     }
 
-    /** Primero la donación; luego, si no está Pendiente, sus solicitudes recibidas. */
+    fun reintentarNovedades() {
+        val donacion = _estado.value.donacion ?: return
+        if (NovedadDonacion.tieneNovedades(donacion)) iniciarCargaNovedades(donacion.id)
+    }
+
+    /** Primero la donación; luego, si no está Pendiente, sus novedades y sus solicitudes recibidas (en paralelo). */
     private fun cargar() {
         trabajo?.cancel()
         _estado.update { it.copy(cargando = it.donacion == null, error = null) }
@@ -130,8 +157,11 @@ class DetalleDonacionViewModel(
                             cargando = false,
                             refrescando = false,
                             solicitudes = if (donacion.estado == Donacion.ESTADO_PENDIENTE) null else it.solicitudes,
+                            novedades = if (NovedadDonacion.tieneNovedades(donacion)) it.novedades else null,
+                            errorNovedades = if (NovedadDonacion.tieneNovedades(donacion)) it.errorNovedades else null,
                         )
                     }
+                    if (NovedadDonacion.tieneNovedades(donacion)) iniciarCargaNovedades(donacion.id)
                     if (donacion.estado != Donacion.ESTADO_PENDIENTE) cargarSolicitudes(donacion)
                 }
                 is Resultado.Error -> {
@@ -140,6 +170,21 @@ class DetalleDonacionViewModel(
                         it.copy(cargando = false, refrescando = false, error = if (conDatos) null else resultado.mensaje)
                     }
                     if (conDatos) _eventos.send(EventoDetalle.Mensaje(resultado.mensaje))
+                }
+            }
+        }
+    }
+
+    private fun iniciarCargaNovedades(donacionId: Int) {
+        trabajoNovedades?.cancel()
+        _estado.update { it.copy(cargandoNovedades = true) }
+        trabajoNovedades = viewModelScope.launch {
+            when (val resultado = repositorio.novedadesDeDonacion(donacionId)) {
+                is Resultado.Exito -> _estado.update {
+                    it.copy(novedades = resultado.datos, cargandoNovedades = false, errorNovedades = null)
+                }
+                is Resultado.Error -> _estado.update {
+                    it.copy(cargandoNovedades = false, errorNovedades = resultado.mensaje)
                 }
             }
         }
@@ -220,6 +265,49 @@ class DetalleDonacionViewModel(
                     is FalloEntrega.Aviso -> {
                         _estado.update { it.copy(entregandoId = null, aviso = fallo.mensaje) }
                         _eventos.send(EventoDetalle.CerrarDialogoEntrega)
+                        if (fallo.recargar) cargar()
+                    }
+                }
+            }
+        }
+    }
+
+    /** Al abrir el diálogo de novedad o al escribir en él: quita los errores que quedaron dentro. */
+    fun limpiarErroresNovedad() {
+        _estado.update { it.copy(errorDescripcion = null, errorNovedad = null) }
+    }
+
+    /**
+     * Novedad sobre un alimento o, con [alimentoId] null, sobre toda la donación (RN-30). Solo Validada o Agotada.
+     * Al terminar se recarga el detalle. Los errores se reparten según [NovedadDonacion.clasificar].
+     */
+    fun reportarNovedad(alimentoId: Int?, descripcion: String) {
+        val actual = _estado.value
+        val donacion = actual.donacion ?: return
+        if (actual.ocupado || !NovedadDonacion.permiteReportar(donacion)) return
+        NovedadDonacion.validarDescripcion(descripcion)?.let { error ->
+            _estado.update { it.copy(errorDescripcion = error, errorNovedad = null) }
+            return
+        }
+        val objetivo = ObjetivoNovedad(alimentoId)
+        _estado.update {
+            it.copy(enviandoNovedad = objetivo, errorDescripcion = null, errorNovedad = null, aviso = null, refrescando = false)
+        }
+        viewModelScope.launch {
+            when (val resultado = repositorio.reportarNovedad(NovedadDonacion.cuerpo(donacion.id, objetivo, descripcion))) {
+                is Resultado.Exito -> {
+                    _estado.update { it.copy(enviandoNovedad = null) }
+                    _eventos.send(EventoDetalle.NovedadEnviada)
+                    cargar()
+                }
+                is Resultado.Error -> when (val fallo = NovedadDonacion.clasificar(resultado)) {
+                    is FalloNovedad.EnCampo -> _estado.update {
+                        it.copy(enviandoNovedad = null, errorDescripcion = TextoUi.Texto(fallo.mensaje))
+                    }
+                    is FalloNovedad.EnDialogo -> _estado.update { it.copy(enviandoNovedad = null, errorNovedad = fallo.mensaje) }
+                    is FalloNovedad.Aviso -> {
+                        _estado.update { it.copy(enviandoNovedad = null, aviso = fallo.mensaje) }
+                        _eventos.send(EventoDetalle.CerrarDialogoNovedad)
                         if (fallo.recargar) cargar()
                     }
                 }

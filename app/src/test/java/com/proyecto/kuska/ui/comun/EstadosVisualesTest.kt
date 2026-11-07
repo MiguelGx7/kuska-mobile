@@ -26,6 +26,15 @@ class EstadosVisualesTest {
     }
 
     @Test
+    fun familiaDeCadaEstadoDeNovedad() {
+        assertEquals(FamiliaColor.NARANJA, EstadosVisuales.familiaNovedad("Pendiente"))
+        assertEquals(FamiliaColor.VERDE, EstadosVisuales.familiaNovedad("Aceptada"))
+        assertEquals(FamiliaColor.ROJO, EstadosVisuales.familiaNovedad("Rechazada"))
+        assertEquals(FamiliaColor.GRIS, EstadosVisuales.familiaNovedad("Archivada"))
+        assertEquals(com.proyecto.kuska.R.string.estado_aceptada, EstadosVisuales.etiqueta("Aceptada"))
+    }
+
+    @Test
     fun estadoDesconocidoEnGrisYSinTexto() {
         assertEquals(FamiliaColor.GRIS, EstadosVisuales.familiaDonacion("Archivada"))
         assertEquals(FamiliaColor.GRIS, EstadosVisuales.familiaSolicitud("pendiente"))

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Contenido del diálogo "Reportar novedad" (RN-30). Los botones van aquí para mostrar la carga y no cerrarlo solo. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp">
+
+        <!-- Nombre del alimento o "Toda la donación" -->
+        <TextView
+            android:id="@+id/texto_contexto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceTitleSmall"
+            android:textColor="?attr/colorOnSurface"
+            tools:text="Arroz" />
+
+        <TextView
+            style="@style/Widget.Kumora.Etiqueta"
+            android:labelFor="@id/entrada_descripcion"
+            android:text="@string/novedad_descripcion" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/campo_descripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/entrada_descripcion"
+                style="@style/Widget.Kumora.Entrada"
+                android:gravity="top"
+                android:hint="@string/novedad_descripcion_placeholder"
+                android:imeOptions="actionDone"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLines="5" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Sin conexión o 429: el diálogo sigue abierto para reintentar -->
+        <TextView
+            android:id="@+id/aviso_novedad"
+            style="@style/Widget.Kumora.AvisoError"
+            android:layout_marginTop="12dp"
+            tools:text="No hay conexión. Revisa tu internet e inténtalo de nuevo."
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/boton_cancelar"
+                style="@style/Widget.Kumora.Button.Text"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:text="@string/accion_cancelar" />
+
+            <include
+                android:id="@+id/boton_enviar"
+                layout="@layout/vista_boton_carga"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

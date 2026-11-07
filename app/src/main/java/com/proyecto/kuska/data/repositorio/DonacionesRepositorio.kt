@@ -13,6 +13,8 @@ import com.proyecto.kuska.data.api.modelos.DatosDonacion
 import com.proyecto.kuska.data.api.modelos.Donacion
 import com.proyecto.kuska.data.api.modelos.Entrega
 import com.proyecto.kuska.data.api.modelos.EntregarRequest
+import com.proyecto.kuska.data.api.modelos.Novedad
+import com.proyecto.kuska.data.api.modelos.NovedadCrearRequest
 import com.proyecto.kuska.data.api.modelos.PaginaDonaciones
 import com.proyecto.kuska.ui.creardonacion.ConstructorDatos
 import com.proyecto.kuska.ui.editardonacion.CambiosDonacion
@@ -99,6 +101,27 @@ class DonacionesRepositorio(
     suspend fun registrarEntrega(solicitudId: Int, cuerpo: EntregarRequest): Resultado<Entrega> =
         ejecutar({ api.registrarEntrega(solicitudId, cuerpo) })
 
+    /** Todas las novedades de la donación: recorre las páginas mientras haya "next". */
+    suspend fun novedadesDeDonacion(id: Int): Resultado<List<Novedad>> {
+        val todas = mutableListOf<Novedad>()
+        var pagina = 1
+        while (pagina <= MAX_PAGINAS_NOVEDADES) {
+            when (val resultado = ejecutar({ api.listarNovedades(id, pagina) })) {
+                is Resultado.Error -> return resultado
+                is Resultado.Exito -> {
+                    todas += resultado.datos.resultados
+                    if (resultado.datos.siguiente == null) break
+                }
+            }
+            pagina++
+        }
+        return Resultado.Exito(todas)
+    }
+
+    /** RN-30. El error de la descripción llega en erroresCampo["descripcion"]. */
+    suspend fun reportarNovedad(cuerpo: NovedadCrearRequest): Resultado<Novedad> =
+        ejecutar({ api.reportarNovedad(cuerpo) })
+
     /**
      * Hace la llamada y convierte cualquier fallo (HTTP o de red) en [Resultado.Error].
      * [sinCuerpo]: valor de éxito para las respuestas sin cuerpo (204).
@@ -132,6 +155,9 @@ class DonacionesRepositorio(
     private companion object {
         const val CAMPO_DATOS = "datos"
         const val CAMPO_FOTO = "foto"
+
+        /** Tope de seguridad: una donación tiene pocas novedades. */
+        const val MAX_PAGINAS_NOVEDADES = 20
         val TIPO_JPEG = "image/jpeg".toMediaType()
         val TIPO_JSON = "application/json; charset=utf-8".toMediaType()
     }

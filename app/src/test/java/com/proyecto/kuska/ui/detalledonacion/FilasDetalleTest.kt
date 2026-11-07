@@ -4,6 +4,7 @@ import com.proyecto.kuska.data.api.modelos.Alimento
 import com.proyecto.kuska.data.api.modelos.AlimentoConSolicitudes
 import com.proyecto.kuska.data.api.modelos.BeneficiarioContacto
 import com.proyecto.kuska.data.api.modelos.Donacion
+import com.proyecto.kuska.data.api.modelos.Novedad
 import com.proyecto.kuska.data.api.modelos.SolicitudRecibida
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -25,7 +26,7 @@ class FilasDetalleTest {
         alimentos = ids.map(::alimento),
     )
 
-    private fun filas(estado: DetalleDonacionEstado) = construirFilas(estado, 1, 2, "Nadie ha pedido")
+    private fun filas(estado: DetalleDonacionEstado) = construirFilas(estado, 1, 3, 2, "Nadie ha pedido")
 
     private fun List<FilaDetalle>.alimentos() = filterIsInstance<FilaDetalle.AlimentoFila>()
 
@@ -112,6 +113,107 @@ class FilasDetalleTest {
         val filas = filas(conSolicitudes(entregandoId = 1)).solicitudes()
         assertEquals(listOf(true, false, false, true), filas.map { it.entregando })
         assertTrue(filas.all { it.ocupado })
+    }
+
+    private fun novedad(id: Int, alimentoId: Int?, estado: String) = Novedad(
+        id = id, donacion = 9, donacionTitulo = "Mercado", donacionAlimento = alimentoId, alimentoNombre = null,
+        descripcion = "Se dañó", estado = estado, respuestaAdmin = null,
+        fechaCreacion = "2026-11-0${id}T10:00:00-05:00", fechaRevision = null,
+    )
+
+    private fun List<FilaDetalle>.secciones() = filterIsInstance<FilaDetalle.Seccion>().map { it.titulo }
+
+    @Test
+    fun pendienteNoTieneNovedadesNiSusBotones() {
+        val filas = filas(DetalleDonacionEstado(donacion = donacion(Donacion.ESTADO_PENDIENTE, 1, 2)))
+        assertEquals(ModoNovedad.NO, filas.filterIsInstance<FilaDetalle.Encabezado>().single().novedad)
+        assertTrue(filas.alimentos().all { it.novedad == ModoNovedad.NO })
+        assertEquals(listOf(1), filas.secciones())
+    }
+
+    @Test
+    fun validadaSinNovedadesMuestraBotonesYNoLaSeccion() {
+        val filas = filas(DetalleDonacionEstado(donacion = donacion(Donacion.ESTADO_VALIDADA, 1, 2), novedades = emptyList()))
+        assertEquals(ModoNovedad.REPORTAR, filas.filterIsInstance<FilaDetalle.Encabezado>().single().novedad)
+        assertTrue(filas.alimentos().all { it.novedad == ModoNovedad.REPORTAR && it.novedadHabilitada })
+        assertEquals(listOf(1, 2), filas.secciones())
+    }
+
+    @Test
+    fun finalizadaMuestraSusNovedadesSinBotones() {
+        val filas = filas(
+            DetalleDonacionEstado(
+                donacion = donacion(Donacion.ESTADO_FINALIZADA, 1),
+                novedades = listOf(novedad(1, 1, Novedad.ESTADO_ACEPTADA)),
+            )
+        )
+        assertEquals(ModoNovedad.NO, filas.filterIsInstance<FilaDetalle.Encabezado>().single().novedad)
+        assertEquals(ModoNovedad.NO, filas.alimentos().single().novedad)
+        assertEquals(listOf(1, 3, 2), filas.secciones())
+    }
+
+    @Test
+    fun novedadesPendientesCambianSusBotonesYLaSeccionVaAntesDeLasSolicitudes() {
+        val filas = filas(
+            DetalleDonacionEstado(
+                donacion = donacion(Donacion.ESTADO_VALIDADA, 1, 2),
+                novedades = listOf(novedad(1, 2, Novedad.ESTADO_PENDIENTE), novedad(2, null, Novedad.ESTADO_RECHAZADA)),
+            )
+        )
+        assertEquals(ModoNovedad.REPORTAR, filas.filterIsInstance<FilaDetalle.Encabezado>().single().novedad)
+        assertEquals(listOf(ModoNovedad.REPORTAR, ModoNovedad.EN_REVISION), filas.alimentos().map { it.novedad })
+        assertEquals(listOf(1, 3, 2), filas.secciones())
+        // La más reciente primero.
+        assertEquals(listOf(2, 1), filas.filterIsInstance<FilaDetalle.NovedadFila>().map { it.novedad.id })
+        val indiceNovedades = filas.indexOfFirst { it is FilaDetalle.NovedadFila }
+        val indiceSolicitudes = filas.indexOf(FilaDetalle.Seccion(2))
+        assertTrue(indiceNovedades < indiceSolicitudes)
+    }
+
+    @Test
+    fun errorAlCargarNovedadesMuestraLaSeccionConReintentar() {
+        val filas = filas(
+            DetalleDonacionEstado(donacion = donacion(Donacion.ESTADO_VALIDADA, 1), errorNovedades = "Sin conexión")
+        )
+        assertEquals(listOf(1, 3, 2), filas.secciones())
+        assertEquals(FilaDetalle.MensajeNovedades("Sin conexión", cargando = false), filas.filterIsInstance<FilaDetalle.MensajeNovedades>().single())
+        // No se sabe si hay pendientes: los botones se muestran y el servidor decide.
+        assertEquals(ModoNovedad.REPORTAR, filas.alimentos().single().novedad)
+    }
+
+    @Test
+    fun mientrasCarganLasNovedadesPorPrimeraVezLosBotonesEsperan() {
+        val filas = filas(DetalleDonacionEstado(donacion = donacion(Donacion.ESTADO_VALIDADA, 1), cargandoNovedades = true))
+        assertFalse(filas.filterIsInstance<FilaDetalle.Encabezado>().single().novedadHabilitada)
+        assertFalse(filas.alimentos().single().novedadHabilitada)
+        assertEquals(listOf(1, 2), filas.secciones())
+    }
+
+    @Test
+    fun mientrasSeEnviaUnaNovedadSoloEseBotonCargaYTodoQuedaOcupado() {
+        val filas = filas(
+            DetalleDonacionEstado(
+                donacion = donacion(Donacion.ESTADO_VALIDADA, 1, 2), novedades = emptyList(),
+                enviandoNovedad = ObjetivoNovedad(2),
+            )
+        )
+        assertEquals(listOf(false, true), filas.alimentos().map { it.reportandoNovedad })
+        assertTrue(filas.alimentos().all { it.ocupado })
+        val encabezado = filas.filterIsInstance<FilaDetalle.Encabezado>().single()
+        assertFalse(encabezado.reportandoNovedad)
+        assertTrue(encabezado.ocupado)
+    }
+
+    @Test
+    fun laNovedadGeneralCargaEnElEncabezado() {
+        val filas = filas(
+            DetalleDonacionEstado(
+                donacion = donacion(Donacion.ESTADO_VALIDADA, 1), novedades = emptyList(),
+                enviandoNovedad = ObjetivoNovedad(null),
+            )
+        )
+        assertTrue(filas.filterIsInstance<FilaDetalle.Encabezado>().single().reportandoNovedad)
+        assertFalse(filas.alimentos().single().reportandoNovedad)
     }
 
     @Test

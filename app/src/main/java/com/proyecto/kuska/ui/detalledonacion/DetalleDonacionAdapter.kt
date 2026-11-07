@@ -1,7 +1,11 @@
 package com.proyecto.kuska.ui.detalledonacion
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -18,12 +22,14 @@ import com.proyecto.kuska.databinding.ItemDetalleEliminarBinding
 import com.proyecto.kuska.databinding.ItemDetalleEncabezadoBinding
 import com.proyecto.kuska.databinding.ItemDetalleGrupoBinding
 import com.proyecto.kuska.databinding.ItemDetalleMensajeBinding
+import com.proyecto.kuska.databinding.ItemDetalleNovedadBinding
 import com.proyecto.kuska.databinding.ItemDetalleSeccionBinding
 import com.proyecto.kuska.databinding.ItemDetalleSolicitudBinding
 import com.proyecto.kuska.ui.comun.FamiliaColor
 import com.proyecto.kuska.ui.comun.FormatoCantidad
 import com.proyecto.kuska.ui.comun.mostrarAviso
 import com.proyecto.kuska.ui.comun.mostrarEstadoDonacion
+import com.proyecto.kuska.ui.comun.mostrarEstadoNovedad
 import com.proyecto.kuska.ui.comun.mostrarEstadoSolicitud
 import com.proyecto.kuska.ui.comun.mostrarEtiqueta
 import com.proyecto.kuska.ui.comun.textoCantidad
@@ -37,6 +43,9 @@ class DetalleDonacionAdapter(
     private val alAgregarAlimento: () -> Unit,
     private val alQuitarAlimento: (Alimento) -> Unit,
     private val alRegistrarEntrega: (SolicitudRecibida) -> Unit,
+    /** null = novedad sobre toda la donación. */
+    private val alReportarNovedad: (Alimento?) -> Unit,
+    private val alReintentarNovedades: () -> Unit,
 ) : ListAdapter<FilaDetalle, RecyclerView.ViewHolder>(Diferencia) {
 
     override fun getItemViewType(posicion: Int) = when (getItem(posicion)) {
@@ -48,6 +57,8 @@ class DetalleDonacionAdapter(
         is FilaDetalle.SolicitudFila -> TIPO_SOLICITUD
         is FilaDetalle.MensajeSolicitudes -> TIPO_MENSAJE
         is FilaDetalle.Eliminar -> TIPO_ELIMINAR
+        is FilaDetalle.NovedadFila -> TIPO_NOVEDAD
+        is FilaDetalle.MensajeNovedades -> TIPO_MENSAJE_NOVEDADES
     }
 
     override fun onCreateViewHolder(padre: ViewGroup, tipo: Int): RecyclerView.ViewHolder {
@@ -60,6 +71,8 @@ class DetalleDonacionAdapter(
             TIPO_GRUPO -> Grupo(ItemDetalleGrupoBinding.inflate(inflador, padre, false))
             TIPO_SOLICITUD -> Solicitud(ItemDetalleSolicitudBinding.inflate(inflador, padre, false))
             TIPO_MENSAJE -> Mensaje(ItemDetalleMensajeBinding.inflate(inflador, padre, false))
+            TIPO_NOVEDAD -> NovedadVista(ItemDetalleNovedadBinding.inflate(inflador, padre, false))
+            TIPO_MENSAJE_NOVEDADES -> MensajeNovedades(ItemDetalleMensajeBinding.inflate(inflador, padre, false))
             else -> Eliminar(ItemDetalleEliminarBinding.inflate(inflador, padre, false))
         }
     }
@@ -74,12 +87,15 @@ class DetalleDonacionAdapter(
             is FilaDetalle.SolicitudFila -> (vista as Solicitud).mostrar(fila)
             is FilaDetalle.MensajeSolicitudes -> (vista as Mensaje).mostrar(fila)
             is FilaDetalle.Eliminar -> (vista as Eliminar).mostrar(fila)
+            is FilaDetalle.NovedadFila -> (vista as NovedadVista).mostrar(fila)
+            is FilaDetalle.MensajeNovedades -> (vista as MensajeNovedades).mostrar(fila)
         }
     }
 
     inner class Encabezado(private val binding: ItemDetalleEncabezadoBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.botonEditar.setOnClickListener { alEditar() }
+            binding.botonNovedad.setOnClickListener { alReportarNovedad(null) }
         }
 
         fun mostrar(fila: FilaDetalle.Encabezado) = with(binding) {
@@ -106,6 +122,11 @@ class DetalleDonacionAdapter(
             avisoAccion.mostrarAviso(fila.aviso)
             botonEditar.isVisible = fila.editable
             botonEditar.isEnabled = !fila.ocupado
+            mostrarNovedad(
+                contenedorNovedad, botonNovedad, indicadorNovedad, etiquetaNovedadRevision,
+                fila.novedad, fila.reportandoNovedad, habilitado = !fila.ocupado && fila.novedadHabilitada,
+                texto = R.string.novedad_boton_donacion,
+            )
         }
 
         private fun etiquetaModalidad(contexto: android.content.Context, modalidad: String) = when (modalidad) {
@@ -125,6 +146,7 @@ class DetalleDonacionAdapter(
 
         init {
             binding.botonQuitar.setOnClickListener { alimento?.let(alQuitarAlimento) }
+            binding.botonNovedad.setOnClickListener { alimento?.let(alReportarNovedad) }
         }
 
         fun mostrar(fila: FilaDetalle.AlimentoFila) = with(binding) {
@@ -169,6 +191,12 @@ class DetalleDonacionAdapter(
             botonQuitar.text = if (fila.quitando) null else contexto.getString(R.string.alimento_quitar)
             botonQuitar.contentDescription = if (fila.quitando) contexto.getString(R.string.cargando) else null
             indicadorQuitar.isVisible = fila.quitando
+
+            mostrarNovedad(
+                contenedorNovedad, botonNovedad, indicadorNovedad, etiquetaNovedadRevision,
+                fila.novedad, fila.reportandoNovedad, habilitado = !fila.ocupado && fila.novedadHabilitada,
+                texto = R.string.novedad_boton_alimento,
+            )
         }
     }
 
@@ -242,6 +270,47 @@ class DetalleDonacionAdapter(
         }
     }
 
+    class NovedadVista(private val binding: ItemDetalleNovedadBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun mostrar(fila: FilaDetalle.NovedadFila) = with(binding) {
+            val contexto = root.context
+            val novedad = fila.novedad
+            textoAfecta.text = if (novedad.donacionAlimento == null) {
+                contexto.getString(R.string.novedad_toda_donacion)
+            } else {
+                contexto.getString(R.string.novedad_afecta_alimento, novedad.alimentoNombre.orEmpty())
+            }
+            etiquetaEstado.mostrarEstadoNovedad(novedad.estado)
+            textoDescripcion.text = novedad.descripcion
+            val reportada = FormatoFecha.fechaDeFechaHora(novedad.fechaCreacion)
+                ?.let { contexto.getString(R.string.novedad_reportada, it) }
+            val revisada = FormatoFecha.fechaDeFechaHora(novedad.fechaRevision)
+                ?.let { contexto.getString(R.string.novedad_revisada, it) }
+            textoFechas.mostrarAviso(
+                if (reportada != null && revisada != null) {
+                    contexto.getString(R.string.novedad_fechas, reportada, revisada)
+                } else {
+                    reportada ?: revisada
+                }
+            )
+            textoRespuesta.mostrarAviso(
+                novedad.respuestaAdmin?.takeIf { it.isNotBlank() }
+                    ?.let { contexto.getString(R.string.novedad_respuesta, it) }
+            )
+        }
+    }
+
+    inner class MensajeNovedades(private val binding: ItemDetalleMensajeBinding) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.botonReintentar.setOnClickListener { alReintentarNovedades() }
+        }
+
+        fun mostrar(fila: FilaDetalle.MensajeNovedades) = with(binding) {
+            indicador.isVisible = fila.cargando
+            textoMensaje.mostrarAviso(fila.mensaje.takeIf { !fila.cargando })
+            botonReintentar.isVisible = !fila.cargando
+        }
+    }
+
     inner class Eliminar(private val binding: ItemDetalleEliminarBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.botonEliminar.setOnClickListener { alEliminar() }
@@ -269,5 +338,30 @@ class DetalleDonacionAdapter(
         const val TIPO_MENSAJE = 5
         const val TIPO_ELIMINAR = 6
         const val TIPO_AGREGAR = 7
+        const val TIPO_NOVEDAD = 8
+        const val TIPO_MENSAJE_NOVEDADES = 9
+
+        /** "Reportar novedad" (con carga) o la etiqueta "Novedad en revisión", según [modo] (RN-30). */
+        fun mostrarNovedad(
+            contenedor: View,
+            boton: Button,
+            indicador: View,
+            etiquetaRevision: TextView,
+            modo: ModoNovedad,
+            reportando: Boolean,
+            habilitado: Boolean,
+            @StringRes texto: Int,
+        ) {
+            val contexto = boton.context
+            contenedor.isVisible = modo == ModoNovedad.REPORTAR
+            etiquetaRevision.isVisible = modo == ModoNovedad.EN_REVISION
+            if (modo == ModoNovedad.EN_REVISION) {
+                etiquetaRevision.mostrarEtiqueta(contexto.getString(R.string.novedad_en_revision), FamiliaColor.NARANJA)
+            }
+            boton.isEnabled = habilitado
+            boton.text = if (reportando) null else contexto.getString(texto)
+            boton.contentDescription = if (reportando) contexto.getString(R.string.cargando) else null
+            indicador.isVisible = reportando
+        }
     }
 }

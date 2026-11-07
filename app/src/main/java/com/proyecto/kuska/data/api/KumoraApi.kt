@@ -9,6 +9,9 @@ import com.proyecto.kuska.data.api.modelos.EntregarRequest
 import com.proyecto.kuska.data.api.modelos.LoginRequest
 import com.proyecto.kuska.data.api.modelos.LoginResponse
 import com.proyecto.kuska.data.api.modelos.MensajeResponse
+import com.proyecto.kuska.data.api.modelos.Novedad
+import com.proyecto.kuska.data.api.modelos.NovedadCrearRequest
+import com.proyecto.kuska.data.api.modelos.PaginaNovedades
 import com.proyecto.kuska.data.api.modelos.PaginaDonaciones
 import com.proyecto.kuska.data.api.modelos.Perfil
 import com.proyecto.kuska.data.api.modelos.RecuperarConfirmarRequest
@@ -96,6 +99,17 @@ interface KumoraApi {
     /** Solo el donante dueño y solo solicitudes Aprobada (RN-26). La entrega es total. Responde 201. */
     @POST("solicitudes/{id}/entregar/")
     suspend fun registrarEntrega(@Path("id") solicitudId: Int, @Body cuerpo: EntregarRequest): Response<Entrega>
+
+    /** Mis novedades de una donación. Paginado. */
+    @GET("novedades/")
+    suspend fun listarNovedades(
+        @Query("donacion") donacion: Int,
+        @Query("page") pagina: Int,
+    ): Response<PaginaNovedades>
+
+    /** Solo sobre una donación Validada o Agotada propia (RN-30). Responde 201. */
+    @POST("novedades/")
+    suspend fun reportarNovedad(@Body cuerpo: NovedadCrearRequest): Response<Novedad>
 }
 
 /** Solo para el refresh de tokens. Usa un cliente sin interceptor de auth ni Authenticator. */
