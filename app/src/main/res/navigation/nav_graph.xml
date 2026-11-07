@@ -54,6 +54,8 @@
             app:argType="string" />
     </fragment>
 
+    <!-- Cambiar cantidad y el éxito del envío son diálogos hijos; "Ir a Inicio" y "Ver mis solicitudes" cambian de
+         pestaña en la barra inferior. -->
     <fragment
         android:id="@+id/carritoFragment"
         android:name="com.proyecto.kuska.ui.carrito.CarritoFragment"

@@ -2,8 +2,12 @@ package com.proyecto.kuska.data.api
 
 import com.proyecto.kuska.data.api.modelos.Alimento
 import com.proyecto.kuska.data.api.modelos.AlimentoConSolicitudes
+import com.proyecto.kuska.data.api.modelos.Carrito
 import com.proyecto.kuska.data.api.modelos.CarritoAgregarRequest
+import com.proyecto.kuska.data.api.modelos.CarritoCantidadRequest
 import com.proyecto.kuska.data.api.modelos.CarritoItem
+import com.proyecto.kuska.data.api.modelos.EnviarCarritoRequest
+import com.proyecto.kuska.data.api.modelos.PedidoEnviado
 import com.proyecto.kuska.data.api.modelos.PaginaAlimentosDisponibles
 import com.proyecto.kuska.data.api.modelos.CambiarContrasenaRequest
 import com.proyecto.kuska.data.api.modelos.CategoriaPublica
@@ -138,6 +142,22 @@ interface KumoraApi {
     /** RN-20: 201 si es nuevo, 200 si ya estaba y se actualizó la cantidad. El carrito no reserva. */
     @POST("carrito/")
     suspend fun agregarAlCarrito(@Body cuerpo: CarritoAgregarRequest): Response<CarritoItem>
+
+    /** RN-21: agrupado por donación, con los ítems inválidos marcados y los avisos de límites. */
+    @GET("carrito/")
+    suspend fun obtenerCarrito(): Response<Carrito>
+
+    /** Revalida RN-20 (tope por solicitud y disponible). No reserva. */
+    @PATCH("carrito/{id}/")
+    suspend fun cambiarCantidadCarrito(@Path("id") id: Int, @Body cuerpo: CarritoCantidadRequest): Response<CarritoItem>
+
+    /** Solo ítems propios; uno ajeno responde 404. Responde 204 sin cuerpo. */
+    @DELETE("carrito/{id}/")
+    suspend fun quitarDelCarrito(@Path("id") id: Int): Response<Unit>
+
+    /** RN-22: una solicitud por donación con el mismo codigo_pedido. Si algo falla, 400 y no crea nada. */
+    @POST("carrito/enviar/")
+    suspend fun enviarCarrito(@Body cuerpo: EnviarCarritoRequest): Response<PedidoEnviado>
 }
 
 /** Solo para el refresh de tokens. Usa un cliente sin interceptor de auth ni Authenticator. */

@@ -101,6 +101,12 @@ class CantidadPedidoTest {
     }
 
     @Test
+    fun cuerpoDelPatchDelCarrito() {
+        assertEquals("""{"cantidad":"1.5"}""", Gson().toJson(CantidadPedido.cuerpoCambio("1,50")))
+        assertEquals("""{"cantidad":"2"}""", Gson().toJson(CantidadPedido.cuerpoCambio("2")))
+    }
+
+    @Test
     fun errorDeCantidadVaAlCampo() {
         val error = Resultado.Error("x", 400, mapOf("cantidad" to "Máximo 2 por solicitud."))
         assertEquals(FalloCarrito.EnCampo("Máximo 2 por solicitud."), CantidadPedido.clasificar(error))

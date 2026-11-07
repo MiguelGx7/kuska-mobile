@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Selector de cantidad (HU-043, HU-045): etiqueta, −/campo/+ y "Puedes pedir hasta …". Lo usan el detalle del
+  alimento y el diálogo "Cambiar cantidad" del carrito, con SelectorCantidad.kt.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/etiqueta_cantidad"
+        style="@style/Widget.Kumora.Etiqueta"
+        android:layout_marginTop="0dp"
+        android:labelFor="@id/entrada_cantidad"
+        android:text="@string/carrito_cantidad" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/boton_restar"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:contentDescription="@string/carrito_restar"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="0dp"
+            android:text="−"
+            android:textSize="22sp"
+            tools:ignore="HardcodedText" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/campo_cantidad"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_weight="1"
+            app:hintEnabled="false">
+
+            <!-- digits permite coma y punto aunque el teclado solo muestre uno. En unidad y paquete
+                 SelectorCantidad deja solo dígitos. -->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/entrada_cantidad"
+                style="@style/Widget.Kumora.Entrada"
+                android:digits="0123456789.,"
+                android:gravity="center"
+                android:imeOptions="actionDone"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/boton_sumar"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:contentDescription="@string/carrito_sumar"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="0dp"
+            android:text="+"
+            android:textSize="22sp"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/texto_puedes_pedir"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        tools:text="Puedes pedir hasta 2 kg" />
+</LinearLayout>

@@ -1,7 +1,6 @@
 package com.proyecto.kuska.ui.detallealimento
 
 import android.os.Bundle
-import android.text.method.DigitsKeyListener
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,13 +18,10 @@ import androidx.navigation.fragment.findNavController
 import coil.load
 import com.proyecto.kuska.R
 import com.proyecto.kuska.data.api.modelos.AlimentoDisponible
-import com.proyecto.kuska.data.api.modelos.Donacion
 import com.proyecto.kuska.databinding.FragmentDetalleAlimentoBinding
 import com.proyecto.kuska.ui.comun.alPulsarListo
 import com.proyecto.kuska.ui.comun.mostrar
 import com.proyecto.kuska.ui.comun.mostrarAviso
-import com.proyecto.kuska.ui.comun.resolver
-import com.proyecto.kuska.ui.comun.textoCantidad
 import com.proyecto.kuska.ui.iniciobeneficiario.InicioBeneficiarioFragment
 import com.proyecto.kuska.ui.iniciobeneficiario.textoDisponible
 import com.proyecto.kuska.ui.iniciobeneficiario.textoDonante
@@ -59,11 +55,12 @@ class DetalleAlimentoFragment : Fragment() {
         mostrarAlimento(estado.alimento)
 
         with(binding) {
-            if (entradaCantidad.text.toString() != estado.cantidad) entradaCantidad.setText(estado.cantidad)
-            entradaCantidad.doAfterTextChanged { viewModel.cambiarCantidad(it?.toString().orEmpty()) }
-            entradaCantidad.alPulsarListo(::ocultarTeclado)
-            botonRestar.setOnClickListener { viewModel.restar() }
-            botonSumar.setOnClickListener { viewModel.sumar() }
+            val selector = contenedorCantidad
+            if (selector.entradaCantidad.text.toString() != estado.cantidad) selector.entradaCantidad.setText(estado.cantidad)
+            selector.entradaCantidad.doAfterTextChanged { viewModel.cambiarCantidad(it?.toString().orEmpty()) }
+            selector.entradaCantidad.alPulsarListo(::ocultarTeclado)
+            selector.botonRestar.setOnClickListener { viewModel.restar() }
+            selector.botonSumar.setOnClickListener { viewModel.sumar() }
             botonCarga.boton.setOnClickListener {
                 ocultarTeclado()
                 viewModel.agregar()
@@ -96,15 +93,7 @@ class DetalleAlimentoFragment : Fragment() {
         )
         textoDonante.mostrarAviso(contexto.textoDonante(alimento))
 
-        // Unidad y paquete: solo enteros (RN-20). Las demás aceptan coma o punto (android:digits del layout).
-        if (!CantidadPedido.admiteDecimales(alimento.unidadMedida)) {
-            entradaCantidad.keyListener = DigitsKeyListener.getInstance("0123456789")
-        }
-        campoCantidad.suffixText = when (alimento.unidadMedida) {
-            Donacion.UNIDAD_UNIDAD -> resources.getQuantityString(R.plurals.cantidad_unidades, 2, "").trim()
-            Donacion.UNIDAD_PAQUETE -> resources.getQuantityString(R.plurals.cantidad_paquetes, 2, "").trim()
-            else -> alimento.unidadMedida
-        }
+        contenedorCantidad.configurar(alimento.unidadMedida)
     }
 
     private fun atenderEvento(evento: EventoDetalleAlimento) {
@@ -130,23 +119,14 @@ class DetalleAlimentoFragment : Fragment() {
 
     private fun mostrar(estado: DetalleAlimentoEstado) = with(binding) {
         val maximo = estado.maximo
-        contenedorCantidad.isVisible = maximo != null
+        contenedorCantidad.root.isVisible = maximo != null
         textoSinCupo.isVisible = maximo == null
         botonCarga.root.isVisible = maximo != null
         if (maximo == null) return@with
 
-        if (entradaCantidad.text.toString() != estado.cantidad) {
-            entradaCantidad.setText(estado.cantidad)
-            entradaCantidad.setSelection(estado.cantidad.length)
-        }
-        campoCantidad.error = estado.errorCantidad?.resolver(requireContext())
-        textoPuedesPedir.text = getString(
-            R.string.carrito_puedes_pedir,
-            requireContext().textoCantidad(maximo.toPlainString(), estado.alimento.unidadMedida),
+        contenedorCantidad.mostrarCantidad(
+            estado.cantidad, maximo, estado.alimento.unidadMedida, estado.errorCantidad, ocupado = estado.agregando,
         )
-        entradaCantidad.isEnabled = !estado.agregando
-        botonRestar.isEnabled = !estado.agregando && CantidadPedido.puedeRestar(estado.cantidad, maximo)
-        botonSumar.isEnabled = !estado.agregando && CantidadPedido.puedeSumar(estado.cantidad, maximo)
         avisoError.mostrarAviso(estado.aviso)
         botonCarga.mostrar(getString(R.string.carrito_agregar), estado.agregando)
     }

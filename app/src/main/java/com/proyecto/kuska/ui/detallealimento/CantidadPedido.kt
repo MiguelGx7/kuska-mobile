@@ -3,6 +3,7 @@ package com.proyecto.kuska.ui.detallealimento
 import com.proyecto.kuska.R
 import com.proyecto.kuska.data.api.modelos.AlimentoDisponible
 import com.proyecto.kuska.data.api.modelos.CarritoAgregarRequest
+import com.proyecto.kuska.data.api.modelos.CarritoCantidadRequest
 import com.proyecto.kuska.data.api.modelos.Donacion
 import com.proyecto.kuska.ui.comun.ErroresAccion
 import com.proyecto.kuska.ui.comun.FormatoCantidad
@@ -78,6 +79,9 @@ object CantidadPedido {
     /** Supone que [texto] es válido. La cantidad va con punto y sin ceros sobrantes ("2,50" → "2.5"). */
     fun cuerpo(alimentoId: Int, texto: String) =
         CarritoAgregarRequest(alimentoId, ValidacionAlimento.normalizarCantidad(texto))
+
+    /** PATCH carrito/{id}/ (HU-045). Supone que [texto] es válido, como [cuerpo]. */
+    fun cuerpoCambio(texto: String) = CarritoCantidadRequest(ValidacionAlimento.normalizarCantidad(texto))
 
     fun clasificar(error: Resultado.Error): FalloCarrito {
         val separados = ErroresAccion.separar(error.erroresCampo, mapOf(CAMPO_CANTIDAD to CAMPO_CANTIDAD))

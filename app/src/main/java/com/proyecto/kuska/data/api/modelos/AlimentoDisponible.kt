@@ -38,8 +38,17 @@ data class CarritoAgregarRequest(
     @SerializedName("cantidad") val cantidad: String,
 )
 
-/** Respuesta de POST carrito/. Solo se leen los campos que usa la app. */
+/**
+ * Un ítem del carrito: respuesta de POST y PATCH carrito/ y parte de GET carrito/. [valido], [motivos] y [alimento]
+ * vienen en GET carrito/ (nullable por si alguna respuesta no los trae).
+ */
 data class CarritoItem(
     @SerializedName("id") val id: Int,
     @SerializedName("cantidad") val cantidad: String,
-)
+    @SerializedName("valido") val valido: Boolean? = null,
+    /** Por qué el ítem ya no se puede enviar (vacío si es válido). */
+    @SerializedName("motivos") val motivos: List<String>? = null,
+    @SerializedName("alimento") val alimento: AlimentoDisponible? = null,
+) {
+    val esValido: Boolean get() = valido != false
+}

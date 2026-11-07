@@ -287,6 +287,36 @@
     <string name="carrito_ver">Ver carrito</string>
     <string name="carrito_error_maximo">Puedes pedir como máximo %1$s.</string>
 
+    <!-- Carrito (HU-045 a HU-050) -->
+    <string name="carrito_vacio">Tu carrito está vacío.</string>
+    <string name="carrito_ir_inicio">Ir a Inicio</string>
+    <string name="carrito_item_cantidad">Cantidad: %1$s</string>
+    <string name="carrito_no_disponible">No se puede enviar</string>
+    <string name="carrito_cambiar_cantidad">Cambiar cantidad</string>
+    <string name="carrito_guardar">Guardar</string>
+    <string name="carrito_cantidad_actualizada">Cantidad actualizada.</string>
+    <string name="carrito_quitar">Quitar</string>
+    <string name="carrito_quitar_titulo">¿Quitar del carrito?</string>
+    <string name="carrito_quitar_mensaje">Se quitará %1$s de tu carrito.</string>
+    <string name="carrito_quitado">Quitado del carrito.</string>
+    <string name="carrito_como_recibir">¿Cómo quieres recibir este pedido?</string>
+    <string name="carrito_direccion">Dirección de entrega</string>
+    <string name="carrito_direccion_placeholder">Ej.: Calle 1 Sur # 5-20</string>
+    <string name="carrito_error_modalidad">Elige cómo quieres recibir este pedido.</string>
+    <string name="carrito_error_direccion">Escribe la dirección de entrega.</string>
+    <string name="carrito_enviar">Enviar pedido</string>
+    <string name="carrito_enviar_titulo">¿Enviar el pedido?</string>
+    <plurals name="carrito_enviar_mensaje">
+        <item quantity="one">Se creará %1$d solicitud, una por donación. El administrador la revisará.</item>
+        <item quantity="other">Se crearán %1$d solicitudes, una por donación. El administrador las revisará.</item>
+    </plurals>
+    <string name="carrito_enviar_confirmar">Enviar</string>
+    <string name="carrito_error_envio">No se pudo enviar el pedido. Revisa los avisos del carrito.</string>
+    <string name="carrito_enviado_titulo">Pedido enviado</string>
+    <string name="carrito_enviado_mensaje">Pedido %1$s enviado. El administrador lo revisará.</string>
+    <string name="carrito_ver_solicitudes">Ver mis solicitudes</string>
+    <string name="accion_aceptar">Aceptar</string>
+
     <!-- Barra inferior -->
     <string name="nav_inicio">Inicio</string>
     <string name="nav_carrito">Carrito</string>

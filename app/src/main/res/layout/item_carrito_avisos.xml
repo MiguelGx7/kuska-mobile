@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Avisos generales del carrito (HU-048), p. ej. superar el máximo de solicitudes activas. -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/texto_avisos"
+    style="@style/Widget.Kumora.AvisoError"
+    android:layout_marginBottom="12dp"
+    android:visibility="visible"
+    tools:text="Tu carrito tiene alimentos de 4 donaciones y solo puedes tener 3 solicitudes activas." />

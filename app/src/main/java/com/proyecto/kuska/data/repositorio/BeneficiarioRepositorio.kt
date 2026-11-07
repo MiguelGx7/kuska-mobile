@@ -3,19 +3,24 @@ package com.proyecto.kuska.data.repositorio
 import android.content.Context
 import com.proyecto.kuska.R
 import com.proyecto.kuska.data.api.KumoraApi
+import com.proyecto.kuska.data.api.modelos.Carrito
 import com.proyecto.kuska.data.api.modelos.CarritoAgregarRequest
+import com.proyecto.kuska.data.api.modelos.CarritoCantidadRequest
 import com.proyecto.kuska.data.api.modelos.CarritoItem
 import com.proyecto.kuska.data.api.modelos.CategoriaPublica
+import com.proyecto.kuska.data.api.modelos.EnviarCarritoRequest
 import com.proyecto.kuska.data.api.modelos.PaginaAlimentosDisponibles
+import com.proyecto.kuska.data.api.modelos.PedidoEnviado
 import com.proyecto.kuska.ui.iniciobeneficiario.FiltrosAlimentos
 import com.proyecto.kuska.util.Resultado
+import com.proyecto.kuska.util.extraerErroresCarrito
 import com.proyecto.kuska.util.extraerErroresPorCampo
 import com.proyecto.kuska.util.mensajeDeError
 import com.proyecto.kuska.util.mensajeDeExcepcion
 import kotlinx.coroutines.CancellationException
 import retrofit2.Response
 
-/** Lo que hace el beneficiario: ver alimentos disponibles y armar su carrito. */
+/** Lo que hace el beneficiario: ver alimentos disponibles, armar su carrito y enviarlo. */
 class BeneficiarioRepositorio(
     context: Context,
     private val api: KumoraApi,
@@ -40,10 +45,31 @@ class BeneficiarioRepositorio(
     suspend fun agregarAlCarrito(cuerpo: CarritoAgregarRequest): Resultado<CarritoItem> =
         ejecutar({ api.agregarAlCarrito(cuerpo) })
 
-    /** Hace la llamada y convierte cualquier fallo (HTTP o de red) en [Resultado.Error]. */
-    private suspend fun <T : Any> ejecutar(llamada: suspend () -> Response<T>): Resultado<T> = try {
+    /** RN-21. */
+    suspend fun obtenerCarrito(): Resultado<Carrito> = ejecutar({ api.obtenerCarrito() })
+
+    /** RN-20, como agregar: el error de la cantidad llega en erroresCampo["cantidad"]. */
+    suspend fun cambiarCantidad(itemId: Int, cuerpo: CarritoCantidadRequest): Resultado<CarritoItem> =
+        ejecutar({ api.cambiarCantidadCarrito(itemId, cuerpo) })
+
+    suspend fun quitarDelCarrito(itemId: Int): Resultado<Unit> =
+        ejecutar({ api.quitarDelCarrito(itemId) }, sinCuerpo = Unit)
+
+    /** RN-22. Un 400 trae los errores con las claves de [extraerErroresCarrito]. */
+    suspend fun enviarCarrito(cuerpo: EnviarCarritoRequest): Resultado<PedidoEnviado> =
+        ejecutar({ api.enviarCarrito(cuerpo) }, erroresPorCampo = ::extraerErroresCarrito)
+
+    /**
+     * Hace la llamada y convierte cualquier fallo (HTTP o de red) en [Resultado.Error].
+     * [sinCuerpo]: valor de éxito para las respuestas sin cuerpo (204).
+     */
+    private suspend fun <T : Any> ejecutar(
+        llamada: suspend () -> Response<T>,
+        erroresPorCampo: (String?) -> Map<String, String> = ::extraerErroresPorCampo,
+        sinCuerpo: T? = null,
+    ): Resultado<T> = try {
         val respuesta = llamada()
-        val cuerpo = respuesta.body()
+        val cuerpo = respuesta.body() ?: sinCuerpo
         if (respuesta.isSuccessful && cuerpo != null) {
             Resultado.Exito(cuerpo)
         } else {
@@ -55,7 +81,7 @@ class BeneficiarioRepositorio(
             } else {
                 mensajeDeError(context, codigo, cuerpoError)
             }
-            Resultado.Error(mensaje, codigo, extraerErroresPorCampo(cuerpoError))
+            Resultado.Error(mensaje, codigo, erroresPorCampo(cuerpoError))
         }
     } catch (e: CancellationException) {
         throw e

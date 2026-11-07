@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Un alimento del carrito. Si ya no se puede enviar, se marca con sus motivos (HU-047). -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Kumora.CardView.Borde"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/miniatura"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@color/estado_gris_fondo"
+                android:scaleType="centerCrop"
+                app:shapeAppearance="@style/ShapeAppearance.Kumora.Control" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/texto_nombre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                    android:textColor="?attr/colorOnSurface"
+                    tools:text="Arroz" />
+
+                <TextView
+                    android:id="@+id/texto_cantidad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    tools:text="Cantidad: 2,5 kg" />
+
+                <TextView
+                    android:id="@+id/etiqueta_invalido"
+                    style="@style/Widget.Kumora.EtiquetaEstado"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/carrito_no_disponible"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Motivos de la API (valido = false) -->
+        <TextView
+            android:id="@+id/texto_motivos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/estado_rojo_texto"
+            android:visibility="gone"
+            tools:text="• Ya no hay suficiente cantidad disponible."
+            tools:visibility="visible" />
+
+        <!-- Error de este ítem en el último envío -->
+        <TextView
+            android:id="@+id/texto_error"
+            style="@style/Widget.Kumora.ErrorCampo"
+            android:paddingHorizontal="0dp"
+            tools:text="Puedes pedir como máximo 2 kg."
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/boton_cambiar"
+                style="@style/Widget.Kumora.Button.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="@string/carrito_cambiar_cantidad" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="48dp">
+
+                <Button
+                    android:id="@+id/boton_quitar"
+                    style="@style/Widget.Kumora.Button.Text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="@string/carrito_quitar"
+                    android:textColor="@color/estado_rojo_texto" />
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/indicador_quitar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/cargando"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    app:indicatorColor="?attr/colorPrimary"
+                    app:indicatorSize="20dp"
+                    app:trackThickness="3dp" />
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

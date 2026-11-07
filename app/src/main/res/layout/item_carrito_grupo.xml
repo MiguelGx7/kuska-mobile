@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Encabezado de una donación del carrito. En las "Ambas" se elige Recoger o Domicilio (HU-049). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/texto_titulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="Mercado de la semana" />
+
+    <TextView
+        android:id="@+id/texto_donante"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        tools:text="Dona: Panadería Sol" />
+
+    <TextView
+        android:id="@+id/texto_modalidad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        tools:text="Entrega: Ambas" />
+
+    <LinearLayout
+        android:id="@+id/contenedor_eleccion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            style="@style/Widget.Kumora.Etiqueta"
+            android:layout_marginTop="12dp"
+            android:text="@string/carrito_como_recibir" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/grupo_modalidad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <Button
+                android:id="@+id/boton_recoger"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="@string/modalidad_recoger" />
+
+            <Button
+                android:id="@+id/boton_domicilio"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="@string/modalidad_domicilio" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <LinearLayout
+            android:id="@+id/contenedor_direccion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                style="@style/Widget.Kumora.Etiqueta"
+                android:labelFor="@id/entrada_direccion"
+                android:text="@string/carrito_direccion" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/campo_direccion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:counterEnabled="true"
+                app:counterMaxLength="200"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/entrada_direccion"
+                    style="@style/Widget.Kumora.Entrada"
+                    android:hint="@string/carrito_direccion_placeholder"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPostalAddress|textCapSentences"
+                    android:maxLength="200" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Error del grupo: falta elegir, falta la dirección o un error del servidor para esta donación -->
+    <TextView
+        android:id="@+id/texto_error"
+        style="@style/Widget.Kumora.ErrorCampo"
+        android:paddingHorizontal="0dp"
+        tools:text="Elige cómo quieres recibir este pedido."
+        tools:visibility="visible" />
+</LinearLayout>
