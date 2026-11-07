@@ -26,6 +26,9 @@
     <!-- Solo para la mascota -->
     <color name="maiz">#FFC233</color>
 
-    <!-- Fondo del splash (igual en ambos modos) -->
-    <color name="splash_fondo">#1766D6</color>
+    <!-- Splash del sistema e intro (paso 16): siempre blancos con textos oscuros, en ambos modos -->
+    <color name="splash_fondo">#FFFFFF</color>
+    <color name="intro_fondo">#FFFFFF</color>
+    <color name="intro_titulo">#101828</color>
+    <color name="intro_subtitulo">#667085</color>
 </resources>

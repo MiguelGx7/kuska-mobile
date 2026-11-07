@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Intro de Kumora (paso 16), encima de toda la app al abrirla en frío. Siempre blanca con textos oscuros, como en
+  el diseño (también en modo oscuro). Tocar en cualquier parte la salta. La anima IntroKumora.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/intro"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/intro_fondo"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp">
+
+        <ImageView
+            android:id="@+id/hormiga"
+            android:layout_width="260dp"
+            android:layout_height="234dp"
+            android:contentDescription="@string/intro_descripcion"
+            android:src="@drawable/hormiga_intro" />
+
+        <TextView
+            android:id="@+id/texto_titulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/figtree_semibold"
+            android:text="@string/intro_titulo"
+            android:textColor="@color/intro_titulo"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/texto_subtitulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:text="@string/intro_subtitulo"
+            android:textColor="@color/intro_subtitulo"
+            android:textSize="16sp" />
+    </LinearLayout>
+</FrameLayout>

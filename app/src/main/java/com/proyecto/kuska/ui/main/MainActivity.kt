@@ -21,6 +21,8 @@ import com.proyecto.kuska.R
 import com.proyecto.kuska.data.api.modelos.Usuario
 import com.proyecto.kuska.data.repositorio.NotificacionesRepositorio
 import com.proyecto.kuska.databinding.ActivityMainBinding
+import com.proyecto.kuska.ui.intro.IntroKumora
+import com.proyecto.kuska.ui.intro.PlanIntro
 import com.proyecto.kuska.ui.notificaciones.ReglasNotificacion
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -31,8 +33,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
 
-    /** El splash se mantiene hasta saber si hay sesión. */
+    /** Ya se leyó la sesión y está armada la navegación. Sin intro, el splash se mantiene hasta entonces. */
     private var listo = false
+
+    /** Intro animada (paso 16): solo al abrir en frío; mientras tanto se arma el destino debajo. */
+    private var intro: IntroKumora? = null
 
     /** Rol con el que está armada la navegación (null = sin sesión). */
     private var rolActual: String? = null
@@ -72,12 +77,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splash = installSplashScreen()
         super.onCreate(savedInstanceState)
-        splash.setKeepOnScreenCondition { !listo }
+        val conIntro = PlanIntro.debeMostrar(hayEstadoGuardado = savedInstanceState != null)
+        // Con intro, el splash del sistema (blanco) se va en el primer cuadro y la intro lo empalma.
+        splash.setKeepOnScreenCondition { !listo && !conIntro }
 
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         configurarInsets()
+        if (conIntro) {
+            intro = IntroKumora(this, binding.root) { intro = null }.also { it.mostrar() }
+        }
 
         val navHost = supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
         navController = navHost.navController
@@ -104,6 +114,7 @@ class MainActivity : AppCompatActivity() {
                 .collect { rol ->
                     if (!listo || rol != rolActual) aplicarNavegacion(rol)
                     listo = true
+                    intro?.avisarDestinoListo()
                 }
         }
 
@@ -161,11 +172,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun aplicarNavegacion(rol: String?) {
-        val (inicio, menu) = when (rol) {
-            Usuario.ROL_BENEFICIARIO -> R.id.inicioBeneficiarioFragment to R.menu.menu_beneficiario
-            Usuario.ROL_DONANTE -> R.id.inicioDonanteFragment to R.menu.menu_donante
-            else -> R.id.loginFragment to null
-        }
+        val (inicio, menu) = NavegacionInicial.para(rol)
 
         binding.bottomNav.menu.clear()
         menu?.let { binding.bottomNav.inflateMenu(it) }

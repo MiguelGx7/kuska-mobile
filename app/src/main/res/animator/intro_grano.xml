@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Al llegar (1620 ms, TiemposIntro.LLEGADA) el grano salta una vez: sube 10dp (≈7,69 en el viewBox) y baja en 450 ms. -->
+<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="450"
+    android:startOffset="1620">
+    <propertyValuesHolder
+        android:propertyName="translateY"
+        android:valueType="floatType">
+        <keyframe
+            android:fraction="0"
+            android:value="0" />
+        <keyframe
+            android:fraction="0.5"
+            android:interpolator="@android:interpolator/decelerate_quad"
+            android:value="-7.69" />
+        <keyframe
+            android:fraction="1"
+            android:interpolator="@android:interpolator/accelerate_quad"
+            android:value="0" />
+    </propertyValuesHolder>
+</objectAnimator>

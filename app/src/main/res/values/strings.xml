@@ -365,6 +365,11 @@
     <string name="solicitud_cancelar_confirmar">Cancelar solicitud</string>
     <string name="solicitud_cancelada">Solicitud cancelada.</string>
 
+    <!-- Intro (paso 16) -->
+    <string name="intro_titulo" translatable="false">Kumora</string>
+    <string name="intro_subtitulo">Comparte comida con tu comunidad.</string>
+    <string name="intro_descripcion">La hormiga de Kumora llega cargando un grano de maíz.</string>
+
     <!-- Inicios (paso 15b) -->
     <string name="inicio_hola">Hola</string>
     <string name="inicio_hola_nombre">Hola, %1$s</string>

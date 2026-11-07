@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Animación de la hormiga en la intro. Los tiempos coinciden con TiemposIntro (IntroKumora mueve la vista hacia el
+  centro con los mismos 120 ms + 1,5 s). Al parar y reiniciar (saltar), todo vuelve a la pose de reposo.
+-->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/hormiga_intro">
+
+    <target
+        android:name="cuerpo"
+        android:animation="@animator/intro_cuerpo" />
+    <target
+        android:name="pata_a1"
+        android:animation="@animator/intro_pata_fase" />
+    <target
+        android:name="pata_a2"
+        android:animation="@animator/intro_pata_fase" />
+    <target
+        android:name="pata_b"
+        android:animation="@animator/intro_pata_contrafase" />
+    <target
+        android:name="grano"
+        android:animation="@animator/intro_grano" />
+    <target
+        android:name="ojos"
+        android:animation="@animator/intro_ojos" />
+</animated-vector>
