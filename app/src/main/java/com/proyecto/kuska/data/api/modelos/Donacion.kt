@@ -136,6 +136,13 @@ data class SolicitudRecibida(
         const val ESTADO_ENTREGADA = "Entregada"
         const val ESTADO_NO_RECOGIDA = "No recogida"
         const val ESTADO_CANCELADA = "Cancelada"
+
+        // EstadoConfirmacionEnum (estado_confirmacion, solo si fue Entregada; RN-26b)
+        const val CONFIRMACION_PENDIENTE = "Pendiente"
+        const val CONFIRMACION_CONFIRMADA = "Confirmada"
+        const val CONFIRMACION_ASUMIDA = "Asumida"
+        const val CONFIRMACION_RECLAMADA = "Reclamada"
+        const val CONFIRMACION_REVISADA = "Revisada"
     }
 }
 
@@ -144,4 +151,16 @@ data class BeneficiarioContacto(
     @SerializedName("nombre") val nombre: String,
     @SerializedName("telefono") val telefono: String?,
     @SerializedName("direccion") val direccion: String?,
+)
+
+/** Cuerpo de POST solicitudes/{id}/entregar/. Gson omite el null: sin observación se envía {}. */
+data class EntregarRequest(
+    @SerializedName("observacion") val observacion: String?,
+)
+
+/** Respuesta 201 de POST solicitudes/{id}/entregar/. Solo se leen los campos que usa la app. */
+data class Entrega(
+    @SerializedName("id") val id: Int,
+    @SerializedName("observacion") val observacion: String?,
+    @SerializedName("estado_confirmacion") val estadoConfirmacion: String?,
 )

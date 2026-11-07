@@ -29,7 +29,7 @@ class AgregarAlimentoFragment : FormularioAlimentoFragment() {
                     volverAlDetalle(DetalleDonacionFragment.RESULTADO_AVISO, mensaje)
                 }
             }
-        }
+        } 
     }
 
     /** El detalle muestra "Alimento agregado." y se recarga. */

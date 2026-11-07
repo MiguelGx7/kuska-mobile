@@ -1,7 +1,10 @@
 package com.proyecto.kuska.ui.detalledonacion
 
 import com.proyecto.kuska.data.api.modelos.Alimento
+import com.proyecto.kuska.data.api.modelos.AlimentoConSolicitudes
+import com.proyecto.kuska.data.api.modelos.BeneficiarioContacto
 import com.proyecto.kuska.data.api.modelos.Donacion
+import com.proyecto.kuska.data.api.modelos.SolicitudRecibida
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -69,6 +72,46 @@ class FilasDetalleTest {
             DetalleDonacionEstado(donacion = donacion(Donacion.ESTADO_VALIDADA, 1), aviso = "Ya fue revisada.")
         )
         assertEquals("Ya fue revisada.", filas.filterIsInstance<FilaDetalle.Encabezado>().single().aviso)
+    }
+
+    private fun solicitud(id: Int, estado: String, cancelado: Boolean = false) = SolicitudRecibida(
+        solicitud = id, codigoPedido = "KUM-$id", estado = estado, modalidadEntrega = "Recoger",
+        fechaSolicitud = null, fechaLimiteRecogida = null, cantidad = "1.00", cancelado = cancelado,
+        beneficiario = BeneficiarioContacto("Beneficiario $id", null, null), estadoConfirmacion = null,
+    )
+
+    /** Dos alimentos: la solicitud 1 (Aprobada) pidió de los dos; la 2 (Aprobada y cancelada) y la 3 (Entregada), solo del primero. */
+    private fun conSolicitudes(entregandoId: Int? = null) = DetalleDonacionEstado(
+        donacion = donacion(Donacion.ESTADO_VALIDADA, 1, 2),
+        solicitudes = listOf(
+            AlimentoConSolicitudes(
+                1, "Arroz", "kg", "5.00", "2.00",
+                listOf(
+                    solicitud(1, SolicitudRecibida.ESTADO_APROBADA),
+                    solicitud(2, SolicitudRecibida.ESTADO_APROBADA, cancelado = true),
+                    solicitud(3, SolicitudRecibida.ESTADO_ENTREGADA),
+                ),
+            ),
+            AlimentoConSolicitudes(2, "Panela", "unidad", "4.00", "3.00", listOf(solicitud(1, SolicitudRecibida.ESTADO_APROBADA))),
+        ),
+        entregandoId = entregandoId,
+    )
+
+    private fun List<FilaDetalle>.solicitudes() = filterIsInstance<FilaDetalle.SolicitudFila>()
+
+    @Test
+    fun registrarEntregaSoloEnAprobadasNoCanceladasYEnTodasSusTarjetas() {
+        val filas = filas(conSolicitudes()).solicitudes()
+        assertEquals(listOf(1, 2, 3, 1), filas.map { it.solicitud.solicitud })
+        assertEquals(listOf(true, false, false, true), filas.map { it.entregable })
+        assertTrue(filas.none { it.ocupado || it.entregando })
+    }
+
+    @Test
+    fun mientrasSeEntregaTodasLasTarjetasDeEsaSolicitudCarganYLasDemasQuedanOcupadas() {
+        val filas = filas(conSolicitudes(entregandoId = 1)).solicitudes()
+        assertEquals(listOf(true, false, false, true), filas.map { it.entregando })
+        assertTrue(filas.all { it.ocupado })
     }
 
     @Test

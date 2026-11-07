@@ -11,6 +11,7 @@ import coil.load
 import com.proyecto.kuska.R
 import com.proyecto.kuska.data.api.modelos.Alimento
 import com.proyecto.kuska.data.api.modelos.Donacion
+import com.proyecto.kuska.data.api.modelos.SolicitudRecibida
 import com.proyecto.kuska.databinding.ItemDetalleAgregarBinding
 import com.proyecto.kuska.databinding.ItemDetalleAlimentoBinding
 import com.proyecto.kuska.databinding.ItemDetalleEliminarBinding
@@ -35,6 +36,7 @@ class DetalleDonacionAdapter(
     private val alEditar: () -> Unit,
     private val alAgregarAlimento: () -> Unit,
     private val alQuitarAlimento: (Alimento) -> Unit,
+    private val alRegistrarEntrega: (SolicitudRecibida) -> Unit,
 ) : ListAdapter<FilaDetalle, RecyclerView.ViewHolder>(Diferencia) {
 
     override fun getItemViewType(posicion: Int) = when (getItem(posicion)) {
@@ -176,8 +178,15 @@ class DetalleDonacionAdapter(
         }
     }
 
-    class Solicitud(private val binding: ItemDetalleSolicitudBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class Solicitud(private val binding: ItemDetalleSolicitudBinding) : RecyclerView.ViewHolder(binding.root) {
+        private var solicitud: SolicitudRecibida? = null
+
+        init {
+            binding.botonEntregar.setOnClickListener { solicitud?.let(alRegistrarEntrega) }
+        }
+
         fun mostrar(fila: FilaDetalle.SolicitudFila) = with(binding) {
+            this@Solicitud.solicitud = fila.solicitud
             val contexto = root.context
             val solicitud = fila.solicitud
             textoBeneficiario.text = solicitud.beneficiario.nombre
@@ -199,6 +208,25 @@ class DetalleDonacionAdapter(
                 solicitud.beneficiario.direccion?.takeIf { it.isNotBlank() }
                     ?.let { contexto.getString(R.string.detalle_direccion, it) }
             )
+            // RN-26b: solo si la API lo manda (solicitud Entregada).
+            textoConfirmacion.mostrarAviso(
+                solicitud.estadoConfirmacion?.takeIf { it.isNotBlank() }
+                    ?.let { contexto.getString(R.string.entrega_confirmacion, etiquetaConfirmacion(contexto, it)) }
+            )
+            contenedorEntregar.isVisible = fila.entregable
+            botonEntregar.isEnabled = !fila.ocupado
+            botonEntregar.text = if (fila.entregando) null else contexto.getString(R.string.entrega_boton)
+            botonEntregar.contentDescription = if (fila.entregando) contexto.getString(R.string.cargando) else null
+            indicadorEntregar.isVisible = fila.entregando
+        }
+
+        private fun etiquetaConfirmacion(contexto: android.content.Context, estado: String) = when (estado) {
+            SolicitudRecibida.CONFIRMACION_PENDIENTE -> contexto.getString(R.string.confirmacion_pendiente)
+            SolicitudRecibida.CONFIRMACION_CONFIRMADA -> contexto.getString(R.string.confirmacion_confirmada)
+            SolicitudRecibida.CONFIRMACION_ASUMIDA -> contexto.getString(R.string.confirmacion_asumida)
+            SolicitudRecibida.CONFIRMACION_RECLAMADA -> contexto.getString(R.string.confirmacion_reclamada)
+            SolicitudRecibida.CONFIRMACION_REVISADA -> contexto.getString(R.string.confirmacion_revisada)
+            else -> estado
         }
     }
 

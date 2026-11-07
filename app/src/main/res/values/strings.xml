@@ -122,6 +122,20 @@
     <string name="detalle_quitar_ultimo">Para quitar este alimento, elimina la donación.</string>
     <string name="detalle_cambios_guardados">Cambios guardados.</string>
     <string name="detalle_alimento_agregado">Alimento agregado.</string>
+    <string name="entrega_boton">Registrar entrega</string>
+    <string name="entrega_titulo">Registrar entrega</string>
+    <string name="entrega_pedido_beneficiario">Pedido %1$s · %2$s</string>
+    <string name="entrega_total">La entrega es total: se entregan todos los alimentos de esta solicitud.</string>
+    <string name="entrega_observacion">Observación (opcional)</string>
+    <string name="entrega_observacion_placeholder">Anota cualquier diferencia en la entrega</string>
+    <string name="entrega_registrar">Registrar</string>
+    <string name="entrega_registrada">Entrega registrada.</string>
+    <string name="entrega_confirmacion">Confirmación del beneficiario: %1$s</string>
+    <string name="confirmacion_pendiente">Pendiente</string>
+    <string name="confirmacion_confirmada">Confirmada</string>
+    <string name="confirmacion_asumida">Asumida</string>
+    <string name="confirmacion_reclamada">Reclamada</string>
+    <string name="confirmacion_revisada">Revisada</string>
 
     <!-- Editar donación -->
     <string name="editar_guardar">Guardar cambios</string>

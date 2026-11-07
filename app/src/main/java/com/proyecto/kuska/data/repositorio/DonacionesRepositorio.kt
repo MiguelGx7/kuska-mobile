@@ -11,6 +11,8 @@ import com.proyecto.kuska.data.api.modelos.CategoriaPublica
 import com.proyecto.kuska.data.api.modelos.DatosAlimento
 import com.proyecto.kuska.data.api.modelos.DatosDonacion
 import com.proyecto.kuska.data.api.modelos.Donacion
+import com.proyecto.kuska.data.api.modelos.Entrega
+import com.proyecto.kuska.data.api.modelos.EntregarRequest
 import com.proyecto.kuska.data.api.modelos.PaginaDonaciones
 import com.proyecto.kuska.ui.creardonacion.ConstructorDatos
 import com.proyecto.kuska.ui.editardonacion.CambiosDonacion
@@ -92,6 +94,10 @@ class DonacionesRepositorio(
     /** No se puede quitar el último alimento: en ese caso se elimina la donación. */
     suspend fun quitarAlimento(id: Int, alimentoId: Int): Resultado<Unit> =
         ejecutar({ api.quitarAlimento(id, alimentoId) }, sinCuerpo = Unit)
+
+    /** Entrega total de una solicitud Aprobada (RN-26). El error de la observación llega en erroresCampo["observacion"]. */
+    suspend fun registrarEntrega(solicitudId: Int, cuerpo: EntregarRequest): Resultado<Entrega> =
+        ejecutar({ api.registrarEntrega(solicitudId, cuerpo) })
 
     /**
      * Hace la llamada y convierte cualquier fallo (HTTP o de red) en [Resultado.Error].

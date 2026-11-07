@@ -38,11 +38,17 @@ data class DetalleDonacionEstado(
     val eliminando: Boolean = false,
     /** Alimento que se está quitando (null = ninguno). */
     val quitandoId: Int? = null,
-    /** Aviso rojo del encabezado: error de la última acción (quitar, eliminar) o de editar/agregar. */
+    /** Aviso rojo del encabezado: error de la última acción (quitar, eliminar, entregar) o de editar/agregar. */
     val aviso: String? = null,
+    /** Solicitud cuya entrega se está registrando (null = ninguna). */
+    val entregandoId: Int? = null,
+    /** Diálogo de entrega: error de la observación (en su campo). */
+    val errorObservacion: String? = null,
+    /** Diálogo de entrega: sin conexión o 429 (dentro del diálogo, que sigue abierto). */
+    val errorEntrega: String? = null,
 ) {
     /** Hay una acción en curso: las demás quedan deshabilitadas. */
-    val ocupado get() = eliminando || quitandoId != null
+    val ocupado get() = eliminando || quitandoId != null || entregandoId != null
 }
 
 sealed interface EventoDetalle {
@@ -50,6 +56,12 @@ sealed interface EventoDetalle {
 
     /** Error al refrescar un detalle que ya se ve (va en un Snackbar). */
     data class Mensaje(val texto: String) : EventoDetalle
+
+    /** Entrega registrada: se cierra el diálogo y sale "Entrega registrada.". */
+    data object EntregaRegistrada : EventoDetalle
+
+    /** Error que va al aviso rojo: se cierra el diálogo de entrega. */
+    data object CerrarDialogoEntrega : EventoDetalle
 }
 
 class DetalleDonacionViewModel(
@@ -174,6 +186,43 @@ class DetalleDonacionViewModel(
                     cargar()
                 }
                 is Resultado.Error -> mostrarErrorAccion(resultado) { it.copy(quitandoId = null) }
+            }
+        }
+    }
+
+    /** Al abrir el diálogo de entrega o al escribir en él: quita los errores que quedaron dentro. */
+    fun limpiarErroresEntrega() {
+        _estado.update { it.copy(errorObservacion = null, errorEntrega = null) }
+    }
+
+    /**
+     * Entrega total de una solicitud Aprobada y no cancelada (RN-26). Al terminar se recarga para ver la solicitud
+     * Entregada. Los errores se reparten según [EntregaSolicitud.clasificar].
+     */
+    fun registrarEntrega(solicitudId: Int, observacion: String) {
+        val actual = _estado.value
+        if (actual.ocupado) return
+        val solicitud = actual.solicitudes.orEmpty().flatMap { it.solicitudes }.firstOrNull { it.solicitud == solicitudId }
+        if (solicitud == null || !EntregaSolicitud.puedeRegistrar(solicitud)) return
+        _estado.update {
+            it.copy(entregandoId = solicitudId, errorObservacion = null, errorEntrega = null, aviso = null, refrescando = false)
+        }
+        viewModelScope.launch {
+            when (val resultado = repositorio.registrarEntrega(solicitudId, EntregaSolicitud.cuerpo(observacion))) {
+                is Resultado.Exito -> {
+                    _estado.update { it.copy(entregandoId = null) }
+                    _eventos.send(EventoDetalle.EntregaRegistrada)
+                    cargar()
+                }
+                is Resultado.Error -> when (val fallo = EntregaSolicitud.clasificar(resultado)) {
+                    is FalloEntrega.EnCampo -> _estado.update { it.copy(entregandoId = null, errorObservacion = fallo.mensaje) }
+                    is FalloEntrega.EnDialogo -> _estado.update { it.copy(entregandoId = null, errorEntrega = fallo.mensaje) }
+                    is FalloEntrega.Aviso -> {
+                        _estado.update { it.copy(entregandoId = null, aviso = fallo.mensaje) }
+                        _eventos.send(EventoDetalle.CerrarDialogoEntrega)
+                        if (fallo.recargar) cargar()
+                    }
+                }
             }
         }
     }

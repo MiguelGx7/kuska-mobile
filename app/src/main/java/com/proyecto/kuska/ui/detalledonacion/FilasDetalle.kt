@@ -53,7 +53,19 @@ sealed interface FilaDetalle {
         override val clave = "grupo_$alimentoId"
     }
 
-    data class SolicitudFila(val alimentoId: Int, val solicitud: SolicitudRecibida, val unidad: String) : FilaDetalle {
+    /**
+     * Una solicitud aparece en una tarjeta por cada alimento que pidió; todas registran la misma entrega total.
+     * [entregable]: muestra "Registrar entrega". [entregando]: se está registrando la entrega de esta solicitud.
+     * [ocupado]: hay una acción en curso (el botón queda deshabilitado).
+     */
+    data class SolicitudFila(
+        val alimentoId: Int,
+        val solicitud: SolicitudRecibida,
+        val unidad: String,
+        val entregable: Boolean = false,
+        val entregando: Boolean = false,
+        val ocupado: Boolean = false,
+    ) : FilaDetalle {
         override val clave = "solicitud_${alimentoId}_${solicitud.solicitud}"
     }
 
@@ -105,7 +117,16 @@ fun construirFilas(
         when {
             grupos.isNotEmpty() -> grupos.forEach { grupo ->
                 add(FilaDetalle.GrupoSolicitudes(grupo.alimento, grupo.nombre))
-                grupo.solicitudes.forEach { add(FilaDetalle.SolicitudFila(grupo.alimento, it, grupo.unidadMedida)) }
+                grupo.solicitudes.forEach {
+                    add(
+                        FilaDetalle.SolicitudFila(
+                            grupo.alimento, it, grupo.unidadMedida,
+                            entregable = EntregaSolicitud.puedeRegistrar(it),
+                            entregando = estado.entregandoId == it.solicitud,
+                            ocupado = ocupado,
+                        )
+                    )
+                }
             }
             estado.cargandoSolicitudes || estado.solicitudes == null && estado.errorSolicitudes == null ->
                 add(FilaDetalle.MensajeSolicitudes(cargando = true, mensaje = null, conReintentar = false))

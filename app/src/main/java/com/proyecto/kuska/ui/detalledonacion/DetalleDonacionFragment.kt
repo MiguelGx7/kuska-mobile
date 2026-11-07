@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -14,6 +15,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.proyecto.kuska.R
 import com.proyecto.kuska.data.api.modelos.Alimento
+import com.proyecto.kuska.data.api.modelos.SolicitudRecibida
 import com.proyecto.kuska.databinding.FragmentDetalleDonacionBinding
 import com.proyecto.kuska.ui.comun.mostrar
 import com.proyecto.kuska.ui.misdonaciones.MisDonacionesFragment
@@ -21,7 +23,7 @@ import kotlinx.coroutines.launch
 
 /**
  * Detalle de una donación del donante (RN-12, RN-15, RN-16). Si está Pendiente se pueden editar sus datos,
- * agregar y quitar alimentos, o eliminarla. Entregas y novedades llegan después.
+ * agregar y quitar alimentos, o eliminarla. Si no, en sus solicitudes recibidas se registra la entrega de las Aprobadas (RN-26). Las novedades llegan después.
  */
 class DetalleDonacionFragment : Fragment() {
 
@@ -50,6 +52,7 @@ class DetalleDonacionFragment : Fragment() {
             alEditar = { abrir(R.id.action_detalle_a_editar) },
             alAgregarAlimento = { abrir(R.id.action_detalle_a_agregar_alimento) },
             alQuitarAlimento = ::confirmarQuitar,
+            alRegistrarEntrega = ::abrirEntrega,
         )
         binding.listaDetalle.adapter = adapter
         binding.deslizarRefrescar.setOnRefreshListener { viewModel.refrescar() }
@@ -79,6 +82,18 @@ class DetalleDonacionFragment : Fragment() {
             .setPositiveButton(R.string.detalle_quitar_confirmar) { _, _ -> viewModel.quitarAlimento(alimento.id) }
             .setNegativeButton(R.string.accion_cancelar, null)
             .show()
+    }
+
+    /** Diálogo de entrega total (RN-26). Todas las tarjetas de la misma solicitud abren el mismo. */
+    private fun abrirEntrega(solicitud: SolicitudRecibida) {
+        if (viewModel.estado.value.ocupado || childFragmentManager.findFragmentByTag(RegistrarEntregaDialogFragment.TAG) != null) return
+        viewModel.limpiarErroresEntrega()
+        RegistrarEntregaDialogFragment.nuevo(solicitud.solicitud, solicitud.codigoPedido, solicitud.beneficiario.nombre)
+            .show(childFragmentManager, RegistrarEntregaDialogFragment.TAG)
+    }
+
+    private fun cerrarDialogoEntrega() {
+        (childFragmentManager.findFragmentByTag(RegistrarEntregaDialogFragment.TAG) as? DialogFragment)?.dismiss()
     }
 
     /** Editar y agregar dejan en el SavedStateHandle de esta pantalla un mensaje de éxito o un aviso. */
@@ -116,6 +131,11 @@ class DetalleDonacionFragment : Fragment() {
                 navegacion.popBackStack()
             }
             is EventoDetalle.Mensaje -> Snackbar.make(binding.root, evento.texto, Snackbar.LENGTH_LONG).show()
+            EventoDetalle.EntregaRegistrada -> {
+                cerrarDialogoEntrega()
+                Snackbar.make(binding.root, R.string.entrega_registrada, Snackbar.LENGTH_LONG).show()
+            }
+            EventoDetalle.CerrarDialogoEntrega -> cerrarDialogoEntrega()
         }
     }
 

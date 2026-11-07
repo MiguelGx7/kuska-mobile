@@ -4,6 +4,8 @@ import com.proyecto.kuska.data.api.modelos.Alimento
 import com.proyecto.kuska.data.api.modelos.AlimentoConSolicitudes
 import com.proyecto.kuska.data.api.modelos.CategoriaPublica
 import com.proyecto.kuska.data.api.modelos.Donacion
+import com.proyecto.kuska.data.api.modelos.Entrega
+import com.proyecto.kuska.data.api.modelos.EntregarRequest
 import com.proyecto.kuska.data.api.modelos.LoginRequest
 import com.proyecto.kuska.data.api.modelos.LoginResponse
 import com.proyecto.kuska.data.api.modelos.MensajeResponse
@@ -90,6 +92,10 @@ interface KumoraApi {
     /** Sin paginación: una entrada por alimento con sus solicitudes. */
     @GET("donaciones/{id}/solicitudes-recibidas/")
     suspend fun solicitudesRecibidas(@Path("id") id: Int): Response<List<AlimentoConSolicitudes>>
+
+    /** Solo el donante dueño y solo solicitudes Aprobada (RN-26). La entrega es total. Responde 201. */
+    @POST("solicitudes/{id}/entregar/")
+    suspend fun registrarEntrega(@Path("id") solicitudId: Int, @Body cuerpo: EntregarRequest): Response<Entrega>
 }
 
 /** Solo para el refresh de tokens. Usa un cliente sin interceptor de auth ni Authenticator. */
