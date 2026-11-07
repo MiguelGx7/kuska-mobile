@@ -23,7 +23,8 @@ object ConstructorDatos {
         alimentos = alimentos.map(::construirAlimento),
     )
 
-    private fun construirAlimento(alimento: AlimentoBorrador) = DatosAlimento(
+    /** Un alimento ya validado, con los mismos campos para POST donaciones/ y POST donaciones/{id}/alimentos/. */
+    internal fun construirAlimento(alimento: AlimentoBorrador) = DatosAlimento(
         categoria = requireNotNull(alimento.categoriaId),
         nombre = alimento.nombre.trim(),
         descripcion = alimento.descripcion.trim().ifEmpty { null },

@@ -4,12 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import androidx.activity.addCallback
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -17,14 +15,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.TextInputLayout
 import com.proyecto.kuska.R
-import com.proyecto.kuska.data.api.modelos.Donacion
 import com.proyecto.kuska.databinding.FragmentCrearDonacionBinding
-import com.proyecto.kuska.ui.comun.alPulsarListo
 import com.proyecto.kuska.ui.comun.mostrar
 import com.proyecto.kuska.ui.comun.mostrarAviso
-import com.proyecto.kuska.ui.comun.resolver
 import com.proyecto.kuska.ui.misdonaciones.MisDonacionesFragment
 import kotlinx.coroutines.launch
 
@@ -38,8 +32,7 @@ class CrearDonacionFragment : Fragment() {
         CrearDonacionViewModel.Factory
     }
 
-    private lateinit var campos: Map<CampoDonacion, Pair<TextInputLayout, EditText>>
-    private lateinit var chipsModalidad: Map<Int, String>
+    private lateinit var vistaDatos: VistaDatosDonacion
     private lateinit var adapter: AlimentosAdapter
 
     override fun onCreateView(
@@ -54,30 +47,14 @@ class CrearDonacionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        campos = with(binding) {
-            mapOf(
-                CampoDonacion.TITULO to (campoTitulo to entradaTitulo),
-                CampoDonacion.DESCRIPCION to (campoDescripcion to entradaDescripcion),
-                CampoDonacion.DIRECCION to (campoDireccion to entradaDireccion),
-            )
-        }
-        chipsModalidad = mapOf(
-            R.id.chip_recoger to Donacion.MODALIDAD_RECOGER,
-            R.id.chip_domicilio to Donacion.MODALIDAD_DOMICILIO,
-            R.id.chip_ambas to Donacion.MODALIDAD_AMBAS,
-        )
-
         // Al volver del formulario del alimento la vista se recrea: se llena desde el ViewModel.
-        val actual = viewModel.estado.value
-        campos.forEach { (campo, par) ->
-            val valor = valorDe(actual, campo)
-            if (par.second.text.toString() != valor) par.second.setText(valor)
-            par.second.doAfterTextChanged { viewModel.cambiarCampo(campo, it?.toString().orEmpty()) }
-        }
-        binding.entradaDireccion.alPulsarListo { ocultarTeclado() }
-        binding.grupoModalidad.setOnCheckedStateChangeListener { _, ids ->
-            viewModel.elegirModalidad(ids.firstOrNull()?.let(chipsModalidad::get))
-        }
+        vistaDatos = VistaDatosDonacion(binding.datos)
+        vistaDatos.configurar(
+            iniciales = viewModel.estado.value.valores(),
+            alCambiar = viewModel::cambiarCampo,
+            alElegirModalidad = viewModel::elegirModalidad,
+            alPulsarListo = ::ocultarTeclado,
+        )
 
         adapter = AlimentosAdapter(
             alEditar = { indice -> abrirAlimento(indice) },
@@ -102,11 +79,7 @@ class CrearDonacionFragment : Fragment() {
         }
     }
 
-    private fun valorDe(estado: CrearDonacionEstado, campo: CampoDonacion) = when (campo) {
-        CampoDonacion.TITULO -> estado.titulo
-        CampoDonacion.DESCRIPCION -> estado.descripcion
-        else -> estado.direccion
-    }
+    private fun CrearDonacionEstado.valores() = ValoresDatosDonacion(titulo, descripcion, direccion, modalidad)
 
     private fun abrirAlimento(indice: Int) {
         if (viewModel.estado.value.enviando) return
@@ -151,25 +124,12 @@ class CrearDonacionFragment : Fragment() {
     }
 
     private fun mostrar(estado: CrearDonacionEstado) = with(binding) {
-        val contexto = requireContext()
-
+        val editable = !estado.enviando
         // Textos que cambia el ViewModel (p. ej. la dirección que llega del perfil).
-        campos.forEach { (campo, par) ->
-            val valor = valorDe(estado, campo)
-            if (par.second.text.toString() != valor) par.second.setText(valor)
-            par.first.error = estado.errores[campo]?.resolver(contexto)
-        }
-
-        val chipElegido = chipsModalidad.entries.firstOrNull { it.value == estado.modalidad }?.key
-        if (chipElegido == null) grupoModalidad.clearCheck() else grupoModalidad.check(chipElegido)
-        errorModalidad.mostrarAviso(estado.errores[CampoDonacion.MODALIDAD]?.resolver(contexto))
+        vistaDatos.mostrar(estado.valores(), estado.errores, editable)
 
         adapter.submitList(estado.alimentos)
         textoSinAlimentos.isVisible = estado.alimentos.isEmpty()
-
-        val editable = !estado.enviando
-        campos.values.forEach { it.second.isEnabled = editable }
-        chipsModalidad.keys.forEach { grupoModalidad.findViewById<View>(it).isEnabled = editable }
         botonAgregarAlimento.isEnabled = editable
 
         avisoError.mostrarAviso(estado.errorApi)

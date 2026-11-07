@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Datos de una donación (título, descripción, dirección y modalidad). Lo usan Crear y Editar con <include>
+     y VistaDatosDonacion. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/Widget.Kumora.Etiqueta"
+        android:layout_marginTop="8dp"
+        android:labelFor="@id/entrada_titulo"
+        android:text="@string/crear_donacion_titulo" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/campo_titulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintEnabled="false">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/entrada_titulo"
+            style="@style/Widget.Kumora.Entrada"
+            android:hint="@string/crear_donacion_titulo_placeholder"
+            android:inputType="textCapSentences" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        style="@style/Widget.Kumora.Etiqueta"
+        android:labelFor="@id/entrada_descripcion"
+        android:text="@string/crear_donacion_descripcion" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/campo_descripcion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintEnabled="false">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/entrada_descripcion"
+            style="@style/Widget.Kumora.Entrada"
+            android:gravity="top"
+            android:hint="@string/crear_donacion_descripcion_placeholder"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLines="5"
+            android:minLines="2" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        style="@style/Widget.Kumora.Etiqueta"
+        android:labelFor="@id/entrada_direccion"
+        android:text="@string/crear_donacion_direccion" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/campo_direccion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintEnabled="false">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/entrada_direccion"
+            style="@style/Widget.Kumora.Entrada"
+            android:autofillHints="postalAddress"
+            android:hint="@string/crear_donacion_direccion_placeholder"
+            android:imeOptions="actionDone"
+            android:inputType="textPostalAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        style="@style/Widget.Kumora.Etiqueta"
+        android:text="@string/crear_donacion_modalidad" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/grupo_modalidad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_recoger"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/modalidad_recoger" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_domicilio"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/modalidad_domicilio" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_ambas"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/modalidad_ambas" />
+    </com.google.android.material.chip.ChipGroup>
+
+    <TextView
+        android:id="@+id/error_modalidad"
+        style="@style/Widget.Kumora.ErrorCampo"
+        android:paddingHorizontal="0dp"
+        tools:text="Elige cómo se entregan los alimentos."
+        tools:visibility="visible" />
+</LinearLayout>

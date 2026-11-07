@@ -7,12 +7,15 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.proyecto.kuska.KumoraApp
 import com.proyecto.kuska.R
-import com.proyecto.kuska.data.api.modelos.CategoriaPublica
 import com.proyecto.kuska.data.repositorio.DonacionesRepositorio
 import com.proyecto.kuska.ui.comun.TextoUi
+import com.proyecto.kuska.ui.comun.formularioalimento.CategoriasAlimento
+import com.proyecto.kuska.ui.comun.formularioalimento.EditorAlimento
+import com.proyecto.kuska.ui.comun.formularioalimento.EstadoCategorias
+import com.proyecto.kuska.ui.comun.formularioalimento.EstadoGuardadoAlimento
+import com.proyecto.kuska.ui.comun.formularioalimento.FormularioAlimento
 import com.proyecto.kuska.util.PREFIJO_ERROR_ALIMENTO
 import com.proyecto.kuska.util.Resultado
 import kotlinx.coroutines.channels.Channel
@@ -41,9 +44,6 @@ data class CrearDonacionEstado(
     /** Mensaje para el aviso rojo. */
     val errorApi: String? = null,
     val enviando: Boolean = false,
-    val categorias: List<CategoriaPublica> = emptyList(),
-    val cargandoCategorias: Boolean = false,
-    val errorCategorias: String? = null,
     /** Dirección que se llenó desde el perfil (no cuenta como dato escrito por el usuario). */
     val direccionPerfil: String? = null,
 ) {
@@ -54,28 +54,33 @@ data class CrearDonacionEstado(
             alimentos.isNotEmpty() || direccion.trim() != direccionPerfil.orEmpty().trim()
 }
 
-/** Alimento que se está agregando ([indice] = -1) o editando. */
-data class EdicionAlimento(
-    val indice: Int,
-    val alimento: AlimentoBorrador,
-    val errores: Map<CampoAlimento, TextoUi> = emptyMap(),
-    val procesandoFoto: Boolean = false,
-)
-
-/** ViewModel del grafo nav_crear_donacion: lo comparten la donación y el formulario del alimento. */
+/**
+ * ViewModel del grafo nav_crear_donacion: lo comparten la donación y el formulario del alimento.
+ * "Guardar alimento" lo agrega a la lista local; todo se envía junto con "Enviar donación".
+ */
 class CrearDonacionViewModel(
     private val app: Application,
     private val repositorio: DonacionesRepositorio,
-) : ViewModel() {
+) : ViewModel(), EditorAlimento {
 
     private val _estado = MutableStateFlow(CrearDonacionEstado())
     val estado: StateFlow<CrearDonacionEstado> = _estado.asStateFlow()
 
-    private val _edicion = MutableStateFlow<EdicionAlimento?>(null)
-    val edicion: StateFlow<EdicionAlimento?> = _edicion.asStateFlow()
+    /** Una foto que ya usa un alimento de la lista no se borra al reemplazarla ni al cancelar. */
+    override val formulario = FormularioAlimento(
+        scope = viewModelScope,
+        borrarFoto = { FotosAlimento.borrar(app, it) },
+        fotoEnUso = { ruta -> _estado.value.alimentos.any { it.alimento.rutaFoto == ruta } },
+    )
+
+    private val categoriasAlimento = CategoriasAlimento(viewModelScope, repositorio::obtenerCategorias)
+    override val categorias: StateFlow<EstadoCategorias> = categoriasAlimento.estado
+
+    /** Guardar es local: nunca hay carga ni error de API en el formulario. */
+    override val estadoGuardado: StateFlow<EstadoGuardadoAlimento> = MutableStateFlow(EstadoGuardadoAlimento())
 
     private val _alimentoGuardado = Channel<Unit>(Channel.BUFFERED)
-    val alimentoGuardado: Flow<Unit> = _alimentoGuardado.receiveAsFlow()
+    override val alimentoGuardado: Flow<Unit> = _alimentoGuardado.receiveAsFlow()
 
     private val _donacionEnviada = Channel<Unit>(Channel.BUFFERED)
     val donacionEnviada: Flow<Unit> = _donacionEnviada.receiveAsFlow()
@@ -189,20 +194,7 @@ class CrearDonacionViewModel(
         FotosAlimento.borrarTodas(app)
     }
 
-    fun cargarCategorias() {
-        if (_estado.value.cargandoCategorias) return
-        _estado.update { it.copy(cargandoCategorias = true, errorCategorias = null) }
-        viewModelScope.launch {
-            when (val resultado = repositorio.obtenerCategorias()) {
-                is Resultado.Exito -> _estado.update {
-                    it.copy(cargandoCategorias = false, categorias = resultado.datos)
-                }
-                is Resultado.Error -> _estado.update {
-                    it.copy(cargandoCategorias = false, errorCategorias = resultado.mensaje)
-                }
-            }
-        }
-    }
+    override fun cargarCategorias() = categoriasAlimento.cargar()
 
     /** Llena la dirección con la del perfil si el usuario aún no escribió una. Si falla, el campo queda como está. */
     private fun cargarDireccionPerfil() {
@@ -219,84 +211,15 @@ class CrearDonacionViewModel(
     // --- Alimento ---
 
     /** Prepara el formulario. Si ya se está editando ese mismo alimento (p. ej. al rotar), lo conserva. */
-    fun iniciarEdicion(indice: Int) {
-        if (_edicion.value?.indice == indice) return
-        val alimento = _estado.value.alimentos.getOrNull(indice)?.alimento
-        _edicion.value = if (alimento != null) EdicionAlimento(indice, alimento) else EdicionAlimento(-1, AlimentoBorrador())
+    override fun iniciarEdicion(indice: Int) {
+        formulario.iniciar(indice, _estado.value.alimentos.getOrNull(indice)?.alimento)
     }
 
-    fun cambiarCampoAlimento(campo: CampoAlimento, valor: String) {
-        val edicion = _edicion.value ?: return
-        val anterior = when (campo) {
-            CampoAlimento.NOMBRE -> edicion.alimento.nombre
-            CampoAlimento.DESCRIPCION -> edicion.alimento.descripcion
-            CampoAlimento.CANTIDAD -> edicion.alimento.cantidad
-            else -> return
-        }
-        if (anterior == valor) return
-        actualizarAlimento(campo) {
-            when (campo) {
-                CampoAlimento.NOMBRE -> it.copy(nombre = valor)
-                CampoAlimento.DESCRIPCION -> it.copy(descripcion = valor)
-                else -> it.copy(cantidad = valor)
-            }
-        }
-    }
+    override fun procesarFoto(origen: Uri, archivoCamara: File?) =
+        formulario.procesarFoto({ FotosAlimento.reducir(app, origen) }, archivoCamara)
 
-    fun elegirCategoria(categoria: CategoriaPublica) = actualizarAlimento(CampoAlimento.CATEGORIA) {
-        it.copy(categoriaId = categoria.id, categoriaNombre = categoria.nombre)
-    }
-
-    /** Al cambiar la unidad se vuelve a validar la cantidad ya escrita (entera o con decimales, RN-10a). */
-    fun elegirUnidad(unidad: String) {
-        val edicion = _edicion.value ?: return
-        val alimento = edicion.alimento.copy(unidadMedida = unidad)
-        val errorCantidad = alimento.cantidad.takeIf { it.isNotBlank() }
-            ?.let { ValidacionAlimento.validarCantidad(it, unidad) }
-        val errores = (edicion.errores - CampoAlimento.UNIDAD - CampoAlimento.CANTIDAD).let {
-            if (errorCantidad != null) it + (CampoAlimento.CANTIDAD to errorCantidad) else it
-        }
-        _edicion.value = edicion.copy(alimento = alimento, errores = errores)
-    }
-
-    fun elegirFecha(fechaUtc: Long) = actualizarAlimento(CampoAlimento.FECHA) { it.copy(fechaVencimiento = fechaUtc) }
-
-    /** Reduce la foto elegida o tomada. [archivoCamara]: el archivo original de la cámara, que se borra después. */
-    fun procesarFoto(origen: Uri, archivoCamara: File? = null) {
-        if (_edicion.value == null) return
-        _edicion.update { it?.copy(procesandoFoto = true) }
-        viewModelScope.launch {
-            val reducida = FotosAlimento.reducir(app, origen)
-            archivoCamara?.delete()
-            val edicion = _edicion.value
-            if (edicion == null) {
-                FotosAlimento.borrar(app, reducida?.path)
-                return@launch
-            }
-            if (reducida == null) {
-                _edicion.value = edicion.copy(
-                    procesandoFoto = false,
-                    errores = edicion.errores + (CampoAlimento.FOTO to TextoUi.Recurso(R.string.error_foto_no_leida)),
-                )
-                return@launch
-            }
-            borrarFotoSiNoSeUsa(edicion.alimento.rutaFoto)
-            _edicion.value = edicion.copy(
-                alimento = edicion.alimento.copy(rutaFoto = reducida.path),
-                errores = edicion.errores - CampoAlimento.FOTO,
-                procesandoFoto = false,
-            )
-        }
-    }
-
-    fun guardarAlimento() {
-        val edicion = _edicion.value ?: return
-        if (edicion.procesandoFoto) return
-        val errores = ValidacionAlimento.validar(edicion.alimento, MaterialDatePicker.todayInUtcMilliseconds())
-        if (errores.isNotEmpty()) {
-            _edicion.value = edicion.copy(errores = errores)
-            return
-        }
+    override fun guardarAlimento() {
+        val edicion = formulario.validar() ?: return
         val anterior = _estado.value.alimentos.getOrNull(edicion.indice)?.alimento
         _estado.update {
             val nuevo = AlimentoEnLista(edicion.alimento)
@@ -310,26 +233,12 @@ class CrearDonacionViewModel(
         if (anterior != null && anterior.rutaFoto != edicion.alimento.rutaFoto) {
             FotosAlimento.borrar(app, anterior.rutaFoto)
         }
-        _edicion.value = null
+        formulario.terminar()
         _alimentoGuardado.trySend(Unit)
     }
 
     /** Sale del formulario sin guardar: borra la foto nueva si no la usa ningún alimento de la lista. */
-    fun cancelarEdicion() {
-        val edicion = _edicion.value ?: return
-        borrarFotoSiNoSeUsa(edicion.alimento.rutaFoto)
-        _edicion.value = null
-    }
-
-    private fun actualizarAlimento(campo: CampoAlimento, cambio: (AlimentoBorrador) -> AlimentoBorrador) {
-        val edicion = _edicion.value ?: return
-        _edicion.value = edicion.copy(alimento = cambio(edicion.alimento), errores = edicion.errores - campo)
-    }
-
-    private fun borrarFotoSiNoSeUsa(ruta: String?) {
-        if (ruta == null || _estado.value.alimentos.any { it.alimento.rutaFoto == ruta }) return
-        FotosAlimento.borrar(app, ruta)
-    }
+    override fun cancelarEdicion() = formulario.cancelar()
 
     override fun onCleared() {
         // El grafo se cerró (enviada, descartada o cierre de sesión): ninguna foto temporal sirve ya.
