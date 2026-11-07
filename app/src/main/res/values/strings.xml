@@ -15,6 +15,7 @@
     <string name="titulo_agregar_alimento">Agregar alimento</string>
     <string name="titulo_editar_alimento">Editar alimento</string>
     <string name="titulo_detalle_donacion">Detalle de la donación</string>
+    <string name="titulo_editar_donacion">Editar donación</string>
 
     <!-- Comunes a varias pantallas -->
     <string name="accion_volver">Volver</string>
@@ -113,6 +114,20 @@
     <string name="detalle_eliminar_mensaje">Se eliminará la donación y sus fotos. No se puede deshacer.</string>
     <string name="detalle_eliminar_confirmar">Eliminar</string>
     <string name="accion_cancelar">Cancelar</string>
+    <string name="detalle_editar">Editar datos</string>
+    <string name="detalle_agregar_alimento">Agregar alimento</string>
+    <string name="detalle_quitar_titulo">¿Quitar este alimento?</string>
+    <string name="detalle_quitar_mensaje">Se quitará %1$s de la donación y se borrará su foto. No se puede deshacer.</string>
+    <string name="detalle_quitar_confirmar">Quitar</string>
+    <string name="detalle_quitar_ultimo">Para quitar este alimento, elimina la donación.</string>
+    <string name="detalle_cambios_guardados">Cambios guardados.</string>
+    <string name="detalle_alimento_agregado">Alimento agregado.</string>
+
+    <!-- Editar donación -->
+    <string name="editar_guardar">Guardar cambios</string>
+    <string name="editar_ya_no_pendiente">Esta donación ya fue revisada y no se puede editar.</string>
+    <string name="descartar_cambios_titulo">¿Descartar los cambios?</string>
+    <string name="descartar_cambios_mensaje">Se perderán los cambios que no guardaste.</string>
 
     <!-- Estados (EstadoDonacionEnum y EstadoSolicitudEnum) -->
     <string name="estado_pendiente">Pendiente</string>

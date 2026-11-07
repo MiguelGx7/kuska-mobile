@@ -13,12 +13,16 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.proyecto.kuska.R
+import com.proyecto.kuska.data.api.modelos.Alimento
 import com.proyecto.kuska.databinding.FragmentDetalleDonacionBinding
 import com.proyecto.kuska.ui.comun.mostrar
 import com.proyecto.kuska.ui.misdonaciones.MisDonacionesFragment
 import kotlinx.coroutines.launch
 
-/** Detalle de una donación del donante (RN-12, RN-15, RN-16). Editar, entregas y novedades llegan después. */
+/**
+ * Detalle de una donación del donante (RN-12, RN-15, RN-16). Si está Pendiente se pueden editar sus datos,
+ * agregar y quitar alimentos, o eliminarla. Entregas y novedades llegan después.
+ */
 class DetalleDonacionFragment : Fragment() {
 
     private var _binding: FragmentDetalleDonacionBinding? = null
@@ -43,16 +47,52 @@ class DetalleDonacionFragment : Fragment() {
         adapter = DetalleDonacionAdapter(
             alReintentarSolicitudes = viewModel::reintentarSolicitudes,
             alEliminar = ::confirmarEliminar,
+            alEditar = { abrir(R.id.action_detalle_a_editar) },
+            alAgregarAlimento = { abrir(R.id.action_detalle_a_agregar_alimento) },
+            alQuitarAlimento = ::confirmarQuitar,
         )
         binding.listaDetalle.adapter = adapter
         binding.deslizarRefrescar.setOnRefreshListener { viewModel.refrescar() }
         binding.estadoPantalla.botonReintentar.setOnClickListener { viewModel.reintentar() }
         binding.barra.setNavigationOnClickListener { findNavController().navigateUp() }
+        observarResultados()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch { viewModel.estado.collect(::mostrar) }
                 launch { viewModel.eventos.collect(::atenderEvento) }
+            }
+        }
+    }
+
+    /** Editar datos o agregar alimento (las dos reciben el id de la donación). */
+    private fun abrir(accion: Int) {
+        if (viewModel.estado.value.ocupado) return
+        viewModel.limpiarAviso()
+        findNavController().navigate(accion, Bundle().apply { putInt(ARG_ID, viewModel.estado.value.donacion?.id ?: return) })
+    }
+
+    private fun confirmarQuitar(alimento: Alimento) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.detalle_quitar_titulo)
+            .setMessage(getString(R.string.detalle_quitar_mensaje, alimento.nombre))
+            .setPositiveButton(R.string.detalle_quitar_confirmar) { _, _ -> viewModel.quitarAlimento(alimento.id) }
+            .setNegativeButton(R.string.accion_cancelar, null)
+            .show()
+    }
+
+    /** Editar y agregar dejan en el SavedStateHandle de esta pantalla un mensaje de éxito o un aviso. */
+    private fun observarResultados() {
+        val estadoGuardado = findNavController().currentBackStackEntry?.savedStateHandle ?: return
+        listOf(RESULTADO_EXITO, RESULTADO_AVISO).forEach { clave ->
+            estadoGuardado.getLiveData<String>(clave).observe(viewLifecycleOwner) { mensaje ->
+                if (mensaje == null) return@observe
+                estadoGuardado.remove<String>(clave)
+                if (clave == RESULTADO_EXITO) {
+                    viewModel.recibirResultado(exito = mensaje, aviso = null)
+                } else {
+                    viewModel.recibirResultado(exito = null, aviso = mensaje)
+                }
             }
         }
     }
@@ -89,7 +129,7 @@ class DetalleDonacionFragment : Fragment() {
             )
         )
         deslizarRefrescar.isRefreshing = estado.refrescando
-        deslizarRefrescar.isEnabled = !estado.eliminando
+        deslizarRefrescar.isEnabled = !estado.ocupado
         estadoPantalla.mostrar(
             cargando = estado.cargando && !estado.refrescando,
             mensaje = estado.error,
@@ -103,7 +143,11 @@ class DetalleDonacionFragment : Fragment() {
     }
 
     companion object {
-        /** Argumento de navegación: id de la donación. */
+        /** Argumento de navegación: id de la donación (también lo usan editar y agregar alimento). */
         const val ARG_ID = "id"
+
+        /** Claves en el SavedStateHandle de esta pantalla: Snackbar de éxito, o aviso rojo si ya no se podía editar. */
+        const val RESULTADO_EXITO = "resultado_exito"
+        const val RESULTADO_AVISO = "resultado_aviso"
     }
 }

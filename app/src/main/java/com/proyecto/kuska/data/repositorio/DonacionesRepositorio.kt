@@ -2,13 +2,18 @@ package com.proyecto.kuska.data.repositorio
 
 import android.content.Context
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.proyecto.kuska.R
 import com.proyecto.kuska.data.api.KumoraApi
+import com.proyecto.kuska.data.api.modelos.Alimento
 import com.proyecto.kuska.data.api.modelos.AlimentoConSolicitudes
 import com.proyecto.kuska.data.api.modelos.CategoriaPublica
+import com.proyecto.kuska.data.api.modelos.DatosAlimento
 import com.proyecto.kuska.data.api.modelos.DatosDonacion
 import com.proyecto.kuska.data.api.modelos.Donacion
 import com.proyecto.kuska.data.api.modelos.PaginaDonaciones
+import com.proyecto.kuska.ui.creardonacion.ConstructorDatos
+import com.proyecto.kuska.ui.editardonacion.CambiosDonacion
 import com.proyecto.kuska.util.Resultado
 import com.proyecto.kuska.util.extraerErroresDonacion
 import com.proyecto.kuska.util.extraerErroresPorCampo
@@ -18,6 +23,7 @@ import kotlinx.coroutines.CancellationException
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import java.io.File
 
@@ -66,6 +72,27 @@ class DonacionesRepositorio(
     suspend fun eliminarDonacion(id: Int): Resultado<Unit> =
         ejecutar({ api.eliminarDonacion(id) }, sinCuerpo = Unit)
 
+    /** PATCH con solo lo que cambió ([CambiosDonacion]); los opcionales vaciados viajan como null. */
+    suspend fun editarDonacion(id: Int, cambios: JsonObject): Resultado<Donacion> {
+        val cuerpo = CambiosDonacion.aJson(cambios).toRequestBody(TIPO_JSON)
+        return ejecutar({ api.editarDonacion(id, cuerpo) })
+    }
+
+    /** Multipart con los campos de AlimentoNuevoRequest y la foto obligatoria (RN-11a). */
+    suspend fun agregarAlimento(id: Int, alimento: DatosAlimento, foto: File): Resultado<Alimento> {
+        val partes = buildList {
+            ConstructorDatos.camposMultipart(alimento).forEach { (campo, valor) ->
+                add(MultipartBody.Part.createFormData(campo, valor))
+            }
+            add(MultipartBody.Part.createFormData(CAMPO_FOTO, foto.name, foto.asRequestBody(TIPO_JPEG)))
+        }
+        return ejecutar({ api.agregarAlimento(id, partes) })
+    }
+
+    /** No se puede quitar el último alimento: en ese caso se elimina la donación. */
+    suspend fun quitarAlimento(id: Int, alimentoId: Int): Resultado<Unit> =
+        ejecutar({ api.quitarAlimento(id, alimentoId) }, sinCuerpo = Unit)
+
     /**
      * Hace la llamada y convierte cualquier fallo (HTTP o de red) en [Resultado.Error].
      * [sinCuerpo]: valor de éxito para las respuestas sin cuerpo (204).
@@ -98,6 +125,8 @@ class DonacionesRepositorio(
 
     private companion object {
         const val CAMPO_DATOS = "datos"
+        const val CAMPO_FOTO = "foto"
         val TIPO_JPEG = "image/jpeg".toMediaType()
+        val TIPO_JSON = "application/json; charset=utf-8".toMediaType()
     }
 }

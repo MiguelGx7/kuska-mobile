@@ -1,5 +1,6 @@
 package com.proyecto.kuska.data.api
 
+import com.proyecto.kuska.data.api.modelos.Alimento
 import com.proyecto.kuska.data.api.modelos.AlimentoConSolicitudes
 import com.proyecto.kuska.data.api.modelos.CategoriaPublica
 import com.proyecto.kuska.data.api.modelos.Donacion
@@ -14,12 +15,14 @@ import com.proyecto.kuska.data.api.modelos.RefreshResponse
 import com.proyecto.kuska.data.api.modelos.RegistroRequest
 import com.proyecto.kuska.data.api.modelos.SolicitarCodigoRequest
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
@@ -70,6 +73,19 @@ interface KumoraApi {
     /** Solo Pendiente (RN-12). Responde 204 sin cuerpo. */
     @DELETE("donaciones/{id}/")
     suspend fun eliminarDonacion(@Path("id") id: Int): Response<Unit>
+
+    /** Solo Pendiente (RN-12). [cuerpo]: JSON con solo los campos que cambiaron (null para vaciar un opcional). */
+    @PATCH("donaciones/{id}/")
+    suspend fun editarDonacion(@Path("id") id: Int, @Body cuerpo: RequestBody): Response<Donacion>
+
+    /** Solo Pendiente. Multipart: campos del alimento (AlimentoNuevoRequest) y "foto". */
+    @Multipart
+    @POST("donaciones/{id}/alimentos/")
+    suspend fun agregarAlimento(@Path("id") id: Int, @Part partes: List<MultipartBody.Part>): Response<Alimento>
+
+    /** Solo Pendiente y nunca el último alimento. Responde 204 sin cuerpo. */
+    @DELETE("donaciones/{id}/alimentos/{alimento_id}/")
+    suspend fun quitarAlimento(@Path("id") id: Int, @Path("alimento_id") alimentoId: Int): Response<Unit>
 
     /** Sin paginación: una entrada por alimento con sus solicitudes. */
     @GET("donaciones/{id}/solicitudes-recibidas/")

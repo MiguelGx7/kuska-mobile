@@ -11,6 +11,7 @@ import com.proyecto.kuska.KumoraApp
 import com.proyecto.kuska.data.api.modelos.AlimentoConSolicitudes
 import com.proyecto.kuska.data.api.modelos.Donacion
 import com.proyecto.kuska.data.repositorio.DonacionesRepositorio
+import com.proyecto.kuska.ui.comun.ErroresAccion
 import com.proyecto.kuska.util.Resultado
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -35,8 +36,14 @@ data class DetalleDonacionEstado(
     val cargandoSolicitudes: Boolean = false,
     val errorSolicitudes: String? = null,
     val eliminando: Boolean = false,
-    val errorEliminar: String? = null,
-)
+    /** Alimento que se está quitando (null = ninguno). */
+    val quitandoId: Int? = null,
+    /** Aviso rojo del encabezado: error de la última acción (quitar, eliminar) o de editar/agregar. */
+    val aviso: String? = null,
+) {
+    /** Hay una acción en curso: las demás quedan deshabilitadas. */
+    val ocupado get() = eliminando || quitandoId != null
+}
 
 sealed interface EventoDetalle {
     data object Eliminada : EventoDetalle
@@ -64,13 +71,29 @@ class DetalleDonacionViewModel(
         cargar()
     }
 
+    /** Pull-to-refresh. También quita el aviso rojo de la última acción. */
     fun refrescar() {
-        if (_estado.value.eliminando) {
+        if (_estado.value.ocupado) {
             _estado.update { it.copy(refrescando = false) }
             return
         }
-        _estado.update { it.copy(refrescando = true) }
+        _estado.update { it.copy(refrescando = true, aviso = null) }
         cargar()
+    }
+
+    /**
+     * Volvió de editar o agregar: recarga. [exito] va en un Snackbar ("Cambios guardados.");
+     * [aviso] en el aviso rojo (la donación ya no se podía editar).
+     */
+    fun recibirResultado(exito: String?, aviso: String?) {
+        _estado.update { it.copy(aviso = aviso) }
+        exito?.let { _eventos.trySend(EventoDetalle.Mensaje(it)) }
+        cargar()
+    }
+
+    /** Antes de abrir editar o agregar. */
+    fun limpiarAviso() {
+        _estado.update { it.copy(aviso = null) }
     }
 
     fun reintentar() = cargar()
@@ -94,7 +117,6 @@ class DetalleDonacionViewModel(
                             donacion = donacion,
                             cargando = false,
                             refrescando = false,
-                            errorEliminar = null,
                             solicitudes = if (donacion.estado == Donacion.ESTADO_PENDIENTE) null else it.solicitudes,
                         )
                     }
@@ -126,18 +148,43 @@ class DetalleDonacionViewModel(
     /** Solo Pendiente (RN-12). Si el servidor no lo permite, su mensaje va en el aviso rojo. */
     fun eliminar() {
         val actual = _estado.value
-        if (actual.eliminando || actual.donacion?.estado != Donacion.ESTADO_PENDIENTE) return
+        if (actual.ocupado || actual.donacion?.estado != Donacion.ESTADO_PENDIENTE) return
         trabajo?.cancel()
-        _estado.update { it.copy(eliminando = true, errorEliminar = null, refrescando = false) }
+        _estado.update { it.copy(eliminando = true, aviso = null, refrescando = false) }
         viewModelScope.launch {
             when (val resultado = repositorio.eliminarDonacion(id)) {
                 // Se deja "eliminando" mientras la pantalla se cierra.
                 is Resultado.Exito -> _eventos.send(EventoDetalle.Eliminada)
-                is Resultado.Error -> _estado.update {
-                    it.copy(eliminando = false, errorEliminar = resultado.mensaje)
-                }
+                is Resultado.Error -> mostrarErrorAccion(resultado) { it.copy(eliminando = false) }
             }
         }
+    }
+
+    /** Solo Pendiente y con más de un alimento: el último no se quita, se elimina la donación. */
+    fun quitarAlimento(alimentoId: Int) {
+        val actual = _estado.value
+        val donacion = actual.donacion ?: return
+        if (actual.ocupado || donacion.estado != Donacion.ESTADO_PENDIENTE || donacion.alimentos.orEmpty().size < 2) return
+        trabajo?.cancel()
+        _estado.update { it.copy(quitandoId = alimentoId, aviso = null, refrescando = false) }
+        viewModelScope.launch {
+            when (val resultado = repositorio.quitarAlimento(id, alimentoId)) {
+                is Resultado.Exito -> {
+                    _estado.update { it.copy(quitandoId = null) }
+                    cargar()
+                }
+                is Resultado.Error -> mostrarErrorAccion(resultado) { it.copy(quitandoId = null) }
+            }
+        }
+    }
+
+    /**
+     * El mensaje va al aviso rojo del encabezado. Si puede ser que la donación ya no esté Pendiente (o ya no
+     * exista), se recarga: así el detalle muestra su estado real y desaparecen las acciones que ya no aplican.
+     */
+    private fun mostrarErrorAccion(error: Resultado.Error, terminar: (DetalleDonacionEstado) -> DetalleDonacionEstado) {
+        _estado.update { terminar(it).copy(aviso = error.mensaje) }
+        if (ErroresAccion.debeRevisarEstado(error)) cargar()
     }
 
     companion object {

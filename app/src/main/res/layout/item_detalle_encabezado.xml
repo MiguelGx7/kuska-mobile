@@ -72,4 +72,23 @@
         android:layout_marginTop="16dp"
         tools:text="Motivo del rechazo: La foto no muestra el alimento."
         tools:visibility="visible" />
+
+    <!-- Error de la última acción (quitar, eliminar) o de editar/agregar si la donación ya no era Pendiente -->
+    <TextView
+        android:id="@+id/aviso_accion"
+        style="@style/Widget.Kumora.AvisoError"
+        android:layout_marginTop="16dp"
+        tools:text="No se puede editar: la donación está Validada y debe estar Pendiente."
+        tools:visibility="visible" />
+
+    <!-- Solo en una donación Pendiente (RN-12) -->
+    <Button
+        android:id="@+id/boton_editar"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/detalle_editar"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </LinearLayout>

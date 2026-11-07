@@ -150,7 +150,7 @@ abstract class FormularioAlimentoFragment : Fragment() {
                         .collect { (edicion, guardado) -> edicion?.let { mostrar(it, guardado) } }
                 }
                 launch { editor.categorias.collect(::mostrarCategorias) }
-                launch { editor.alimentoGuardado.collect { findNavController().popBackStack() } }
+                launch { editor.alimentoGuardado.collect { alGuardar() } }
             }
         }
     }
@@ -158,6 +158,11 @@ abstract class FormularioAlimentoFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         archivoCamara?.let { outState.putString(ESTADO_ARCHIVO_CAMARA, it.path) }
+    }
+
+    /** El alimento quedó guardado: por defecto solo cierra el formulario. */
+    protected open fun alGuardar() {
+        findNavController().popBackStack()
     }
 
     /** Atrás o flecha: por defecto sale sin guardar. */

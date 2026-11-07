@@ -33,6 +33,19 @@ object ConstructorDatos {
         fechaVencimiento = formatoApi().format(requireNotNull(alimento.fechaVencimiento)),
     )
 
+    /**
+     * Campos de texto del multipart de POST donaciones/{id}/alimentos/ (AlimentoNuevoRequest), en el orden
+     * del schema. La descripción vacía no se envía. La foto va aparte.
+     */
+    fun camposMultipart(alimento: DatosAlimento): List<Pair<String, String>> = buildList {
+        add("categoria" to alimento.categoria.toString())
+        add("nombre" to alimento.nombre)
+        alimento.descripcion?.let { add("descripcion" to it) }
+        add("unidad_medida" to alimento.unidadMedida)
+        add("cantidad_total" to alimento.cantidadTotal)
+        add("fecha_vencimiento" to alimento.fechaVencimiento)
+    }
+
     /** yyyy-MM-dd en UTC, porque la fecha es la medianoche UTC del día elegido. */
     private fun formatoApi() = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
         timeZone = TimeZone.getTimeZone("UTC")

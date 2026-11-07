@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.dispose
 import coil.load
 import com.proyecto.kuska.R
+import com.proyecto.kuska.data.api.modelos.Alimento
 import com.proyecto.kuska.data.api.modelos.Donacion
+import com.proyecto.kuska.databinding.ItemDetalleAgregarBinding
 import com.proyecto.kuska.databinding.ItemDetalleAlimentoBinding
 import com.proyecto.kuska.databinding.ItemDetalleEliminarBinding
 import com.proyecto.kuska.databinding.ItemDetalleEncabezadoBinding
@@ -30,12 +32,16 @@ import com.proyecto.kuska.util.FormatoFecha
 class DetalleDonacionAdapter(
     private val alReintentarSolicitudes: () -> Unit,
     private val alEliminar: () -> Unit,
+    private val alEditar: () -> Unit,
+    private val alAgregarAlimento: () -> Unit,
+    private val alQuitarAlimento: (Alimento) -> Unit,
 ) : ListAdapter<FilaDetalle, RecyclerView.ViewHolder>(Diferencia) {
 
     override fun getItemViewType(posicion: Int) = when (getItem(posicion)) {
         is FilaDetalle.Encabezado -> TIPO_ENCABEZADO
         is FilaDetalle.Seccion -> TIPO_SECCION
         is FilaDetalle.AlimentoFila -> TIPO_ALIMENTO
+        is FilaDetalle.AgregarAlimento -> TIPO_AGREGAR
         is FilaDetalle.GrupoSolicitudes -> TIPO_GRUPO
         is FilaDetalle.SolicitudFila -> TIPO_SOLICITUD
         is FilaDetalle.MensajeSolicitudes -> TIPO_MENSAJE
@@ -48,6 +54,7 @@ class DetalleDonacionAdapter(
             TIPO_ENCABEZADO -> Encabezado(ItemDetalleEncabezadoBinding.inflate(inflador, padre, false))
             TIPO_SECCION -> Seccion(ItemDetalleSeccionBinding.inflate(inflador, padre, false))
             TIPO_ALIMENTO -> AlimentoVista(ItemDetalleAlimentoBinding.inflate(inflador, padre, false))
+            TIPO_AGREGAR -> Agregar(ItemDetalleAgregarBinding.inflate(inflador, padre, false))
             TIPO_GRUPO -> Grupo(ItemDetalleGrupoBinding.inflate(inflador, padre, false))
             TIPO_SOLICITUD -> Solicitud(ItemDetalleSolicitudBinding.inflate(inflador, padre, false))
             TIPO_MENSAJE -> Mensaje(ItemDetalleMensajeBinding.inflate(inflador, padre, false))
@@ -57,9 +64,10 @@ class DetalleDonacionAdapter(
 
     override fun onBindViewHolder(vista: RecyclerView.ViewHolder, posicion: Int) {
         when (val fila = getItem(posicion)) {
-            is FilaDetalle.Encabezado -> (vista as Encabezado).mostrar(fila.donacion)
+            is FilaDetalle.Encabezado -> (vista as Encabezado).mostrar(fila)
             is FilaDetalle.Seccion -> (vista as Seccion).binding.textoSeccion.setText(fila.titulo)
             is FilaDetalle.AlimentoFila -> (vista as AlimentoVista).mostrar(fila)
+            is FilaDetalle.AgregarAlimento -> (vista as Agregar).binding.botonAgregar.isEnabled = fila.habilitado
             is FilaDetalle.GrupoSolicitudes -> (vista as Grupo).binding.textoGrupo.text = fila.nombre
             is FilaDetalle.SolicitudFila -> (vista as Solicitud).mostrar(fila)
             is FilaDetalle.MensajeSolicitudes -> (vista as Mensaje).mostrar(fila)
@@ -67,9 +75,14 @@ class DetalleDonacionAdapter(
         }
     }
 
-    class Encabezado(private val binding: ItemDetalleEncabezadoBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun mostrar(donacion: Donacion) = with(binding) {
+    inner class Encabezado(private val binding: ItemDetalleEncabezadoBinding) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.botonEditar.setOnClickListener { alEditar() }
+        }
+
+        fun mostrar(fila: FilaDetalle.Encabezado) = with(binding) {
             val contexto = root.context
+            val donacion = fila.donacion
             textoTitulo.text = donacion.titulo
             etiquetaEstado.mostrarEstadoDonacion(donacion.estado)
             textoDescripcion.mostrarAviso(donacion.descripcion?.takeIf { it.isNotBlank() })
@@ -88,6 +101,9 @@ class DetalleDonacionAdapter(
                 donacion.motivoRechazo?.takeIf { donacion.estado == Donacion.ESTADO_RECHAZADA && it.isNotBlank() }
                     ?.let { contexto.getString(R.string.detalle_motivo_rechazo, it) }
             )
+            avisoAccion.mostrarAviso(fila.aviso)
+            botonEditar.isVisible = fila.editable
+            botonEditar.isEnabled = !fila.ocupado
         }
 
         private fun etiquetaModalidad(contexto: android.content.Context, modalidad: String) = when (modalidad) {
@@ -102,8 +118,15 @@ class DetalleDonacionAdapter(
 
     class Grupo(val binding: ItemDetalleGrupoBinding) : RecyclerView.ViewHolder(binding.root)
 
-    class AlimentoVista(private val binding: ItemDetalleAlimentoBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class AlimentoVista(private val binding: ItemDetalleAlimentoBinding) : RecyclerView.ViewHolder(binding.root) {
+        private var alimento: Alimento? = null
+
+        init {
+            binding.botonQuitar.setOnClickListener { alimento?.let(alQuitarAlimento) }
+        }
+
         fun mostrar(fila: FilaDetalle.AlimentoFila) = with(binding) {
+            this@AlimentoVista.alimento = fila.alimento
             val contexto = root.context
             val alimento = fila.alimento
 
@@ -137,6 +160,19 @@ class DetalleDonacionAdapter(
                     contexto.getString(R.string.detalle_maximo_solicitud, contexto.textoCantidad(it, alimento.unidadMedida))
                 }
             )
+
+            textoUltimo.isVisible = fila.quitar == ModoQuitar.ULTIMO
+            contenedorQuitar.isVisible = fila.quitar == ModoQuitar.PERMITIDO
+            botonQuitar.isEnabled = !fila.ocupado
+            botonQuitar.text = if (fila.quitando) null else contexto.getString(R.string.alimento_quitar)
+            botonQuitar.contentDescription = if (fila.quitando) contexto.getString(R.string.cargando) else null
+            indicadorQuitar.isVisible = fila.quitando
+        }
+    }
+
+    inner class Agregar(val binding: ItemDetalleAgregarBinding) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.botonAgregar.setOnClickListener { alAgregarAlimento() }
         }
     }
 
@@ -184,8 +220,7 @@ class DetalleDonacionAdapter(
         }
 
         fun mostrar(fila: FilaDetalle.Eliminar) = with(binding) {
-            avisoError.mostrarAviso(fila.error)
-            botonEliminar.isEnabled = !fila.eliminando
+            botonEliminar.isEnabled = fila.habilitado
             botonEliminar.text = if (fila.eliminando) null else root.context.getString(R.string.detalle_eliminar)
             botonEliminar.contentDescription = if (fila.eliminando) root.context.getString(R.string.cargando) else null
             indicador.isVisible = fila.eliminando
@@ -205,5 +240,6 @@ class DetalleDonacionAdapter(
         const val TIPO_SOLICITUD = 4
         const val TIPO_MENSAJE = 5
         const val TIPO_ELIMINAR = 6
+        const val TIPO_AGREGAR = 7
     }
 }

@@ -74,6 +74,31 @@
         <argument
             android:name="id"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_detalle_a_editar"
+            app:destination="@id/editarDonacionFragment" />
+        <action
+            android:id="@+id/action_detalle_a_agregar_alimento"
+            app:destination="@id/agregarAlimentoFragment" />
+    </fragment>
+
+    <!-- Solo para una donación Pendiente (RN-12). Cada una tiene su propio ViewModel. -->
+    <fragment
+        android:id="@+id/editarDonacionFragment"
+        android:name="com.proyecto.kuska.ui.editardonacion.EditarDonacionFragment"
+        android:label="@string/titulo_editar_donacion">
+        <argument
+            android:name="id"
+            app:argType="integer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/agregarAlimentoFragment"
+        android:name="com.proyecto.kuska.ui.agregaralimento.AgregarAlimentoFragment"
+        android:label="@string/titulo_agregar_alimento">
+        <argument
+            android:name="id"
+            app:argType="integer" />
     </fragment>
 
     <!-- Registrar donación: las dos pantallas comparten CrearDonacionViewModel (navGraphViewModels). -->

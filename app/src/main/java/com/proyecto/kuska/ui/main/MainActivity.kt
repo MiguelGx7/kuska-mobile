@@ -42,6 +42,8 @@ class MainActivity : AppCompatActivity() {
         R.id.crearDonacionFragment,
         R.id.alimentoFragment,
         R.id.detalleDonacionFragment,
+        R.id.editarDonacionFragment,
+        R.id.agregarAlimentoFragment,
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
