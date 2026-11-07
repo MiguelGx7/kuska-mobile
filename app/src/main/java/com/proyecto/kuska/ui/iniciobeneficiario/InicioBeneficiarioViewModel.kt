@@ -7,7 +7,11 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.proyecto.kuska.KumoraApp
 import com.proyecto.kuska.data.api.modelos.AlimentoDisponible
+import com.proyecto.kuska.data.api.modelos.DashboardBeneficiario
 import com.proyecto.kuska.data.repositorio.BeneficiarioRepositorio
+import com.proyecto.kuska.data.repositorio.NotificacionesRepositorio
+import com.proyecto.kuska.data.sesion.SesionManager
+import com.proyecto.kuska.ui.comun.Saludo
 import com.proyecto.kuska.ui.comun.formularioalimento.CategoriasAlimento
 import com.proyecto.kuska.util.Resultado
 import kotlinx.coroutines.Job
@@ -17,7 +21,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -41,10 +48,23 @@ data class InicioBeneficiarioEstado(
 }
 
 /**
- * Alimentos disponibles del beneficiario (HU-038 a HU-041): lista paginada con buscador, categoría y modalidad.
- * En el paso 15 esta pantalla suma un resumen arriba (contenedor_resumen del layout).
+ * Resumen del inicio (HU-121), independiente de la lista: si falla, la lista sigue igual. [error] solo cuando no
+ * hay datos (si un refresco falla, se queda el último resumen).
  */
-class InicioBeneficiarioViewModel(private val repositorio: BeneficiarioRepositorio) : ViewModel() {
+data class ResumenEstado(
+    val datos: DashboardBeneficiario? = null,
+    val error: String? = null,
+)
+
+/**
+ * Alimentos disponibles del beneficiario (HU-038 a HU-041): lista paginada con buscador, categoría y modalidad.
+ * Arriba, el resumen (HU-121), que se recarga al volver a la pestaña (no al girar); la lista, no.
+ */
+class InicioBeneficiarioViewModel(
+    private val repositorio: BeneficiarioRepositorio,
+    private val notificaciones: NotificacionesRepositorio,
+    sesionManager: SesionManager,
+) : ViewModel() {
 
     private val _estado = MutableStateFlow(InicioBeneficiarioEstado())
     val estado: StateFlow<InicioBeneficiarioEstado> = _estado.asStateFlow()
@@ -63,9 +83,52 @@ class InicioBeneficiarioViewModel(private val repositorio: BeneficiarioRepositor
     /** Filtros con los que se pidió la lista que se ve (o se está pidiendo). */
     private var consultados = FiltrosAlimentos()
 
+    private val _resumen = MutableStateFlow(ResumenEstado())
+    val resumen: StateFlow<ResumenEstado> = _resumen.asStateFlow()
+
+    /** Para "Hola, …" del resumen. */
+    val nombre: StateFlow<String?> = sesionManager.sesion
+        .map { Saludo.nombre(it?.usuario) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private var trabajoResumen: Job? = null
+    private var recargarResumenAlVolver = false
+
     init {
         categorias.cargar()
         cargarPrimera(pantallaCompleta = true)
+        cargarResumen()
+    }
+
+    fun reintentarResumen() = cargarResumen()
+
+    /** Se fue a otra pestaña, a otra pantalla o a segundo plano (no al girar). */
+    fun marcarSalida() {
+        recargarResumenAlVolver = true
+    }
+
+    /** Al volver a la pestaña solo se recarga el resumen. */
+    fun alVolver() {
+        if (!recargarResumenAlVolver) return
+        recargarResumenAlVolver = false
+        cargarResumen()
+    }
+
+    /** Además del resumen, trae las no leídas: actualiza la campana. */
+    private fun cargarResumen() {
+        trabajoResumen?.cancel()
+        _resumen.update { it.copy(error = null) }
+        trabajoResumen = viewModelScope.launch {
+            when (val resultado = repositorio.obtenerDashboard()) {
+                is Resultado.Exito -> {
+                    _resumen.value = ResumenEstado(datos = resultado.datos)
+                    notificaciones.fijarContador(resultado.datos.notificacionesNoLeidas)
+                }
+                is Resultado.Error -> _resumen.update {
+                    if (it.datos != null) it else it.copy(error = resultado.mensaje)
+                }
+            }
+        }
     }
 
     /** Busca 400 ms después de la última tecla; mientras tanto la lista sigue como está. */
@@ -96,6 +159,7 @@ class InicioBeneficiarioViewModel(private val repositorio: BeneficiarioRepositor
         if (categorias.estado.value.lista.isEmpty()) categorias.cargar()
         _estado.update { it.copy(refrescando = true) }
         cargarPrimera(pantallaCompleta = _estado.value.alimentos.isEmpty())
+        cargarResumen()
     }
 
     fun reintentar() = cargarPrimera(pantallaCompleta = true)
@@ -181,7 +245,8 @@ class InicioBeneficiarioViewModel(private val repositorio: BeneficiarioRepositor
     companion object {
         val Factory = viewModelFactory {
             initializer {
-                InicioBeneficiarioViewModel((this[APPLICATION_KEY] as KumoraApp).beneficiarioRepositorio)
+                val app = this[APPLICATION_KEY] as KumoraApp
+                InicioBeneficiarioViewModel(app.beneficiarioRepositorio, app.notificacionesRepositorio, app.sesionManager)
             }
         }
     }

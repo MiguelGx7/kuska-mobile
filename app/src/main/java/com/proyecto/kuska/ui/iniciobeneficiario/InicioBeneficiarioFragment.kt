@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -27,15 +28,18 @@ import com.proyecto.kuska.data.api.modelos.AlimentoDisponible
 import com.proyecto.kuska.data.api.modelos.CategoriaPublica
 import com.proyecto.kuska.data.api.modelos.Donacion
 import com.proyecto.kuska.databinding.FragmentInicioBeneficiarioBinding
+import com.proyecto.kuska.databinding.VistaCifraBinding
 import com.proyecto.kuska.ui.comun.PieLista
 import com.proyecto.kuska.ui.comun.PieListaAdapter
 import com.proyecto.kuska.ui.comun.mostrar
 import com.proyecto.kuska.ui.detallealimento.DetalleAlimentoFragment
+import com.proyecto.kuska.ui.detallesolicitud.DetalleSolicitudFragment
+import com.proyecto.kuska.util.FormatoFecha
 import kotlinx.coroutines.launch
 
 /**
  * Inicio del beneficiario: alimentos disponibles (HU-038 a HU-041). El buscador y los filtros quedan fijos arriba;
- * contenedor_resumen (paso 15) se desplaza con la lista.
+ * el resumen (HU-121, en contenedor_resumen) se desplaza con la lista y se recarga al volver a la pestaña.
  */
 class InicioBeneficiarioFragment : Fragment() {
 
@@ -97,11 +101,22 @@ class InicioBeneficiarioFragment : Fragment() {
         binding.estadoPantalla.botonReintentar.setOnClickListener { viewModel.reintentar() }
 
         observarResultados()
+        binding.resumen.botonReintentar.setOnClickListener { viewModel.reintentarResumen() }
+        binding.resumen.tarjetaRecogida.setOnClickListener { abrirProximaRecogida() }
+        binding.resumen.cifraPendientes.etiqueta.setText(R.string.resumen_pendientes)
+        binding.resumen.cifraAprobadas.etiqueta.setText(R.string.resumen_aprobadas)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch { viewModel.estado.collect(::mostrar) }
                 launch { viewModel.categorias.estado.collect { crearChipsCategoria(it.lista) } }
+                launch { viewModel.resumen.collect(::mostrarResumen) }
+                launch {
+                    viewModel.nombre.collect { nombre ->
+                        binding.resumen.textoSaludo.text = nombre?.let { getString(R.string.inicio_hola_nombre, it) }
+                            ?: getString(R.string.inicio_hola)
+                    }
+                }
                 launch {
                     viewModel.mensajes.collect { mensaje ->
                         Snackbar.make(binding.root, mensaje, Snackbar.LENGTH_LONG).show()
@@ -156,6 +171,64 @@ class InicioBeneficiarioFragment : Fragment() {
         if (grupo.checkedChipId == View.NO_ID) {
             grupo.check(grupo.getChildAt(0).id)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.alVolver()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Al girar la pantalla no se recarga el resumen; en cualquier otra salida, sí al volver.
+        if (!requireActivity().isChangingConfigurations) viewModel.marcarSalida()
+    }
+
+    /** HU-121: la tarjeta de la próxima recogida abre el detalle de esa solicitud. */
+    private fun abrirProximaRecogida() {
+        val recogida = viewModel.resumen.value.datos?.proximaRecogida ?: return
+        val navegacion = findNavController()
+        if (navegacion.currentDestination?.id != R.id.inicioBeneficiarioFragment) return
+        navegacion.navigate(
+            R.id.action_inicio_beneficiario_a_detalle_solicitud,
+            Bundle().apply { putInt(DetalleSolicitudFragment.ARG_ID, recogida.solicitud) },
+        )
+    }
+
+    /**
+     * Oculto hasta tener datos (o un error en la primera carga). Si falla, una fila pequeña con "Reintentar":
+     * la lista de alimentos no cambia.
+     */
+    private fun mostrarResumen(resumen: ResumenEstado) = with(binding.resumen) {
+        val datos = resumen.datos
+        binding.contenedorResumen.isVisible = datos != null || resumen.error != null
+        filaError.isVisible = datos == null && resumen.error != null
+        textoError.text = getString(R.string.resumen_error)
+        contenidoResumen.isVisible = datos != null
+        if (datos == null) return@with
+
+        cifra(cifraPendientes, datos.solicitudesPendientes, R.string.resumen_pendientes)
+        cifra(cifraAprobadas, datos.solicitudesAprobadas, R.string.resumen_aprobadas)
+        val cupos = ReglasResumen.cupos(datos)
+        textoCupos.isVisible = !ReglasResumen.enLimite(datos)
+        textoCupos.text = resources.getQuantityString(R.plurals.resumen_cupos, cupos, cupos)
+        avisoLimite.isVisible = ReglasResumen.enLimite(datos)
+        avisoLimite.text = getString(R.string.resumen_limite, datos.maxSolicitudesActivas)
+
+        val recogida = datos.proximaRecogida
+        tarjetaRecogida.isVisible = recogida != null
+        if (recogida != null) {
+            val fecha = FormatoFecha.fechaHoraDeFechaHora(recogida.fechaLimiteRecogida) ?: recogida.fechaLimiteRecogida
+            textoTituloRecogida.setText(ReglasResumen.titulo(recogida))
+            textoFechaRecogida.text = getString(ReglasResumen.etiquetaFecha(recogida), fecha)
+            textoPedidoRecogida.text = getString(R.string.mis_solicitudes_pedido, recogida.codigoPedido)
+            textoDonacionRecogida.text = getString(R.string.solicitud_donacion, recogida.donacionTitulo)
+        }
+    }
+
+    private fun cifra(vista: VistaCifraBinding, valor: Int, etiqueta: Int) {
+        vista.numero.text = valor.toString()
+        vista.root.contentDescription = "$valor ${getString(etiqueta)}"
     }
 
     private fun abrirDetalle(alimento: AlimentoDisponible) {

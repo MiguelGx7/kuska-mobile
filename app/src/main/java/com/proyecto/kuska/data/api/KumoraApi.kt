@@ -11,6 +11,8 @@ import com.proyecto.kuska.data.api.modelos.PedidoEnviado
 import com.proyecto.kuska.data.api.modelos.PaginaAlimentosDisponibles
 import com.proyecto.kuska.data.api.modelos.CambiarContrasenaRequest
 import com.proyecto.kuska.data.api.modelos.CategoriaPublica
+import com.proyecto.kuska.data.api.modelos.DashboardBeneficiario
+import com.proyecto.kuska.data.api.modelos.DashboardDonante
 import com.proyecto.kuska.data.api.modelos.Donacion
 import com.proyecto.kuska.data.api.modelos.Entrega
 import com.proyecto.kuska.data.api.modelos.EntregarRequest
@@ -197,6 +199,14 @@ interface KumoraApi {
 
     @POST("notificaciones/leer-todas/")
     suspend fun marcarTodasLeidas(): Response<LeerTodas>
+
+    /** Inicio del donante (RN-61). Antes aplica los vencimientos pendientes (RN-50). */
+    @GET("dashboard/donante/")
+    suspend fun dashboardDonante(): Response<DashboardDonante>
+
+    /** Inicio del beneficiario (RN-62). Antes aplica los vencimientos de sus solicitudes (RN-50). */
+    @GET("dashboard/beneficiario/")
+    suspend fun dashboardBeneficiario(): Response<DashboardBeneficiario>
 }
 
 /** Solo para el refresh de tokens. Usa un cliente sin interceptor de auth ni Authenticator. */

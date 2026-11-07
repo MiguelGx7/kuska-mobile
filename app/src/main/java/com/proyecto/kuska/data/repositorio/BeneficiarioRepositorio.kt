@@ -8,6 +8,7 @@ import com.proyecto.kuska.data.api.modelos.CarritoAgregarRequest
 import com.proyecto.kuska.data.api.modelos.CarritoCantidadRequest
 import com.proyecto.kuska.data.api.modelos.CarritoItem
 import com.proyecto.kuska.data.api.modelos.CategoriaPublica
+import com.proyecto.kuska.data.api.modelos.DashboardBeneficiario
 import com.proyecto.kuska.data.api.modelos.ConfirmarEntregaRequest
 import com.proyecto.kuska.data.api.modelos.EnviarCarritoRequest
 import com.proyecto.kuska.data.api.modelos.MiSolicitud
@@ -32,6 +33,9 @@ class BeneficiarioRepositorio(
 
     /** Solo las activas (RN-17), para el filtro por categoría. */
     suspend fun obtenerCategorias(): Resultado<List<CategoriaPublica>> = ejecutar({ api.obtenerCategorias() })
+
+    /** Resumen del inicio (HU-121): solicitudes activas, cupos, próxima recogida y no leídas. */
+    suspend fun obtenerDashboard(): Resultado<DashboardBeneficiario> = ejecutar({ api.dashboardBeneficiario() })
 
     /** Ya vienen ordenados por vencimiento más cercano. [pagina] empieza en 1. */
     suspend fun listarAlimentos(filtros: FiltrosAlimentos, pagina: Int): Resultado<PaginaAlimentosDisponibles> =

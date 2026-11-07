@@ -8,6 +8,7 @@ import com.proyecto.kuska.data.api.KumoraApi
 import com.proyecto.kuska.data.api.modelos.Alimento
 import com.proyecto.kuska.data.api.modelos.AlimentoConSolicitudes
 import com.proyecto.kuska.data.api.modelos.CategoriaPublica
+import com.proyecto.kuska.data.api.modelos.DashboardDonante
 import com.proyecto.kuska.data.api.modelos.DatosAlimento
 import com.proyecto.kuska.data.api.modelos.DatosDonacion
 import com.proyecto.kuska.data.api.modelos.Donacion
@@ -40,6 +41,9 @@ class DonacionesRepositorio(
 
     suspend fun obtenerCategorias(): Resultado<List<CategoriaPublica>> =
         ejecutar({ api.obtenerCategorias() })
+
+    /** Inicio del donante (HU-035 a HU-037). */
+    suspend fun obtenerDashboard(): Resultado<DashboardDonante> = ejecutar({ api.dashboardDonante() })
 
     /** Dirección del perfil del usuario (null si no tiene). */
     suspend fun obtenerDireccionPerfil(): Resultado<String?> =

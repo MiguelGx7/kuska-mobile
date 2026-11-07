@@ -106,6 +106,20 @@ class MisDonacionesFragment : Fragment() {
         }
     }
 
+    /** El Inicio pidió un filtro (tocó un estado): se aplica una sola vez, como "Ver mis solicitudes". */
+    override fun onStart() {
+        super.onStart()
+        val pedido = consumirFiltro() ?: return
+        viewModel.cambiarFiltro(pedido.estado)
+        marcarChip(pedido.estado)
+    }
+
+    /** Marca el chip de [estado] sin volver a pedir la lista (cambiarFiltro ignora el filtro actual). */
+    private fun marcarChip(estado: String?) {
+        val id = filtros.entries.firstOrNull { it.value == estado }?.key ?: return
+        binding.grupoFiltros.check(id)
+    }
+
     private fun abrirDetalle(donacion: Donacion) {
         viewModel.marcarSalida()
         findNavController().navigate(
@@ -173,5 +187,22 @@ class MisDonacionesFragment : Fragment() {
         const val RESULTADO_DONACION_ELIMINADA = "donacion_eliminada"
 
         private const val MARGEN_PAGINA = 3
+
+        /** Filtro pedido desde otra pestaña ([estado] null = Todas). */
+        private class FiltroPedido(val estado: String?)
+
+        /** Lo pide el Inicio antes de cambiar de pestaña. Se atiende en el siguiente onStart. */
+        @Volatile
+        private var filtroAlEntrar: FiltroPedido? = null
+
+        fun pedirFiltro(estado: String?) {
+            filtroAlEntrar = FiltroPedido(estado)
+        }
+
+        private fun consumirFiltro(): FiltroPedido? {
+            val pedido = filtroAlEntrar
+            filtroAlEntrar = null
+            return pedido
+        }
     }
 }

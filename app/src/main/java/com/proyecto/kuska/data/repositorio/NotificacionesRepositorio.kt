@@ -58,6 +58,11 @@ class NotificacionesRepositorio(
         _noLeidas.update { actual -> actual?.let { (it + cambio).coerceAtLeast(0) } }
     }
 
+    /** Otro endpoint trajo el total de no leídas (p. ej. el resumen del beneficiario). */
+    fun fijarContador(noLeidas: Int) {
+        _noLeidas.value = noLeidas.coerceAtLeast(0)
+    }
+
     /** Al cerrar sesión o cambiar de cuenta. */
     fun limpiar() {
         _noLeidas.value = null

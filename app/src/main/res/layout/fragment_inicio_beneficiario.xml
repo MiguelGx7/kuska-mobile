@@ -26,7 +26,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone"
-            app:layout_scrollFlags="scroll" />
+            app:layout_scrollFlags="scroll">
+
+            <include
+                android:id="@+id/resumen"
+                layout="@layout/vista_resumen_beneficiario" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"

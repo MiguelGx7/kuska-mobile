@@ -365,6 +365,69 @@
     <string name="solicitud_cancelar_confirmar">Cancelar solicitud</string>
     <string name="solicitud_cancelada">Solicitud cancelada.</string>
 
+    <!-- Inicios (paso 15b) -->
+    <string name="inicio_hola">Hola</string>
+    <string name="inicio_hola_nombre">Hola, %1$s</string>
+
+    <!-- Inicio del donante (HU-035 a HU-037) -->
+    <string name="inicio_donante_vacio_titulo">Aún no has hecho donaciones</string>
+    <string name="inicio_donante_vacio_mensaje">Tu primera donación puede llegar hoy mismo a una familia que la necesita.</string>
+    <string name="inicio_donante_primera">Crear mi primera donación</string>
+    <string name="inicio_donante_estados">Tus donaciones</string>
+    <string name="inicio_donante_estado_descripcion">%1$s: %2$d. Ver en Mis donaciones</string>
+    <string name="inicio_donante_entregado">Lo que has entregado</string>
+    <plurals name="inicio_donante_entregas">
+        <item quantity="one">entrega</item>
+        <item quantity="other">entregas</item>
+    </plurals>
+    <plurals name="inicio_donante_alimentos">
+        <item quantity="one">alimento entregado</item>
+        <item quantity="other">alimentos entregados</item>
+    </plurals>
+    <plurals name="inicio_donante_personas">
+        <item quantity="one">persona ayudada</item>
+        <item quantity="other">personas ayudadas</item>
+    </plurals>
+    <string name="inicio_donante_cantidades">Entregaste %1$s</string>
+    <string name="inicio_donante_sin_entregas">Todavía no has entregado alimentos.</string>
+    <string name="inicio_donante_meses">Últimos 12 meses</string>
+    <string name="inicio_donante_sin_actividad">Sin actividad en los últimos 12 meses.</string>
+    <string name="inicio_donante_meses_descripcion">Gráfica de los últimos 12 meses. %1$s</string>
+    <string name="inicio_donante_mes_descripcion">%1$s: %2$d donaciones y %3$d entregas</string>
+    <string name="inicio_donante_categorias">Por categoría</string>
+    <string name="inicio_donante_categoria_descripcion">%1$s: %2$d alimentos donados y %3$d entregados</string>
+    <string name="inicio_donante_serie_donaciones">Donaciones</string>
+    <string name="inicio_donante_serie_entregas">Entregas</string>
+    <string name="inicio_donante_serie_donados">Alimentos donados</string>
+    <string name="inicio_donante_serie_entregados">Alimentos entregados</string>
+    <string-array name="meses">
+        <item>enero</item>
+        <item>febrero</item>
+        <item>marzo</item>
+        <item>abril</item>
+        <item>mayo</item>
+        <item>junio</item>
+        <item>julio</item>
+        <item>agosto</item>
+        <item>septiembre</item>
+        <item>octubre</item>
+        <item>noviembre</item>
+        <item>diciembre</item>
+    </string-array>
+
+    <!-- Resumen del beneficiario (HU-121) -->
+    <string name="resumen_pendientes">Pendientes</string>
+    <string name="resumen_aprobadas">Aprobadas</string>
+    <plurals name="resumen_cupos">
+        <item quantity="one">Puedes enviar %1$d pedido más</item>
+        <item quantity="other">Puedes enviar %1$d pedidos más</item>
+    </plurals>
+    <string name="resumen_limite">Llegaste al límite de %1$d pedidos activos. Podrás enviar otro cuando alguno se entregue o se cancele.</string>
+    <string name="resumen_proxima_recogida">Tu próxima recogida</string>
+    <string name="resumen_proxima_entrega">Tu próxima entrega</string>
+    <string name="resumen_fecha_limite">Fecha límite: %1$s</string>
+    <string name="resumen_error">No pudimos cargar tu resumen.</string>
+
     <!-- Notificaciones (HU-119, HU-120) -->
     <string name="titulo_notificaciones">Notificaciones</string>
     <string name="notificaciones_campana">Notificaciones</string>

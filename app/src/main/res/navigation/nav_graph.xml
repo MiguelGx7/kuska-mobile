@@ -39,6 +39,9 @@
         android:name="com.proyecto.kuska.ui.iniciobeneficiario.InicioBeneficiarioFragment"
         android:label="@string/titulo_inicio_beneficiario">
         <action
+            android:id="@+id/action_inicio_beneficiario_a_detalle_solicitud"
+            app:destination="@id/detalleSolicitudFragment" />
+        <action
             android:id="@+id/action_inicio_beneficiario_a_detalle_alimento"
             app:destination="@id/detalleAlimentoFragment" />
     </fragment>

@@ -162,6 +162,23 @@
         <item name="android:textAppearance">?attr/textAppearanceLabelMedium</item>
     </style>
 
+    <!-- Título de sección en los inicios (donante y resumen del beneficiario) -->
+    <style name="Widget.Kumora.TituloSeccionInicio" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:accessibilityHeading">true</item>
+        <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <!-- Aviso naranja: algo que conviene saber, no un error -->
+    <style name="Widget.Kumora.AvisoAdvertencia" parent="Widget.Kumora.AvisoError">
+        <item name="android:background">@drawable/fondo_aviso_advertencia</item>
+        <item name="android:textColor">@color/estado_naranja_texto</item>
+    </style>
+
     <!-- Error bajo un grupo de chips u otro control sin TextInputLayout -->
     <style name="Widget.Kumora.ErrorCampo" parent="">
         <item name="android:layout_width">match_parent</item>
