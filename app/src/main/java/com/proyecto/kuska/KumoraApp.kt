@@ -3,6 +3,7 @@ package com.proyecto.kuska
 import android.app.Application
 import com.proyecto.kuska.data.api.ClienteApi
 import com.proyecto.kuska.data.repositorio.AuthRepositorio
+import com.proyecto.kuska.data.repositorio.BeneficiarioRepositorio
 import com.proyecto.kuska.data.repositorio.DonacionesRepositorio
 import com.proyecto.kuska.data.repositorio.PerfilRepositorio
 import com.proyecto.kuska.data.sesion.SesionManager
@@ -20,6 +21,10 @@ class KumoraApp : Application() {
 
     val donacionesRepositorio: DonacionesRepositorio by lazy {
         DonacionesRepositorio(this, clienteApi.api)
+    }
+
+    val beneficiarioRepositorio: BeneficiarioRepositorio by lazy {
+        BeneficiarioRepositorio(this, clienteApi.api)
     }
 
     val perfilRepositorio: PerfilRepositorio by lazy {

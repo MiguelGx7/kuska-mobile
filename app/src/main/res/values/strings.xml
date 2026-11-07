@@ -267,6 +267,26 @@
     <string name="titulo_editar_perfil">Editar perfil</string>
     <string name="titulo_cambiar_contrasena">Cambiar contraseña</string>
 
+    <!-- Beneficiario: alimentos disponibles y carrito -->
+    <string name="alimentos_titulo">Alimentos disponibles</string>
+    <string name="alimentos_buscar">Busca por nombre, categoría o donación</string>
+    <string name="alimentos_vacia">Por ahora no hay alimentos disponibles. Vuelve más tarde.</string>
+    <string name="alimentos_vacia_filtro">No encontramos alimentos con ese filtro.</string>
+    <string name="alimentos_modalidad_todas">Todas</string>
+    <string name="alimentos_disponible">Disponible %1$s</string>
+    <string name="alimentos_dona">Dona: %1$s</string>
+    <string name="alimentos_donacion">Donación: %1$s</string>
+    <string name="titulo_detalle_alimento">Alimento</string>
+    <string name="carrito_cantidad">¿Cuánto quieres pedir?</string>
+    <string name="carrito_puedes_pedir">Puedes pedir hasta %1$s</string>
+    <string name="carrito_sin_cupo">Este alimento ya no se puede pedir.</string>
+    <string name="carrito_restar">Pedir uno menos</string>
+    <string name="carrito_sumar">Pedir uno más</string>
+    <string name="carrito_agregar">Agregar al carrito</string>
+    <string name="carrito_agregado">Agregado al carrito.</string>
+    <string name="carrito_ver">Ver carrito</string>
+    <string name="carrito_error_maximo">Puedes pedir como máximo %1$s.</string>
+
     <!-- Barra inferior -->
     <string name="nav_inicio">Inicio</string>
     <string name="nav_carrito">Carrito</string>

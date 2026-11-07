@@ -2,6 +2,9 @@ package com.proyecto.kuska.data.api
 
 import com.proyecto.kuska.data.api.modelos.Alimento
 import com.proyecto.kuska.data.api.modelos.AlimentoConSolicitudes
+import com.proyecto.kuska.data.api.modelos.CarritoAgregarRequest
+import com.proyecto.kuska.data.api.modelos.CarritoItem
+import com.proyecto.kuska.data.api.modelos.PaginaAlimentosDisponibles
 import com.proyecto.kuska.data.api.modelos.CambiarContrasenaRequest
 import com.proyecto.kuska.data.api.modelos.CategoriaPublica
 import com.proyecto.kuska.data.api.modelos.Donacion
@@ -122,6 +125,19 @@ interface KumoraApi {
     /** Solo sobre una donación Validada o Agotada propia (RN-30). Responde 201. */
     @POST("novedades/")
     suspend fun reportarNovedad(@Body cuerpo: NovedadCrearRequest): Response<Novedad>
+
+    /** Beneficiario (RN-14). Paginado y ordenado por vencimiento. Los filtros null no se envían. */
+    @GET("alimentos-disponibles/")
+    suspend fun listarAlimentosDisponibles(
+        @Query("search") busqueda: String?,
+        @Query("categoria") categoria: Int?,
+        @Query("modalidad") modalidad: String?,
+        @Query("page") pagina: Int,
+    ): Response<PaginaAlimentosDisponibles>
+
+    /** RN-20: 201 si es nuevo, 200 si ya estaba y se actualizó la cantidad. El carrito no reserva. */
+    @POST("carrito/")
+    suspend fun agregarAlCarrito(@Body cuerpo: CarritoAgregarRequest): Response<CarritoItem>
 }
 
 /** Solo para el refresh de tokens. Usa un cliente sin interceptor de auth ni Authenticator. */

@@ -37,7 +37,22 @@
     <fragment
         android:id="@+id/inicioBeneficiarioFragment"
         android:name="com.proyecto.kuska.ui.iniciobeneficiario.InicioBeneficiarioFragment"
-        android:label="@string/titulo_inicio_beneficiario" />
+        android:label="@string/titulo_inicio_beneficiario">
+        <action
+            android:id="@+id/action_inicio_beneficiario_a_detalle_alimento"
+            app:destination="@id/detalleAlimentoFragment" />
+    </fragment>
+
+    <!-- No hay endpoint de detalle: recibe el alimento de la lista como JSON. Devuelve el resultado en el
+         SavedStateHandle de la lista (agregado o recargar). -->
+    <fragment
+        android:id="@+id/detalleAlimentoFragment"
+        android:name="com.proyecto.kuska.ui.detallealimento.DetalleAlimentoFragment"
+        android:label="@string/titulo_detalle_alimento">
+        <argument
+            android:name="alimento"
+            app:argType="string" />
+    </fragment>
 
     <fragment
         android:id="@+id/carritoFragment"

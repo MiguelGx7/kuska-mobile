@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         R.id.agregarAlimentoFragment,
         R.id.editarPerfilFragment,
         R.id.cambiarContrasenaFragment,
+        R.id.detalleAlimentoFragment,
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
