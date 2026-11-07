@@ -129,11 +129,4 @@ class ReglasSolicitudTest {
         )
         assertNull(ReglasSolicitud.direccionEntrega(solicitud(modalidad = MiSolicitud.MODALIDAD_RECOGER, direccionEntrega = "Calle 1 Sur")))
     }
-
-    @Test
-    fun plazoDeConfirmacionSoloMientrasEstaPendiente() {
-        assertTrue(ReglasSolicitud.mostrarPlazoConfirmacion(entrega()))
-        assertFalse(ReglasSolicitud.mostrarPlazoConfirmacion(entrega(SolicitudRecibida.CONFIRMACION_CONFIRMADA)))
-        assertFalse(ReglasSolicitud.mostrarPlazoConfirmacion(entrega(hasta = null)))
-    }
 }

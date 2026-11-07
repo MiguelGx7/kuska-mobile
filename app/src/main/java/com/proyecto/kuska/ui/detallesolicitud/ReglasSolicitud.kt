@@ -1,6 +1,5 @@
 package com.proyecto.kuska.ui.detallesolicitud
 
-import com.proyecto.kuska.data.api.modelos.ConfirmacionEntrega
 import com.proyecto.kuska.data.api.modelos.MiSolicitud
 import com.proyecto.kuska.data.api.modelos.SolicitudRecibida
 
@@ -74,10 +73,6 @@ object ReglasSolicitud {
     /** La dirección de entrega solo aplica a Domicilio. */
     fun direccionEntrega(solicitud: MiSolicitud): String? =
         solicitud.direccionEntrega.limpio().takeIf { solicitud.modalidadEntrega == MiSolicitud.MODALIDAD_DOMICILIO }
-
-    /** "Puedes confirmar hasta…" solo mientras la confirmación sigue Pendiente (RN-26b). */
-    fun mostrarPlazoConfirmacion(entrega: ConfirmacionEntrega): Boolean =
-        entrega.estadoConfirmacion == SolicitudRecibida.CONFIRMACION_PENDIENTE && entrega.confirmarHasta.limpio() != null
 
     private fun String?.limpio(): String? = this?.trim()?.takeIf { it.isNotEmpty() }
 }

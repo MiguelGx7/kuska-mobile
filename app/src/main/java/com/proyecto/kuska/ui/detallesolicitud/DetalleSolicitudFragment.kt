@@ -22,7 +22,8 @@ import kotlinx.coroutines.launch
 /**
  * Detalle de una solicitud del beneficiario (HU-053 a HU-056): estado, donación, modalidad, fechas, datos del
  * donante según el estado (RN-29), alimentos (los cancelados tachados), entrega si la hay y, en una Pendiente,
- * "Cancelar solicitud" (RN-23). Al volver, Mis solicitudes se recarga sola.
+ * "Cancelar solicitud" (RN-23). En una Entregada, confirmar si llegó el pedido y ver la respuesta (HU-057 a
+ * HU-059, RN-26b). Al volver, Mis solicitudes se recarga sola.
  */
 class DetalleSolicitudFragment : Fragment() {
 
@@ -48,6 +49,8 @@ class DetalleSolicitudFragment : Fragment() {
         adapter = DetalleSolicitudAdapter(
             alLlamar = ::llamar,
             alCancelar = ::confirmarCancelar,
+            alConfirmarRecibido = ::confirmarRecibido,
+            alReportarNoRecibido = ::reportarNoRecibido,
         )
         binding.listaDetalle.adapter = adapter
         binding.deslizarRefrescar.setOnRefreshListener { viewModel.refrescar() }
@@ -70,6 +73,26 @@ class DetalleSolicitudFragment : Fragment() {
         CancelarSolicitudDialogFragment().show(childFragmentManager, CancelarSolicitudDialogFragment.TAG)
     }
 
+    /** HU-057. Antes de preguntar se revisa el plazo: pudo vencer con la pantalla abierta. */
+    private fun confirmarRecibido() {
+        if (childFragmentManager.findFragmentByTag(ConfirmarRecibidoDialogFragment.TAG) != null) return
+        if (!viewModel.revisarPlazo()) return
+        ConfirmarRecibidoDialogFragment().show(childFragmentManager, ConfirmarRecibidoDialogFragment.TAG)
+    }
+
+    /** HU-058. El diálogo empieza sin los errores de un intento anterior. */
+    private fun reportarNoRecibido() {
+        if (childFragmentManager.findFragmentByTag(ReportarNoRecibidoDialogFragment.TAG) != null) return
+        if (!viewModel.revisarPlazo()) return
+        viewModel.limpiarErroresReclamo()
+        ReportarNoRecibidoDialogFragment().show(childFragmentManager, ReportarNoRecibidoDialogFragment.TAG)
+    }
+
+    private fun cerrarDialogoReclamo() {
+        (childFragmentManager.findFragmentByTag(ReportarNoRecibidoDialogFragment.TAG) as? ReportarNoRecibidoDialogFragment)
+            ?.dismissAllowingStateLoss()
+    }
+
     /** Abre el marcador con el número (ACTION_DIAL no pide permisos ni llama solo). */
     private fun llamar(numero: String) {
         try {
@@ -84,6 +107,13 @@ class DetalleSolicitudFragment : Fragment() {
             is EventoSolicitud.Mensaje -> Snackbar.make(binding.root, evento.texto, Snackbar.LENGTH_LONG).show()
             EventoSolicitud.Cancelada ->
                 Snackbar.make(binding.root, R.string.solicitud_cancelada, Snackbar.LENGTH_LONG).show()
+            EventoSolicitud.Confirmada ->
+                Snackbar.make(binding.root, R.string.recibido_gracias, Snackbar.LENGTH_LONG).show()
+            EventoSolicitud.Reclamada -> {
+                cerrarDialogoReclamo()
+                Snackbar.make(binding.root, R.string.no_recibido_enviado, Snackbar.LENGTH_LONG).show()
+            }
+            EventoSolicitud.CerrarDialogoReclamo -> cerrarDialogoReclamo()
         }
     }
 

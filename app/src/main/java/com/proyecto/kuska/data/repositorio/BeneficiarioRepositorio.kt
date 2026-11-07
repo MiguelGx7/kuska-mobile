@@ -8,6 +8,7 @@ import com.proyecto.kuska.data.api.modelos.CarritoAgregarRequest
 import com.proyecto.kuska.data.api.modelos.CarritoCantidadRequest
 import com.proyecto.kuska.data.api.modelos.CarritoItem
 import com.proyecto.kuska.data.api.modelos.CategoriaPublica
+import com.proyecto.kuska.data.api.modelos.ConfirmarEntregaRequest
 import com.proyecto.kuska.data.api.modelos.EnviarCarritoRequest
 import com.proyecto.kuska.data.api.modelos.MiSolicitud
 import com.proyecto.kuska.data.api.modelos.PaginaAlimentosDisponibles
@@ -69,6 +70,10 @@ class BeneficiarioRepositorio(
 
     /** RN-23. Si ya no está Pendiente, 400 con la regla como mensaje general. */
     suspend fun cancelarMiSolicitud(id: Int): Resultado<MiSolicitud> = ejecutar({ api.cancelarMiSolicitud(id) })
+
+    /** RN-26b. El error del comentario llega en erroresCampo["comentario"]; el plazo vencido, como mensaje general. */
+    suspend fun confirmarEntrega(id: Int, cuerpo: ConfirmarEntregaRequest): Resultado<MiSolicitud> =
+        ejecutar({ api.confirmarEntrega(id, cuerpo) })
 
     /**
      * Hace la llamada y convierte cualquier fallo (HTTP o de red) en [Resultado.Error].

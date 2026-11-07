@@ -13,7 +13,6 @@ import coil.load
 import com.google.android.material.color.MaterialColors
 import com.proyecto.kuska.R
 import com.proyecto.kuska.data.api.modelos.MiSolicitud
-import com.proyecto.kuska.data.api.modelos.SolicitudRecibida
 import com.proyecto.kuska.databinding.ItemDetalleSeccionBinding
 import com.proyecto.kuska.databinding.ItemSolicitudAlimentoBinding
 import com.proyecto.kuska.databinding.ItemSolicitudCancelarBinding
@@ -21,9 +20,11 @@ import com.proyecto.kuska.databinding.ItemSolicitudDonanteBinding
 import com.proyecto.kuska.databinding.ItemSolicitudEncabezadoBinding
 import com.proyecto.kuska.databinding.ItemSolicitudEntregaBinding
 import com.proyecto.kuska.ui.comun.FamiliaColor
+import com.proyecto.kuska.ui.comun.mostrar
 import com.proyecto.kuska.ui.comun.mostrarAviso
 import com.proyecto.kuska.ui.comun.mostrarEstadoSolicitud
 import com.proyecto.kuska.ui.comun.mostrarEtiqueta
+import com.proyecto.kuska.ui.comun.resolver
 import com.proyecto.kuska.ui.comun.textoCantidad
 import com.proyecto.kuska.util.FormatoFecha
 
@@ -32,6 +33,10 @@ class DetalleSolicitudAdapter(
     /** Recibe el número ya limpio para "tel:". */
     private val alLlamar: (String) -> Unit,
     private val alCancelar: () -> Unit,
+    /** "Sí, lo recibí" (HU-057). */
+    private val alConfirmarRecibido: () -> Unit,
+    /** "No me llegó" (HU-058). */
+    private val alReportarNoRecibido: () -> Unit,
 ) : ListAdapter<FilaSolicitud, RecyclerView.ViewHolder>(Diferencia) {
 
     override fun getItemViewType(posicion: Int) = when (getItem(posicion)) {
@@ -88,7 +93,7 @@ class DetalleSolicitudAdapter(
                     null -> null
                 }
             )
-            avisoAccion.mostrarAviso(fila.aviso)
+            avisoAccion.mostrarAviso(fila.aviso?.resolver(contexto))
         }
 
         private fun etiquetaModalidad(contexto: Context, modalidad: String) = when (modalidad) {
@@ -163,7 +168,12 @@ class DetalleSolicitudAdapter(
         }
     }
 
-    class EntregaVista(private val binding: ItemSolicitudEntregaBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class EntregaVista(private val binding: ItemSolicitudEntregaBinding) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.botonRecibido.boton.setOnClickListener { alConfirmarRecibido() }
+            binding.botonNoLlego.setOnClickListener { alReportarNoRecibido() }
+        }
+
         fun mostrar(fila: FilaSolicitud.Entrega) = with(binding) {
             val contexto = root.context
             val entrega = fila.entrega
@@ -173,15 +183,37 @@ class DetalleSolicitudAdapter(
             textoObservacion.mostrarAviso(
                 entrega.observacion?.takeIf { it.isNotBlank() }?.let { contexto.getString(R.string.solicitud_observacion, it) }
             )
-            textoConfirmacion.mostrarAviso(
-                entrega.estadoConfirmacion?.takeIf { it.isNotBlank() }
-                    ?.let { contexto.getString(R.string.solicitud_confirmacion, etiquetaConfirmacion(contexto, it)) }
-            )
+
+            // Por responder: pregunta, plazo y botones. Si no, la confirmación como etiqueta de color (HU-059).
+            val estadoConfirmacion = entrega.estadoConfirmacion?.takeIf { it.isNotBlank() }
+            filaConfirmacion.isVisible = !fila.puedeResponder && estadoConfirmacion != null
+            if (estadoConfirmacion != null) {
+                etiquetaConfirmacion.mostrarEtiqueta(
+                    ConfirmacionEntregaSolicitud.etiqueta(estadoConfirmacion)?.let(contexto::getString) ?: estadoConfirmacion,
+                    ConfirmacionEntregaSolicitud.familia(estadoConfirmacion),
+                )
+            }
+            textoPregunta.isVisible = fila.puedeResponder
+            botonesRespuesta.isVisible = fila.puedeResponder
             textoPlazo.mostrarAviso(
-                FormatoFecha.fechaHoraDeFechaHora(entrega.confirmarHasta)
-                    ?.takeIf { fila.mostrarPlazo }
-                    ?.let { contexto.getString(R.string.solicitud_confirmar_hasta, it) }
+                when {
+                    fila.puedeResponder -> FormatoFecha.fechaHoraDeFechaHora(entrega.confirmarHasta)
+                        ?.let { contexto.getString(R.string.solicitud_confirmar_hasta, it) }
+                    fila.plazoVencido -> contexto.getString(R.string.solicitud_plazo_terminado)
+                    else -> null
+                }
             )
+            botonRecibido.mostrar(
+                contexto.getString(R.string.solicitud_si_recibi),
+                cargando = fila.enviando == RespuestaEntrega.RECIBIDO,
+                habilitado = fila.habilitado,
+            )
+            val reclamando = fila.enviando == RespuestaEntrega.RECLAMO
+            botonNoLlego.isEnabled = fila.habilitado
+            botonNoLlego.text = if (reclamando) null else contexto.getString(R.string.solicitud_no_llego)
+            botonNoLlego.contentDescription = if (reclamando) contexto.getString(R.string.cargando) else null
+            indicadorNoLlego.isVisible = reclamando
+
             textoComentario.mostrarAviso(
                 entrega.comentarioBeneficiario?.takeIf { it.isNotBlank() }
                     ?.let { contexto.getString(R.string.solicitud_tu_comentario, it) }
@@ -190,15 +222,6 @@ class DetalleSolicitudAdapter(
                 entrega.respuestaAdmin?.takeIf { it.isNotBlank() }
                     ?.let { contexto.getString(R.string.solicitud_respuesta_admin, it) }
             )
-        }
-
-        private fun etiquetaConfirmacion(contexto: Context, estado: String) = when (estado) {
-            SolicitudRecibida.CONFIRMACION_PENDIENTE -> contexto.getString(R.string.confirmacion_pendiente)
-            SolicitudRecibida.CONFIRMACION_CONFIRMADA -> contexto.getString(R.string.confirmacion_confirmada)
-            SolicitudRecibida.CONFIRMACION_ASUMIDA -> contexto.getString(R.string.confirmacion_asumida)
-            SolicitudRecibida.CONFIRMACION_RECLAMADA -> contexto.getString(R.string.confirmacion_reclamada)
-            SolicitudRecibida.CONFIRMACION_REVISADA -> contexto.getString(R.string.confirmacion_revisada)
-            else -> estado
         }
     }
 

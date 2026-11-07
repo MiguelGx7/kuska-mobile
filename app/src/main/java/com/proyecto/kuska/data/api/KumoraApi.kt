@@ -17,6 +17,7 @@ import com.proyecto.kuska.data.api.modelos.EntregarRequest
 import com.proyecto.kuska.data.api.modelos.LoginRequest
 import com.proyecto.kuska.data.api.modelos.LoginResponse
 import com.proyecto.kuska.data.api.modelos.MensajeResponse
+import com.proyecto.kuska.data.api.modelos.ConfirmarEntregaRequest
 import com.proyecto.kuska.data.api.modelos.MiSolicitud
 import com.proyecto.kuska.data.api.modelos.Novedad
 import com.proyecto.kuska.data.api.modelos.NovedadCrearRequest
@@ -175,6 +176,10 @@ interface KumoraApi {
     /** RN-23: solo si está Pendiente. Devuelve las cantidades, sin sanción. Responde 200 con la solicitud cancelada. */
     @POST("mis-solicitudes/{id}/cancelar/")
     suspend fun cancelarMiSolicitud(@Path("id") id: Int): Response<MiSolicitud>
+
+    /** RN-26b: solo Entregada, una vez y antes de entrega.confirmar_hasta. Responde 200 con la solicitud actualizada. */
+    @POST("mis-solicitudes/{id}/confirmar-entrega/")
+    suspend fun confirmarEntrega(@Path("id") id: Int, @Body cuerpo: ConfirmarEntregaRequest): Response<MiSolicitud>
 }
 
 /** Solo para el refresh de tokens. Usa un cliente sin interceptor de auth ni Authenticator. */

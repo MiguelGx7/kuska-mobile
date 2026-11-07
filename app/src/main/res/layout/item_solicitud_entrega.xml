@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Entrega y su confirmación (RN-26b), solo texto. El paso 14 agrega aquí "Recibido" / "No recibido". -->
+<!--
+    Entrega y su confirmación (RN-26b). Mientras se puede responder: pregunta, plazo y "No me llegó" / "Sí, lo recibí".
+    Después: la confirmación como etiqueta de color, el comentario y la respuesta del administrador (HU-059).
+-->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.Kumora.CardView.Borde"
     android:layout_width="match_parent"
@@ -30,14 +34,37 @@
             android:textColor="?attr/colorOnSurface"
             tools:text="Observación del donante: Faltó una bolsa de pan." />
 
-        <TextView
-            android:id="@+id/texto_confirmacion"
+        <!-- Ya respondida (o sin poder responder): "Tu confirmación:" + etiqueta de color -->
+        <LinearLayout
+            android:id="@+id/fila_confirmacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?attr/colorOnSurface"
-            tools:text="Tu confirmación: Pendiente" />
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/solicitud_confirmacion"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/etiqueta_confirmacion"
+                style="@style/Widget.Kumora.EtiquetaEstado"
+                tools:text="Confirmada" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/texto_pregunta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/solicitud_recibiste_pedido"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?attr/colorOnSurface" />
 
         <TextView
             android:id="@+id/texto_plazo"
@@ -46,13 +73,54 @@
             android:layout_marginTop="4dp"
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="?attr/colorOnSurfaceVariant"
-            tools:text="Puedes confirmar hasta el 20/10/2026 a las 10:15" />
+            tools:text="Puedes responder hasta el 20/10/2026 a las 10:15" />
+
+        <LinearLayout
+            android:id="@+id/botones_respuesta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/boton_no_llego"
+                    style="@style/Widget.Kumora.Button.Peligro"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="@string/solicitud_no_llego" />
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/indicador_no_llego"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    app:indicatorColor="?attr/colorError"
+                    app:indicatorSize="24dp"
+                    app:trackThickness="3dp" />
+            </FrameLayout>
+
+            <include
+                android:id="@+id/boton_recibido"
+                layout="@layout/vista_boton_carga"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/texto_comentario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="?attr/colorOnSurface"
             tools:text="Tu comentario: No llegó el arroz." />

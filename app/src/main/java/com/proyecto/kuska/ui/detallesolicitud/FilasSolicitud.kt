@@ -3,17 +3,18 @@ package com.proyecto.kuska.ui.detallesolicitud
 import com.proyecto.kuska.data.api.modelos.ConfirmacionEntrega
 import com.proyecto.kuska.data.api.modelos.DetalleSolicitud
 import com.proyecto.kuska.data.api.modelos.MiSolicitud
+import com.proyecto.kuska.ui.comun.TextoUi
 
 /** Filas del detalle de una solicitud (un solo RecyclerView con varios tipos). */
 sealed interface FilaSolicitud {
     val clave: String
 
-    /** [aviso]: error de la última acción (cancelar). [motivo]: de rechazo o de cancelación (HU-056). */
+    /** [aviso]: error de la última acción (cancelar o confirmar). [motivo]: de rechazo o de cancelación (HU-056). */
     data class Encabezado(
         val solicitud: MiSolicitud,
         val direccionEntrega: String?,
         val motivo: MotivoSolicitud?,
-        val aviso: String?,
+        val aviso: TextoUi?,
     ) : FilaSolicitud {
         override val clave = "encabezado"
     }
@@ -34,10 +35,17 @@ sealed interface FilaSolicitud {
     }
 
     /**
-     * Entrega y su confirmación, solo como texto. El paso 14 (confirmar "Recibido" / "No recibido") agrega aquí
-     * sus campos y los botones de la tarjeta.
+     * Entrega y su confirmación (RN-26b). [puedeResponder]: pregunta, plazo y los botones "Sí, lo recibí" /
+     * "No me llegó". Si no, la confirmación como etiqueta de color; [plazoVencido]: sigue Pendiente pero ya no se
+     * puede responder. [enviando]: botón con carga; [habilitado]: no hay otra acción en curso.
      */
-    data class Entrega(val entrega: ConfirmacionEntrega, val mostrarPlazo: Boolean) : FilaSolicitud {
+    data class Entrega(
+        val entrega: ConfirmacionEntrega,
+        val puedeResponder: Boolean,
+        val plazoVencido: Boolean = false,
+        val enviando: RespuestaEntrega? = null,
+        val habilitado: Boolean = true,
+    ) : FilaSolicitud {
         override val clave = "entrega"
     }
 
@@ -47,11 +55,15 @@ sealed interface FilaSolicitud {
     }
 }
 
-/** Encabezado, donante, entrega (si llegó), alimentos y, si está Pendiente, "Cancelar solicitud". */
+/**
+ * Encabezado, donante, entrega (si llegó), alimentos y, si está Pendiente, "Cancelar solicitud".
+ * [ahora]: para saber si todavía se puede responder la entrega.
+ */
 fun construirFilasSolicitud(
     estado: DetalleSolicitudEstado,
     tituloEntrega: Int,
     tituloAlimentos: Int,
+    ahora: Long = System.currentTimeMillis(),
 ): List<FilaSolicitud> {
     val solicitud = estado.solicitud ?: return emptyList()
     return buildList {
@@ -66,7 +78,15 @@ fun construirFilasSolicitud(
         ReglasSolicitud.datosDonante(solicitud)?.let { add(FilaSolicitud.Donante(it)) }
         solicitud.entrega?.let {
             add(FilaSolicitud.Seccion(tituloEntrega))
-            add(FilaSolicitud.Entrega(it, ReglasSolicitud.mostrarPlazoConfirmacion(it)))
+            add(
+                FilaSolicitud.Entrega(
+                    entrega = it,
+                    puedeResponder = ConfirmacionEntregaSolicitud.puedeResponder(solicitud, ahora),
+                    plazoVencido = ConfirmacionEntregaSolicitud.plazoVencido(it, ahora),
+                    enviando = estado.confirmando,
+                    habilitado = !estado.ocupado,
+                )
+            )
         }
         val detalles = solicitud.detalles.orEmpty()
         if (detalles.isNotEmpty()) {

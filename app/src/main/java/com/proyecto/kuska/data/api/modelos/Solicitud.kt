@@ -73,6 +73,15 @@ data class ConfirmacionEntrega(
     @SerializedName("fecha_revision") val fechaRevision: String?,
 )
 
+/**
+ * RN-26b: [recibido] true lo confirma; false lo reclama y entonces [comentario] es obligatorio (máximo 255).
+ * Gson omite los null, así que "Lo recibí" envía solo {"recibido": true}.
+ */
+data class ConfirmarEntregaRequest(
+    @SerializedName("recibido") val recibido: Boolean,
+    @SerializedName("comentario") val comentario: String? = null,
+)
+
 /** PaginatedMiSolicitudList. */
 data class PaginaMisSolicitudes(
     @SerializedName("count") val total: Int,
