@@ -2,6 +2,7 @@ package com.proyecto.kuska.data.api
 
 import com.proyecto.kuska.data.api.modelos.Alimento
 import com.proyecto.kuska.data.api.modelos.AlimentoConSolicitudes
+import com.proyecto.kuska.data.api.modelos.CambiarContrasenaRequest
 import com.proyecto.kuska.data.api.modelos.CategoriaPublica
 import com.proyecto.kuska.data.api.modelos.Donacion
 import com.proyecto.kuska.data.api.modelos.Entrega
@@ -55,6 +56,17 @@ interface KumoraApi {
 
     @GET("auth/perfil/")
     suspend fun obtenerPerfil(): Response<Perfil>
+
+    /** RN-04a. [cuerpo]: JSON con solo los campos que cambiaron (direccion null para vaciarla). */
+    @PATCH("auth/perfil/")
+    suspend fun editarPerfil(@Body cuerpo: RequestBody): Response<Perfil>
+
+    /**
+     * Invalida todos los refresh tokens del usuario, también el de este celular. Una contraseña actual incorrecta
+     * puede llegar como 400 o 401: ver [Respuestas401].
+     */
+    @POST("auth/perfil/cambiar-contrasena/")
+    suspend fun cambiarContrasena(@Body cuerpo: CambiarContrasenaRequest): Response<MensajeResponse>
 
     /** Solo las categorías activas, sin paginación. */
     @GET("categorias/")

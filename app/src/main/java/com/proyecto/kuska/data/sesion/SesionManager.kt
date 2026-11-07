@@ -1,6 +1,7 @@
 package com.proyecto.kuska.data.sesion
 
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -35,6 +36,11 @@ class SesionManager(context: Context) {
     /** Emite cuando el refresh falla y la sesión se borró. */
     val sesionExpirada: SharedFlow<Unit> = _sesionExpirada.asSharedFlow()
 
+    private val _avisos = MutableSharedFlow<Int>(extraBufferCapacity = 1)
+
+    /** Texto (recurso) que MainActivity muestra en un Snackbar, p. ej. al cerrar la sesión por un motivo propio. */
+    val avisos: SharedFlow<Int> = _avisos.asSharedFlow()
+
     /** Sesión actual, o null si no hay sesión iniciada. */
     val sesion: Flow<Sesion?> = dataStore.data.map { prefs ->
         val access = prefs[ACCESS] ?: return@map null
@@ -60,6 +66,18 @@ class SesionManager(context: Context) {
 
     suspend fun cerrarSesion() {
         dataStore.edit { it.clear() }
+    }
+
+    /** Tras editar el perfil: el usuario guardado conserva sus nombres al día. Sin sesión no hace nada. */
+    suspend fun actualizarNombres(nombres: String?, apellidos: String?) {
+        dataStore.edit { prefs ->
+            val usuario = prefs[USUARIO]?.let { leerUsuario(it) } ?: return@edit
+            prefs[USUARIO] = gson.toJson(usuario.copy(nombres = nombres, apellidos = apellidos))
+        }
+    }
+
+    fun notificarAviso(@StringRes mensaje: Int) {
+        _avisos.tryEmit(mensaje)
     }
 
     suspend fun obtenerAccess(): String? = dataStore.data.first()[ACCESS]

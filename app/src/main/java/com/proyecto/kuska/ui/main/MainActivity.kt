@@ -44,6 +44,8 @@ class MainActivity : AppCompatActivity() {
         R.id.detalleDonacionFragment,
         R.id.editarDonacionFragment,
         R.id.agregarAlimentoFragment,
+        R.id.editarPerfilFragment,
+        R.id.cambiarContrasenaFragment,
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,8 +81,15 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                sesionManager.sesionExpirada.collect {
-                    Snackbar.make(binding.root, R.string.sesion_expirada, Snackbar.LENGTH_LONG).show()
+                launch {
+                    sesionManager.sesionExpirada.collect {
+                        Snackbar.make(binding.root, R.string.sesion_expirada, Snackbar.LENGTH_LONG).show()
+                    }
+                }
+                launch {
+                    sesionManager.avisos.collect { mensaje ->
+                        Snackbar.make(binding.root, mensaje, Snackbar.LENGTH_LONG).show()
+                    }
                 }
             }
         }

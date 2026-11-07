@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Editar perfil (HU-013): solo nombres, apellidos, teléfono y dirección. Mientras carga o si falla se ve vista_estado_pantalla. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
+    android:orientation="vertical"
+    tools:context=".ui.editarperfil.EditarPerfilFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/barra"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?android:attr/colorBackground"
+        app:navigationContentDescription="@string/accion_volver"
+        app:navigationIcon="@drawable/ic_atras"
+        app:title="@string/titulo_editar_perfil" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/desplazamiento"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="16dp">
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:layout_marginTop="0dp"
+                    android:labelFor="@id/entrada_nombres"
+                    android:text="@string/registro_nombres" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_nombres"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_nombres"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:autofillHints="personGivenName"
+                        android:inputType="textPersonName|textCapWords" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:labelFor="@id/entrada_apellidos"
+                    android:text="@string/registro_apellidos" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_apellidos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_apellidos"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:autofillHints="personFamilyName"
+                        android:inputType="textPersonName|textCapWords" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:labelFor="@id/entrada_telefono"
+                    android:text="@string/registro_telefono" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_telefono"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_telefono"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:autofillHints="phone"
+                        android:inputType="phone" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    style="@style/Widget.Kumora.Etiqueta"
+                    android:labelFor="@id/entrada_direccion"
+                    android:text="@string/registro_direccion" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/campo_direccion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/entrada_direccion"
+                        style="@style/Widget.Kumora.Entrada"
+                        android:autofillHints="postalAddress"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPostalAddress|textCapSentences" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/perfil_no_editables"
+                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                    android:textColor="?attr/colorOnSurface" />
+
+                <!-- Un item_dato_perfil por cada dato que no se edita (RN-04a) -->
+                <LinearLayout
+                    android:id="@+id/contenedor_solo_lectura"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:orientation="vertical" />
+
+                <!-- Empuja el aviso y el botón hacia abajo cuando sobra espacio -->
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:minHeight="32dp" />
+
+                <TextView
+                    android:id="@+id/aviso_error"
+                    style="@style/Widget.Kumora.AvisoError"
+                    android:layout_marginBottom="16dp"
+                    tools:text="No hay conexión. Revisa tu internet e inténtalo de nuevo."
+                    tools:visibility="visible" />
+
+                <include
+                    android:id="@+id/boton_carga"
+                    layout="@layout/vista_boton_carga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <include
+            android:id="@+id/estado_pantalla"
+            layout="@layout/vista_estado_pantalla"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+</LinearLayout>

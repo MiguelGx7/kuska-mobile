@@ -245,6 +245,27 @@
 
     <!-- Perfil -->
     <string name="perfil_cerrar_sesion">Cerrar sesión</string>
+    <string name="perfil_cerrar_sesion_titulo">¿Cerrar sesión?</string>
+    <string name="perfil_cerrar_sesion_mensaje">Tendrás que volver a escribir tu correo y contraseña para entrar.</string>
+    <string name="perfil_editar">Editar perfil</string>
+    <string name="perfil_cambiar_contrasena">Cambiar contraseña</string>
+    <string name="perfil_rol">Rol</string>
+    <string name="perfil_nombre_negocio">Nombre del negocio</string>
+    <string name="perfil_direccion">Dirección</string>
+    <string name="perfil_fecha_registro">Fecha de registro</string>
+    <string name="perfil_sin_dato">No registrado</string>
+    <string name="perfil_no_editables">Datos que no se pueden cambiar</string>
+    <string name="perfil_cambios_guardados">Cambios guardados.</string>
+    <string name="perfil_contrasena_explicacion">Usa al menos 8 caracteres, que no sean solo números ni parecidos a tus datos.</string>
+    <string name="perfil_contrasena_actual">Contraseña actual</string>
+    <string name="perfil_confirmar_nueva">Confirmar nueva contraseña</string>
+    <string name="perfil_contrasena_guardar">Cambiar contraseña</string>
+    <string name="perfil_contrasena_actualizada">Contraseña actualizada.</string>
+    <string name="perfil_contrasena_relogin">Tu contraseña cambió. Inicia sesión con la nueva.</string>
+    <string name="perfil_error_actual_vacia">Escribe tu contraseña actual.</string>
+    <string name="perfil_error_actual_incorrecta">La contraseña actual no es correcta.</string>
+    <string name="titulo_editar_perfil">Editar perfil</string>
+    <string name="titulo_cambiar_contrasena">Cambiar contraseña</string>
 
     <!-- Barra inferior -->
     <string name="nav_inicio">Inicio</string>

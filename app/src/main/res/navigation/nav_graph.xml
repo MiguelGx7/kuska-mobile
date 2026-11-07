@@ -131,5 +131,23 @@
     <fragment
         android:id="@+id/perfilFragment"
         android:name="com.proyecto.kuska.ui.perfil.PerfilFragment"
-        android:label="@string/titulo_perfil" />
+        android:label="@string/titulo_perfil">
+        <action
+            android:id="@+id/action_perfil_a_editar"
+            app:destination="@id/editarPerfilFragment" />
+        <action
+            android:id="@+id/action_perfil_a_cambiar_contrasena"
+            app:destination="@id/cambiarContrasenaFragment" />
+    </fragment>
+
+    <!-- Las dos devuelven el mensaje de éxito en el SavedStateHandle de Perfil -->
+    <fragment
+        android:id="@+id/editarPerfilFragment"
+        android:name="com.proyecto.kuska.ui.editarperfil.EditarPerfilFragment"
+        android:label="@string/titulo_editar_perfil" />
+
+    <fragment
+        android:id="@+id/cambiarContrasenaFragment"
+        android:name="com.proyecto.kuska.ui.cambiarcontrasena.CambiarContrasenaFragment"
+        android:label="@string/titulo_cambiar_contrasena" />
 </navigation>

@@ -9,12 +9,6 @@ data class CategoriaPublica(
     @SerializedName("descripcion") val descripcion: String?,
 )
 
-/** GET auth/perfil/. Solo se leen los campos que usa la app. */
-data class Perfil(
-    @SerializedName("id") val id: Int,
-    @SerializedName("direccion") val direccion: String?,
-)
-
 /**
  * Campo "datos" de POST donaciones/ (multipart). Las fotos van aparte como foto_0, foto_1...
  * en el mismo orden de [alimentos]. Gson omite los null, así que los opcionales vacíos no se envían.

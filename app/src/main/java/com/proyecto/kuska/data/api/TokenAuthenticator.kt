@@ -23,6 +23,12 @@ class TokenAuthenticator(
     override fun authenticate(route: Route?, response: Response): Request? {
         // Un 401 en login/registro/refresh es un error de credenciales, no de token.
         if (RutasPublicas.esPublica(response.request)) return null
+        // En cambiar contraseña un 401 puede ser la contraseña actual incorrecta: ni refresh ni cerrar sesión.
+        if (Respuestas401.esCambioContrasena(response.request) &&
+            !Respuestas401.esTokenInvalido(response.peekBody(MAX_CUERPO).string())
+        ) {
+            return null
+        }
         // La petición ya se repitió con un token nuevo y aun así falló.
         if (response.priorResponse != null) {
             expirarSesion()
@@ -69,5 +75,10 @@ class TokenAuthenticator(
     private fun expirarSesion() {
         sesion.cerrarSesionBloqueante()
         sesion.notificarSesionExpirada()
+    }
+
+    private companion object {
+        /** Bytes que se leen del cuerpo del 401 sin consumirlo (basta para ver "code"). */
+        const val MAX_CUERPO = 4096L
     }
 }
