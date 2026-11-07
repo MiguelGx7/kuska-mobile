@@ -17,10 +17,12 @@ import com.proyecto.kuska.data.api.modelos.EntregarRequest
 import com.proyecto.kuska.data.api.modelos.LoginRequest
 import com.proyecto.kuska.data.api.modelos.LoginResponse
 import com.proyecto.kuska.data.api.modelos.MensajeResponse
+import com.proyecto.kuska.data.api.modelos.MiSolicitud
 import com.proyecto.kuska.data.api.modelos.Novedad
 import com.proyecto.kuska.data.api.modelos.NovedadCrearRequest
 import com.proyecto.kuska.data.api.modelos.PaginaNovedades
 import com.proyecto.kuska.data.api.modelos.PaginaDonaciones
+import com.proyecto.kuska.data.api.modelos.PaginaMisSolicitudes
 import com.proyecto.kuska.data.api.modelos.Perfil
 import com.proyecto.kuska.data.api.modelos.RecuperarConfirmarRequest
 import com.proyecto.kuska.data.api.modelos.RefreshRequest
@@ -158,6 +160,21 @@ interface KumoraApi {
     /** RN-22: una solicitud por donación con el mismo codigo_pedido. Si algo falla, 400 y no crea nada. */
     @POST("carrito/enviar/")
     suspend fun enviarCarrito(@Body cuerpo: EnviarCarritoRequest): Response<PedidoEnviado>
+
+    /** Mis solicitudes. Paginado; [estado] null = todas. Antes de listar, la API aplica los vencimientos (RN-27). */
+    @GET("mis-solicitudes/")
+    suspend fun listarMisSolicitudes(
+        @Query("estado") estado: String?,
+        @Query("page") pagina: Int,
+    ): Response<PaginaMisSolicitudes>
+
+    /** Datos de contacto del donante solo desde Aprobada (RN-29). Una ajena responde 404. */
+    @GET("mis-solicitudes/{id}/")
+    suspend fun obtenerMiSolicitud(@Path("id") id: Int): Response<MiSolicitud>
+
+    /** RN-23: solo si está Pendiente. Devuelve las cantidades, sin sanción. Responde 200 con la solicitud cancelada. */
+    @POST("mis-solicitudes/{id}/cancelar/")
+    suspend fun cancelarMiSolicitud(@Path("id") id: Int): Response<MiSolicitud>
 }
 
 /** Solo para el refresh de tokens. Usa un cliente sin interceptor de auth ni Authenticator. */

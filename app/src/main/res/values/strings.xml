@@ -15,6 +15,7 @@
     <string name="titulo_agregar_alimento">Agregar alimento</string>
     <string name="titulo_editar_alimento">Editar alimento</string>
     <string name="titulo_detalle_donacion">Detalle de la donación</string>
+    <string name="titulo_detalle_solicitud">Detalle de la solicitud</string>
     <string name="titulo_editar_donacion">Editar donación</string>
 
     <!-- Comunes a varias pantallas -->
@@ -316,6 +317,37 @@
     <string name="carrito_enviado_mensaje">Pedido %1$s enviado. El administrador lo revisará.</string>
     <string name="carrito_ver_solicitudes">Ver mis solicitudes</string>
     <string name="accion_aceptar">Aceptar</string>
+
+    <!-- Mis solicitudes (HU-051 a HU-056) -->
+    <string name="mis_solicitudes_vacia">Todavía no has hecho pedidos.</string>
+    <string name="mis_solicitudes_vacia_filtro">No tienes solicitudes en este estado.</string>
+    <string name="mis_solicitudes_pedido">Pedido %1$s</string>
+    <string name="mis_solicitudes_fecha">Pedida el %1$s</string>
+    <string name="solicitud_donacion">Donación: %1$s</string>
+    <string name="solicitud_entregar_en">Entregar en: %1$s</string>
+    <string name="solicitud_gestionada">Revisada el %1$s</string>
+    <string name="solicitud_motivo_cancelacion">Motivo de la cancelación: %1$s</string>
+    <string name="solicitud_donante">Donante</string>
+    <string name="solicitud_datos_recogida">Datos de recogida</string>
+    <string name="solicitud_recoger_antes">Recoge antes del %1$s</string>
+    <string name="solicitud_fecha_limite">Fecha límite de recogida: %1$s</string>
+    <string name="solicitud_llamar">Llamar a %1$s</string>
+    <string name="solicitud_direccion_recogida">Dirección de recogida: %1$s</string>
+    <string name="solicitud_donante_pendiente">Verás su teléfono y su dirección cuando el administrador apruebe tu solicitud.</string>
+    <string name="solicitud_sin_marcador">No hay una app para hacer llamadas.</string>
+    <string name="solicitud_alimentos">Alimentos</string>
+    <string name="solicitud_entrega_titulo">Entrega</string>
+    <string name="solicitud_entregada_el">Entregada el %1$s</string>
+    <string name="solicitud_observacion">Observación del donante: %1$s</string>
+    <string name="solicitud_confirmacion">Tu confirmación: %1$s</string>
+    <string name="solicitud_confirmar_hasta">Puedes confirmar hasta el %1$s</string>
+    <string name="solicitud_tu_comentario">Tu comentario: %1$s</string>
+    <string name="solicitud_respuesta_admin">Respuesta del administrador: %1$s</string>
+    <string name="solicitud_cancelar">Cancelar solicitud</string>
+    <string name="solicitud_cancelar_titulo">¿Cancelar la solicitud?</string>
+    <string name="solicitud_cancelar_mensaje">Se cancelará el pedido %1$s de %2$s y los alimentos quedarán disponibles para otras personas. No tiene ninguna sanción.</string>
+    <string name="solicitud_cancelar_confirmar">Cancelar solicitud</string>
+    <string name="solicitud_cancelada">Solicitud cancelada.</string>
 
     <!-- Barra inferior -->
     <string name="nav_inicio">Inicio</string>

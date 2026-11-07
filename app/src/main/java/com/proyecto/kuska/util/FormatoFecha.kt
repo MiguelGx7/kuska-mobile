@@ -31,6 +31,12 @@ object FormatoFecha {
         return SimpleDateFormat("dd/MM/yyyy", Locale.US).apply { timeZone = ZONA_BOGOTA }.format(milis)
     }
 
+    /** "2026-10-20T23:30:00Z" → "20/10/2026 a las 18:30" (hora de Bogotá, 24 h). Para plazos donde importa la hora. */
+    fun fechaHoraDeFechaHora(texto: String?): String? {
+        val milis = milisDeFechaHora(texto) ?: return null
+        return SimpleDateFormat("dd/MM/yyyy 'a las' HH:mm", Locale.US).apply { timeZone = ZONA_BOGOTA }.format(milis)
+    }
+
     /** Milisegundos desde 1970 de una fecha ISO-8601 con hora, o null si no se puede leer. */
     internal fun milisDeFechaHora(texto: String?): Long? {
         val coincidencia = fechaHora.matchEntire(texto?.trim().orEmpty()) ?: return null

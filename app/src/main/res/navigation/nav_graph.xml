@@ -61,10 +61,25 @@
         android:name="com.proyecto.kuska.ui.carrito.CarritoFragment"
         android:label="@string/titulo_carrito" />
 
+    <!-- Se recarga cada vez que se vuelve a la pestaña. "Ver mis solicitudes" (carrito) además deja el filtro en Todas. -->
     <fragment
         android:id="@+id/misSolicitudesFragment"
         android:name="com.proyecto.kuska.ui.missolicitudes.MisSolicitudesFragment"
-        android:label="@string/titulo_mis_solicitudes" />
+        android:label="@string/titulo_mis_solicitudes">
+        <action
+            android:id="@+id/action_mis_solicitudes_a_detalle"
+            app:destination="@id/detalleSolicitudFragment" />
+    </fragment>
+
+    <!-- Cancelar (solo Pendiente) usa un diálogo hijo; la lista se recarga sola al volver. -->
+    <fragment
+        android:id="@+id/detalleSolicitudFragment"
+        android:name="com.proyecto.kuska.ui.detallesolicitud.DetalleSolicitudFragment"
+        android:label="@string/titulo_detalle_solicitud">
+        <argument
+            android:name="id"
+            app:argType="integer" />
+    </fragment>
 
     <!-- Donante -->
     <fragment

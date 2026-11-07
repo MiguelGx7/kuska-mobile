@@ -9,7 +9,9 @@ import com.proyecto.kuska.data.api.modelos.CarritoCantidadRequest
 import com.proyecto.kuska.data.api.modelos.CarritoItem
 import com.proyecto.kuska.data.api.modelos.CategoriaPublica
 import com.proyecto.kuska.data.api.modelos.EnviarCarritoRequest
+import com.proyecto.kuska.data.api.modelos.MiSolicitud
 import com.proyecto.kuska.data.api.modelos.PaginaAlimentosDisponibles
+import com.proyecto.kuska.data.api.modelos.PaginaMisSolicitudes
 import com.proyecto.kuska.data.api.modelos.PedidoEnviado
 import com.proyecto.kuska.ui.iniciobeneficiario.FiltrosAlimentos
 import com.proyecto.kuska.util.Resultado
@@ -20,7 +22,7 @@ import com.proyecto.kuska.util.mensajeDeExcepcion
 import kotlinx.coroutines.CancellationException
 import retrofit2.Response
 
-/** Lo que hace el beneficiario: ver alimentos disponibles, armar su carrito y enviarlo. */
+/** Lo que hace el beneficiario: ver alimentos disponibles, armar su carrito, enviarlo y seguir sus solicitudes. */
 class BeneficiarioRepositorio(
     context: Context,
     private val api: KumoraApi,
@@ -58,6 +60,15 @@ class BeneficiarioRepositorio(
     /** RN-22. Un 400 trae los errores con las claves de [extraerErroresCarrito]. */
     suspend fun enviarCarrito(cuerpo: EnviarCarritoRequest): Resultado<PedidoEnviado> =
         ejecutar({ api.enviarCarrito(cuerpo) }, erroresPorCampo = ::extraerErroresCarrito)
+
+    /** [estado] null = todas. [pagina] empieza en 1. */
+    suspend fun listarMisSolicitudes(estado: String?, pagina: Int): Resultado<PaginaMisSolicitudes> =
+        ejecutar({ api.listarMisSolicitudes(estado, pagina) })
+
+    suspend fun obtenerMiSolicitud(id: Int): Resultado<MiSolicitud> = ejecutar({ api.obtenerMiSolicitud(id) })
+
+    /** RN-23. Si ya no está Pendiente, 400 con la regla como mensaje general. */
+    suspend fun cancelarMiSolicitud(id: Int): Resultado<MiSolicitud> = ejecutar({ api.cancelarMiSolicitud(id) })
 
     /**
      * Hace la llamada y convierte cualquier fallo (HTTP o de red) en [Resultado.Error].

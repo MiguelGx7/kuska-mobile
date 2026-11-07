@@ -35,6 +35,14 @@ class FormatoFechaTest {
     }
 
     @Test
+    fun fechaConHoraEnBogota() {
+        assertEquals("20/10/2026 a las 18:30", FormatoFecha.fechaHoraDeFechaHora("2026-10-20T23:30:00Z"))
+        assertEquals("20/10/2026 a las 08:05", FormatoFecha.fechaHoraDeFechaHora("2026-10-20T08:05:00.123-05:00"))
+        assertNull(FormatoFecha.fechaHoraDeFechaHora("20/10/2026"))
+        assertNull(FormatoFecha.fechaHoraDeFechaHora(null))
+    }
+
+    @Test
     fun milisegundosExactos() {
         assertEquals(1_792_108_800_000L, FormatoFecha.milisDeFechaHora("2026-10-15T19:00:00-05:00"))
         assertEquals(1_792_108_800_000L, FormatoFecha.milisDeFechaHora("2026-10-16T00:00:00.999999Z"))

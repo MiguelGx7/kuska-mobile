@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.proyecto.kuska.R
+import com.proyecto.kuska.ui.missolicitudes.MisSolicitudesFragment
 import kotlinx.coroutines.launch
 
 /**
@@ -42,6 +43,7 @@ class PedidoEnviadoDialogFragment : DialogFragment() {
                 viewModel.cerrarExito()
                 // Se quita ya, para que no quede guardado con la pestaña del carrito.
                 dismissNow()
+                MisSolicitudesFragment.pedirMostrarTodas()
                 actividad.irAPestana(R.id.misSolicitudesFragment)
             }
             .setNegativeButton(R.string.accion_aceptar) { _, _ -> viewModel.cerrarExito() }

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Encabezado del detalle de una solicitud: código, estado, donación, modalidad, dirección, fechas y avisos. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="8dp">
+
+    <TextView
+        android:id="@+id/texto_codigo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="Pedido KUM-0012" />
+
+    <TextView
+        android:id="@+id/etiqueta_estado"
+        style="@style/Widget.Kumora.EtiquetaEstado"
+        android:layout_marginTop="8dp"
+        tools:text="Pendiente" />
+
+    <TextView
+        android:id="@+id/texto_donacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="Donación: Mercado de la semana" />
+
+    <TextView
+        android:id="@+id/texto_modalidad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="Entrega: Domicilio" />
+
+    <TextView
+        android:id="@+id/texto_direccion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="Entregar en: Calle 1 Sur # 5-20" />
+
+    <TextView
+        android:id="@+id/texto_solicitada"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        tools:text="Pedida el 16/10/2026" />
+
+    <TextView
+        android:id="@+id/texto_gestionada"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        tools:text="Revisada el 17/10/2026" />
+
+    <!-- Motivo del rechazo o de la cancelación (HU-056) -->
+    <TextView
+        android:id="@+id/aviso_motivo"
+        style="@style/Widget.Kumora.AvisoError"
+        android:layout_marginTop="16dp"
+        tools:text="Motivo del rechazo: No hay cupo."
+        tools:visibility="visible" />
+
+    <!-- Error de la última acción (cancelar), p. ej. si ya no estaba Pendiente -->
+    <TextView
+        android:id="@+id/aviso_accion"
+        style="@style/Widget.Kumora.AvisoError"
+        android:layout_marginTop="16dp"
+        tools:text="No se puede cancelar: la solicitud está Aprobada y debe estar Pendiente."
+        tools:visibility="visible" />
+</LinearLayout>
