@@ -50,6 +50,26 @@
 
     <style name="Theme.Kumora" parent="Base.Theme.Kumora" />
 
+    <!-- Se aplica solo a la hoja reutilizable; no cambia los diálogos de otras pantallas. -->
+    <style name="ThemeOverlay.Kumora.HojaFiltros" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.Kumora.HojaFiltros</item>
+    </style>
+
+    <style name="Widget.Kumora.HojaFiltros" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.Kumora.HojaFiltros</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Kumora.HojaFiltros</item>
+        <item name="backgroundTint">?attr/colorSurface</item>
+        <item name="behavior_draggable">true</item>
+    </style>
+
+    <style name="ShapeAppearance.Kumora.HojaFiltros" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">20dp</item>
+        <item name="cornerSizeTopRight">20dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
     <!-- Splash (SplashScreen API): blanco y sin ícono, lo más corto posible; empalma con la intro (vista_intro) -->
     <style name="Theme.Kumora.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_fondo</item>

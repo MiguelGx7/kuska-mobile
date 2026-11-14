@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">Kumora</string>
 
+    <!-- Hoja reutilizable de filtros -->
+    <string name="filtros_titulo">Filtros</string>
+    <string name="filtros_filtrar">Filtrar</string>
+    <string name="filtros_filtrar_contador">Filtrar · %1$d</string>
+    <string name="filtros_todas">Todas</string>
+    <string name="filtros_aplicar">Aplicar filtros</string>
+    <string name="filtros_limpiar">Limpiar</string>
+    <string name="filtros_quitar">Quitar filtros</string>
+
     <!-- Títulos de pantallas -->
     <string name="titulo_login">Inicia sesión</string>
     <string name="titulo_registro">Crea tu cuenta</string>

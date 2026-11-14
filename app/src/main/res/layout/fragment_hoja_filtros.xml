@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:accessibilityHeading="true"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="8dp"
+        android:text="@string/filtros_titulo"
+        android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textColor="?attr/colorOnSurface" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingHorizontal="24dp"
+        android:paddingBottom="8dp">
+
+        <LinearLayout
+            android:id="@+id/grupos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/acciones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/boton_limpiar"
+            style="@style/Widget.Kumora.Button.Outlined"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginEnd="12dp"
+            android:text="@string/filtros_limpiar" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/boton_aplicar"
+            style="@style/Widget.Kumora.Button"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="@string/filtros_aplicar" />
+    </LinearLayout>
+</LinearLayout>
